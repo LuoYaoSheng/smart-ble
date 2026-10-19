@@ -172,7 +172,7 @@ ref:{base:'v1-new PAGE001 首页（Web 形态替代）',cap:'10_platform §2.3 �
 render(s){
   const B=BROWSERS[s.browser];
   return `<div class="navbar"><div class="kicker">WEB · SUBSET</div>
-    <div class="row"><div class="title">BLE Toolkit+ · Web</div>${C.chip('GATT 调试器子集','primary')}</div></div>
+    <div class="row"><div class="title">蓝析BLE工具箱 · Web</div>${C.chip('GATT 调试器子集','primary')}</div></div>
     <div class="page">
       <div class="refbar">${C.chip('① 基准：PAGE001 形态替代','primary')}${C.chip('② 限制：HTTPS+兼容分化','neutral')}${C.chip('③ 差异：chooser 即授权','neutral')}</div>
       ${s.secure?'':C.ebanner({code:'insecure_context',message:'当前为 HTTP 不安全上下文：Web Bluetooth 仅在安全上下文（HTTPS / localhost）可用。请通过 HTTPS 访问。',retry:'home-secure'})}
@@ -336,7 +336,7 @@ render(s){
       <div class="refbar">${C.chip('① 基准：P009 分享 / P006 日志','primary')}${C.chip('② 差异：复制 URL + 下载','neutral')}${C.chip('③ 增强候选未决策','neutral')}</div>
       <div class="card" style="margin-top:12px">
         <div class="card-t">${C.ic('info')} 版本</div>
-        <div class="kv"><span class="k">产品</span><span class="v">BLE Toolkit+ 1.0.5（PREVIEW）</span></div>
+        <div class="kv"><span class="k">产品</span><span class="v">蓝析BLE工具箱 1.0.5（PREVIEW）</span></div>
         <div class="kv"><span class="k">形态</span><span class="v">Web 子集实例（GATT 调试器）</span></div>
         <div class="kv"><span class="k">版本投影（F027）</span><span class="v">小程序 release-metadata 通道不可用 → 回退构建内置（对标基准 P009 verFallback 场景）</span></div>
       </div>

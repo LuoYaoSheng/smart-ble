@@ -40,5 +40,7 @@
     "bluetooth": true,
     "camera": true,
     "debuggable": false
-  }
+  },
+  "current_product_display_name": "蓝析BLE工具箱",
+  "branding_scope": "PRE_RENAME_EVIDENCE_REBUILD_REQUIRED"
 }

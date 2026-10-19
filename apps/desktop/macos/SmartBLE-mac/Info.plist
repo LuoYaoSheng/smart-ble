@@ -17,9 +17,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleDisplayName</key>
-	<string>BLE Toolkit+</string>
+	<string>蓝析BLE工具箱</string>
 	<key>CFBundleName</key>
-	<string>BLE Toolkit+</string>
+	<string>蓝析BLE工具箱</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -31,13 +31,13 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2026 BLE Toolkit+. All rights reserved.</string>
+	<string>Copyright © 2026 蓝析BLE工具箱. All rights reserved.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>BLE Toolkit+ needs Bluetooth access to scan for, connect to, and interact with nearby BLE devices.</string>
+	<string>蓝析BLE工具箱 needs Bluetooth access to scan for, connect to, and interact with nearby BLE devices.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>BLE Toolkit+ needs Bluetooth access to scan for, connect to, and interact with nearby BLE devices.</string>
+	<string>蓝析BLE工具箱 needs Bluetooth access to scan for, connect to, and interact with nearby BLE devices.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>BLE Toolkit+ uses the camera to scan ControlHub pairing QR codes (shid://pair). No images are stored.</string>
+	<string>蓝析BLE工具箱 uses the camera to scan ControlHub pairing QR codes (shid://pair). No images are stored.</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSHighResolutionCapable</key>

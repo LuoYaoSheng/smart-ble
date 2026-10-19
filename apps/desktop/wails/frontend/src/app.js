@@ -602,7 +602,7 @@ class App {
 
         // P010 复制版本信息（剪贴板 + 按钮态反馈）
         body.querySelector('#versionsCopyBtn')?.addEventListener('click', (e) => {
-            const info = `BLE Toolkit+ v${c.display_version} · ${c.channel_label} · 构建 v+${sha7 || 'unknown'} · ${c.platforms.map((p) => `${p.name} ${p.display_status}`).join(' / ')}`;
+            const info = `蓝析BLE工具箱 v${c.display_version} · ${c.channel_label} · 构建 v+${sha7 || 'unknown'} · ${c.platforms.map((p) => `${p.name} ${p.display_status}`).join(' / ')}`;
             const btn = e.currentTarget;
             const done = (ok) => {
                 const label = btn.querySelector('span');
@@ -740,7 +740,7 @@ class App {
     // P008 广播表单读取（includeName 恒真：桌面 noble 路径始终带名）
     readBroadcastForm() {
         return {
-            name: document.getElementById('broadcastName')?.value || 'BLE Toolkit+',
+            name: document.getElementById('broadcastName')?.value || 'LanxiBLE',
             uuid: (document.getElementById('broadcastServiceUuid')?.value || '').trim(),
             mfgId: (document.getElementById('broadcastManufacturerId')?.value || '').trim(),
             mfgData: document.getElementById('broadcastManufacturerData')?.value || '',

@@ -1,10 +1,12 @@
-# BLE Toolkit+ · Windows ARM64 虚拟机软件验证
+# 蓝析BLE工具箱 · Windows ARM64 虚拟机软件验证
+
+> **2026-10-19 更名：蓝析BLE工具箱。** 当前源码、产品配置和发布脚本已统一新名称。下文既有签名包路径、哈希和实测结论属于改名前的 BLE Toolkit+，不能作为新名称安装包的验收结果。当前同步范围见 [更名记录](product-name-sync-2026-10-19.md)。
 
 本文记录在用户已有 Parallels Windows 11 ARM64 虚拟机中验证 Windows 客户端的软件流程。当前环境没有提供 USB 蓝牙适配器，不执行蓝牙硬件操作。最终实际结果、构建编号及证据路径由根代理填写；本草稿不填入未汇总的通过数量。
 
 ## 验证对象与环境
 
-客户端包括 Avalonia、Qt、Wails、Electron、Tauri 和 Flutter。它们使用同一个 `smart-ble` 工程的源码，应用显示名统一为 **BLE Toolkit+**。仓库名、内部程序集、Cargo target、包标识和可执行文件名可以保留已有技术名称，不用它们推断用户看到的应用名称。
+客户端包括 Avalonia、Qt、Wails、Electron、Tauri 和 Flutter。它们使用同一个 `smart-ble` 工程的源码，本轮历史实测应用显示名为 **BLE Toolkit+**。仓库名、内部程序集、Cargo target、包标识和可执行文件名可以保留已有技术名称，不用它们推断用户看到的应用名称。
 
 | 信息 | 本轮记录 |
 | --- | --- |
@@ -40,9 +42,9 @@
 
 候选来源应能关联到提交、包 SHA256、架构检查和构建报告。运行时使用确定的应用主 EXE，不以安装器、框架库或同名已有进程代替。复用已有 PID 时，要核验该 PID 的实际映像路径与指定 EXE 一致，并保留该进程的用户状态。
 
-[`vm-app-smoke.ps1`](../scripts/windows/vm-app-smoke.ps1) 当前核验 PID 映像路径、预期窗口标题 **BLE Toolkit+**、非空 UIA 子控件和截图前的前台 HWND，并记录 `StartedByHarness`。`WINDOW_LAUNCH_PASS` 只覆盖该启动与窗口采集范围，报告中的 `Navigation` 和 `Hardware` 仍为 `NOT_RUN`。应继续检查可见页面内容；存在子控件不自动证明整页已经正确渲染。截图是屏幕矩形采集，分享前仍须确认无遮挡和敏感内容。
+[`vm-app-smoke.ps1`](https://github.com/LuoYaoSheng/smart-ble/blob/main/scripts/windows/vm-app-smoke.ps1) 当前核验 PID 映像路径、预期窗口标题 **蓝析BLE工具箱**、非空 UIA 子控件和截图前的前台 HWND，并记录 `StartedByHarness`。`WINDOW_LAUNCH_PASS` 只覆盖该启动与窗口采集范围，报告中的 `Navigation` 和 `Hardware` 仍为 `NOT_RUN`。应继续检查可见页面内容；存在子控件不自动证明整页已经正确渲染。截图是屏幕矩形采集，分享前仍须确认无遮挡和敏感内容。
 
-[`vm-navigate-smoke.ps1`](../scripts/windows/vm-navigate-smoke.ps1) 当前核验目标 PID / EXE / 标题，检查四个底栏按钮可见、可用且提供 Invoke，再等待不在屏幕外的页面锚点。任一页失败时保存 `navigation.json` 并以退出码 1 结束；四项均为 `PAGE_ANCHOR_VERIFIED` 才输出 `NAVIGATION_PASS`。根代理仍应逐项核对结果及锚点是否属于当前页面，不能把四页通过扩展为全部九页或业务功能通过。
+[`vm-navigate-smoke.ps1`](https://github.com/LuoYaoSheng/smart-ble/blob/main/scripts/windows/vm-navigate-smoke.ps1) 当前核验目标 PID / EXE / 标题，检查四个底栏按钮可见、可用且提供 Invoke，再等待不在屏幕外的页面锚点。任一页失败时保存 `navigation.json` 并以退出码 1 结束；四项均为 `PAGE_ANCHOR_VERIFIED` 才输出 `NAVIGATION_PASS`。根代理仍应逐项核对结果及锚点是否属于当前页面，不能把四页通过扩展为全部九页或业务功能通过。
 
 每次运行应使用独立证据目录，保留日志、JSON、截图和失败信息。输入只用明确的测试数据。UIA 对密码控件名称的脱敏不保证截图、普通文本或其他日志已经脱敏，保存或分享前应检查实际内容。
 

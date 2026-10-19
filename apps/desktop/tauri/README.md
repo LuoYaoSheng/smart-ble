@@ -1,4 +1,4 @@
-# SmartBLE Desktop - Tauri Version
+# 蓝析BLE工具箱 Desktop - Tauri Version
 
 Lightweight cross-platform BLE debugging tool built with Rust (Tauri).
 

@@ -2,7 +2,7 @@
 
 - 状态：初版（Phase B 首轮，2026-09-04，基线 commit `dbb38a8`，分支 `refactor/uniapp-v1`）
 - 审计对象：`apps/flutter`（F-AND = Flutter Android 并行正式实现线）
-- 事实源：`docs/specs`（BLE Toolkit+ v1 产品基准）+ `docs/specs/prototype/v1-new` + `prototype/platform/app`
+- 事实源：`docs/specs`（蓝析BLE工具箱 v1 产品基准）+ `docs/specs/prototype/v1-new` + `prototype/platform/app`
 - 结论级定义：`CONFIRMED`（代码证据）/ `PARTIAL`（部分证据）/ `ABSENT`（未实现）/ `N_A`
 
 ## 1. 页面差距（§6.1）

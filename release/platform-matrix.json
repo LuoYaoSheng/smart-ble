@@ -11,7 +11,7 @@
     "tencent-myapp",
     "desktop-distribution"
   ],
-  "status": "SOFTWARE_VERIFIED_RELEASE_GATES_OPEN",
+  "status": "BRANDING_UPDATED_REBUILD_REQUIRED",
   "rule": "Every implementation requires current-source build, functional and hardware evidence. Candidate packages and static checks are not store-ready releases.",
   "implementations": [
     {
@@ -316,7 +316,7 @@
     "full accessibility review beyond structural audit and real-device VoiceOver"
   ],
   "application_id": "com.i2kai.open.smartble",
-  "local_evidence_note": "Current signed Kotlin/Flutter Android packages have matching application/core source trees, product ID, signatures and hashes. Native SwiftUI/AppKit signed exports were rebuilt with BLE Toolkit+. Windows ARM64 VM software validation uses actual native runtimes; hardware and Windows distribution signing remain independent gates.",
+  "local_evidence_note": "Historical pre-rename evidence: Current signed Kotlin/Flutter Android packages have matching application/core source trees, product ID, signatures and hashes. Native SwiftUI/AppKit signed exports were rebuilt with BLE Toolkit+. Windows ARM64 VM software validation uses actual native runtimes; hardware and Windows distribution signing remain independent gates.",
   "publisher_type": "individual",
   "public_support_email": "121912336@qq.com",
   "store_materials_status": "DEFERRED_BY_USER",
@@ -721,6 +721,29 @@
     },
     "display_name": "BLE Toolkit+"
   },
-  "display_name": "BLE Toolkit+",
-  "windows_vm_software_report": "release/windows-vm-software-verification.json"
+  "display_name": "蓝析BLE工具箱",
+  "windows_vm_software_report": "release/windows-vm-software-verification.json",
+  "branding_update": {
+    "date": "2026-10-19",
+    "display_name": "蓝析BLE工具箱",
+    "artifact_prefix": "Lanxi-BLE-Toolkit",
+    "previous_display_name": "BLE Toolkit+",
+    "status": "SOURCE_AND_LOCAL_VALIDATION_PASS_DISTRIBUTION_REBUILD_REQUIRED",
+    "evidence_scope": "Existing per-platform builds, signatures, hashes and runtime results describe the previous name. Rebuild and verify new-name packages before distribution.",
+    "external_metadata": "PENDING_CHANNEL_UPDATE",
+    "validation": {
+      "release_checks": "PASS_13_TESTS",
+      "desktop_contracts": "PASS_190_TESTS",
+      "flutter_analysis": "PASS",
+      "flutter_tests": "PASS_156_TESTS",
+      "uniapp": "PASS_27_UNIT_FILES_15_GATES_H5_AND_APP_RESOURCES",
+      "website": "BUILD_PASS",
+      "native_ios": "SIMULATOR_DEBUG_BUILD_AND_ACTUAL_BUNDLE_LABEL_PASS",
+      "native_macos": "DEBUG_BUILD_AND_ACTUAL_BUNDLE_LABEL_PASS",
+      "native_android": "DEBUG_BUILD_AND_ACTUAL_APK_LABEL_PASS",
+      "tauri_linux": "CONFIG_SCHEMA_AND_DESKTOP_TEMPLATE_PASS_PACKAGE_BUILD_PENDING",
+      "distribution_signing": "NOT_RERUN_FOR_NEW_NAME",
+      "remote_channels": "NOT_UPDATED"
+    }
+  }
 }

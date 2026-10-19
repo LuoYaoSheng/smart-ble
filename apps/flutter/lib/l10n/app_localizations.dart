@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @app_name.
   ///
   /// In en, this message translates to:
-  /// **'BLE Toolkit+'**
+  /// **'蓝析BLE工具箱'**
   String get app_name;
 
   /// No description provided for @tab_scan.

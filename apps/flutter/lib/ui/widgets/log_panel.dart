@@ -21,7 +21,7 @@ class LogPanel extends StatelessWidget {
   /// 将日志条目格式化为可导出的文本
   static String formatLogsForExport(List<LogEntry> entries) {
     final buffer = StringBuffer();
-    buffer.writeln('BLE Toolkit+ - 操作日志');
+    buffer.writeln('蓝析BLE工具箱 - 操作日志');
     buffer.writeln('导出时间: ${DateTime.now().toIso8601String()}');
     buffer.writeln('=' * 40);
     buffer.writeln();
@@ -81,7 +81,7 @@ class LogPanel extends StatelessWidget {
             return '[$time] $typeLabel: ${log.message}';
           }).join('\n');
 
-    return 'BLE Toolkit+ 数据导出\n'
+    return '蓝析BLE工具箱 数据导出\n'
         '导出时间: $exportTime\n'
         '\n'
         '设备信息\n'

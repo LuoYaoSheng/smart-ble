@@ -1,4 +1,4 @@
-# PROJECT_CONTEXT —— BLE Toolkit+（smart-ble uniapp）
+# PROJECT_CONTEXT —— 蓝析BLE工具箱（smart-ble uniapp）
 
 > SOP v2.0 Phase 1 产出 · 生成日期 2026-09-02
 > 事实源：[../01_reverse/REVERSE_ANALYSIS.md](../01_reverse/REVERSE_ANALYSIS.md)（代码基线 smart-ble main `d305d3d`）。本文件是该报告「项目身份」的快速装载视图，供 AI 协作任务作上下文；事实冲突时以逆向报告为准。
@@ -7,7 +7,7 @@
 
 | 项 | 值 | 来源 |
 |---|---|---|
-| 产品名 | **BLE Toolkit+**（当前对外名） | manifest.json:2 |
+| 产品名 | **蓝析BLE工具箱**（当前对外名） | manifest.json:2 |
 | 历史名 | LightBLE（历史线）/ HJWY_BLE（微信工程名）/ Smart BLE（总项目名） | package.json / project.config.json / README |
 | 版本 | 1.0.5 · versionCode 101 · 渠道 preview · 总体状态 PREVIEW | manifest.json / release-metadata.generated.js |
 | 主平台 | 微信小程序（appid `wxf6c58b1dcac4c82d`） | project.config.json:19 |

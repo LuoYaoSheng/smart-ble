@@ -85,7 +85,7 @@ final class P009AboutPage: NSViewController, PageProtocol {
             hstack([
                 brandIcon,
                 vstack([
-                    makeLabel("BLE Toolkit+", size: 15, weight: .bold),
+                    makeLabel("蓝析BLE工具箱", size: 15, weight: .bold),
                     makeLabel("v\(DS.probeVersion) · \(DS.probeChannel) · 零后端 · 零本地持久化", size: 10, color: DS.mut),
                 ], spacing: 2),
                 NSView(),
@@ -144,7 +144,7 @@ final class P009AboutPage: NSViewController, PageProtocol {
         ], spacing: 0)
         views.append(menuCard)
 
-        let foot = makeLabel("日志全局脱敏：敏感凭据显示为 token=***\nBLE Toolkit+ · 跨平台 BLE 调试工具", size: 10, color: DS.ph, align: .center)
+        let foot = makeLabel("日志全局脱敏：敏感凭据显示为 token=***\n蓝析BLE工具箱 · 跨平台 BLE 调试工具", size: 10, color: DS.ph, align: .center)
         foot.maximumNumberOfLines = 0
         views.append(foot)
 
@@ -261,7 +261,7 @@ final class P009AboutPage: NSViewController, PageProtocol {
                        confirmText: "复制介绍文本", cancelText: "保存文本文件（候选）", hideCancel: false,
                        onConfirm: { [weak host] in
                            NSPasteboard.general.clearContents()
-                           NSPasteboard.general.setString("BLE Toolkit+ · BLE 调试工具（桌面探针）", forType: .string)
+                           NSPasteboard.general.setString("蓝析BLE工具箱 · BLE 调试工具（桌面探针）", forType: .string)
                            host?.toast("介绍文本已复制", ok: true)
                        },
                        onCancel: { [weak host] in

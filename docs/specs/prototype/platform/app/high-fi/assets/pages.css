@@ -1,5 +1,5 @@
 /* ============================================================
-   BLE Toolkit+ · 原型桌面与页面布局（引用 tokens，不产生新值）
+   蓝析BLE工具箱 · 原型桌面与页面布局（引用 tokens，不产生新值）
    ============================================================ */
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:var(--font);background:#E9EEF5;color:var(--c-text);display:flex;justify-content:center;

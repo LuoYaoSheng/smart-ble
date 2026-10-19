@@ -1,5 +1,5 @@
 {
-  "product": "BLE Toolkit+",
+  "product": "蓝析BLE工具箱",
   "application_id": "com.i2kai.open.smartble",
   "publisher_type": "individual",
   "public_support_email": "121912336@qq.com",
@@ -29,5 +29,7 @@
   "apple_store_application_id": "com.i2kai.open.smartble",
   "apple_store_team_id": "72MZZQB893",
   "apple_store_team_name": "longcan cai",
-  "display_name": "BLE Toolkit+"
+  "display_name": "蓝析BLE工具箱",
+  "artifact_prefix": "Lanxi-BLE-Toolkit",
+  "name_updated_at": "2026-10-19"
 }

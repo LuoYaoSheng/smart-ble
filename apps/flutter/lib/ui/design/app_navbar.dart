@@ -9,7 +9,7 @@ import 'app_tokens.dart';
 class AppNavbar extends StatelessWidget {
   const AppNavbar({
     super.key,
-    this.kicker = 'BLE TOOLKIT+',
+    this.kicker = '蓝析BLE工具箱',
     required this.title,
     this.statusText = '',
     this.statusTone,

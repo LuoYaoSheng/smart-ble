@@ -41,7 +41,7 @@ struct AboutView: View {
 
                     VStack(spacing: 2) {
                         Text("日志全局脱敏：敏感凭据显示为 token=***")
-                        Text("BLE Toolkit+ · 跨平台 BLE 调试工具")
+                        Text("蓝析BLE工具箱 · 跨平台 BLE 调试工具")
                     }
                     .scaledFont(10)
                     .foregroundColor(NativeDS.placeholder)
@@ -82,11 +82,11 @@ struct AboutView: View {
             }
             .frame(width: 42, height: 42)
             .clipShape(RoundedRectangle(cornerRadius: 10))
-            // 品牌字装饰：语义由相邻 "BLE Toolkit+" 文本承担
+            // 品牌字装饰：语义由相邻 "蓝析BLE工具箱" 文本承担
             .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("BLE Toolkit+")
+                Text("蓝析BLE工具箱")
                     .scaledFont(15, .bold)
                     .foregroundColor(NativeDS.ink)
                 Text("v\(displayVersion) · \(metadata.channel) · 零后端 · 零本地持久化")
@@ -160,7 +160,7 @@ struct AboutView: View {
             Divider()
             Button(action: {
                 sharePayload = SharePayload(items: [
-                    "BLE Toolkit+ · 跨平台 BLE 调试工具",
+                    "蓝析BLE工具箱 · 跨平台 BLE 调试工具",
                     URL(string: "https://lightble.i2kai.com/")!,
                 ])
             }) {
@@ -375,13 +375,13 @@ private struct FeedbackSheet: View {
 struct OfflinePrivacyView: View {
     @Environment(\.dismiss) private var dismiss
     static let text = """
-BLE Toolkit+ 隐私说明
+蓝析BLE工具箱 隐私说明
 更新日期：2026-10-10
 开发者：个人开发者
 联系邮箱：121912336@qq.com
 
 使用目的
-BLE Toolkit+ 用于扫描附近蓝牙设备、查看广播、连接 GATT、读写特征、监听通知和配置支持的设备。核心调试无需注册账号。
+蓝析BLE工具箱 用于扫描附近蓝牙设备、查看广播、连接 GATT、读写特征、监听通知和配置支持的设备。核心调试无需注册账号。
 
 权限说明
 蓝牙权限用于扫描、连接、读写、通知和受平台支持的广播功能。Android 的扫描兼容路径可能需要位置权限；应用不读取 GPS 坐标，不记录定位轨迹。

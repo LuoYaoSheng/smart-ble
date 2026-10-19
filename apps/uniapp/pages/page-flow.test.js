@@ -165,8 +165,8 @@ describe('Smart BLE complete page and navigation flow', () => {
 
 	test('PARITY-P001: scan page navbar / scantool copy locked to prototype p001 canon', () => {
 		const indexSrc = fs.readFileSync(path.join(__dirname, '../pages/index/index.vue'), 'utf8')
-		// 导航栏：kicker=BLE TOOLKIT+、标题=扫描、蓝牙状态三态词（正典 btWord）
-		expect(indexSrc).toContain('kicker="BLE TOOLKIT+"')
+		// 导航栏：kicker=蓝析BLE工具箱、标题=扫描、蓝牙状态三态词（正典 btWord）
+		expect(indexSrc).toContain('kicker="蓝析BLE工具箱"')
 		expect(indexSrc).toContain('title="扫描"')
 		expect(indexSrc).toContain("'蓝牙就绪'")
 		expect(indexSrc).toContain("'蓝牙未开启'")

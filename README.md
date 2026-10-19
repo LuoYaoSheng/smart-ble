@@ -1,4 +1,4 @@
-# Smart BLE
+# 蓝析BLE工具箱
 
 原生 Apple 上架入口：[SmartBLE-Apple.xcworkspace](SmartBLE-Apple.xcworkspace)，包含 SwiftUI iOS / AppKit Mac 两个目标。配置步骤见 [原生 Apple 上架说明](docs/native-apple-publishing.md)。
 
@@ -11,11 +11,11 @@
 [![Android Version](https://img.shields.io/badge/Android-APK-green?style=for-the-badge&logo=android)](https://github.com/luoyaosheng/smart-ble/releases)
 [![iOS TestFlight](https://img.shields.io/badge/iOS-TestFlight-black?style=for-the-badge&logo=apple)](https://github.com/luoyaosheng/smart-ble/releases)
 
-> `Smart BLE` 是总项目名和主入口名。
+> `蓝析BLE工具箱` 是统一对外名称；`smart-ble` 是工程名。
 >
 > `LightBLE` 是历史命名与旧仓库线。
 
-`smart-ble` 不是单一实现仓库，而是一个围绕 BLE 调试、教学、多平台对照和硬件联动展开的产品家族。
+`蓝析BLE工具箱` 的工程 `smart-ble` 不是单一实现仓库，而是一个围绕 BLE 调试、教学、多平台对照和硬件联动展开的产品家族。
 
 ---
 
@@ -33,7 +33,7 @@
 
 ## 命名说明
 
-- `Smart BLE`：总项目名、主入口名
+- `蓝析BLE工具箱`：统一应用、网站和上架名称；`Smart BLE` 为历史名称
 - `LightBLE`：历史命名与旧仓库线
 
 如果你是第一次进入，建议先固定这三个名字，再进入对应平台或文档。
@@ -42,7 +42,7 @@
 
 ## 项目定位
 
-`Smart BLE` 解决的不是“某个平台缺一个调试工具”，而是：
+`蓝析BLE工具箱` 解决的不是“某个平台缺一个调试工具”，而是：
 
 - BLE 调试工具分散，体验不统一
 - 学习资料零散，软硬件脱节
@@ -81,7 +81,7 @@
 Smart-HID-Workspace (固件/ControlHub/协议正典)
         │ contract SHA-256 lock
         ▼
-smart-ble (开源 BLE Toolkit+ + Profile 注册表 + 通用 GATT)
+smart-ble (开源 蓝析BLE工具箱 + Profile 注册表 + 通用 GATT)
         │ 未来：更多第一方 Profile（ESP32 演示等）
         ▼
 真机（Android / iOS / 桌面 / ESP32 夹具）
@@ -105,14 +105,14 @@ smart-ble (开源 BLE Toolkit+ + Profile 注册表 + 通用 GATT)
 | Avalonia | .NET 8 + C# | Windows 原型验证 |
 | ESP32 | PlatformIO + Arduino | 硬件联动与协议示例 |
 
-对外主入口只有一个：`lys-smart-ble`。  
+当前统一工程入口为 `smart-ble`，对外名称为 **蓝析BLE工具箱**。
 历史仓库 `LightBLE`、`SmartBLE-iOS` 只保留迁移与历史资产价值。
 
 ---
 
 ## 多分支多模式定位
 
-`smart-ble` 的核心特点不是“支持很多平台”这么简单，而是它本身就是一个多分支、多模式的 BLE 工具家族：
+`蓝析BLE工具箱` 的核心特点不是“支持很多平台”这么简单，而是它本身就是一个多分支、多模式的 BLE 工具家族：
 
 ```text
 lys-smart-ble

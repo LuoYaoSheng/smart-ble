@@ -18,6 +18,6 @@ try {
   await ui.startScan(); await ui.startBroadcast();
   return {name:document.title,word:document.getElementById('btWord').textContent,scanDisabled:document.getElementById('scanButton').disabled,broadcastDisabled:document.getElementById('startBroadcastButton').disabled,badge:document.getElementById('broadcastStateBadge').textContent};
  });
- assert.equal(result.word,'未发现蓝牙适配器');assert.equal(result.scanDisabled,true);assert.equal(result.broadcastDisabled,true);assert.doesNotMatch(result.badge,/已就绪/);assert.equal(result.name,'BLE Toolkit+');
+ assert.equal(result.word,'未发现蓝牙适配器');assert.equal(result.scanDisabled,true);assert.equal(result.broadcastDisabled,true);assert.doesNotMatch(result.badge,/已就绪/);assert.equal(result.name,'蓝析BLE工具箱');
  console.log(JSON.stringify({pass:true,...result}));
 } finally {app.process().kill('SIGKILL');}

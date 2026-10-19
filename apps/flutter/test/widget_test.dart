@@ -103,7 +103,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     // 自绘导航栏：kicker + 标题「扫描」（与 Tab 文案同名，共 2 处）
-    expect(find.text('BLE TOOLKIT+'), findsOneWidget);
+    expect(find.text('蓝析BLE工具箱'), findsOneWidget);
     expect(find.text('扫描'), findsNWidgets(2));
     // 蓝牙状态 chip 一定是正典词之一（测试环境初始化失败落 unavailable→蓝牙不可用；
     // 瞬态期短暂显示「初始化中…」）

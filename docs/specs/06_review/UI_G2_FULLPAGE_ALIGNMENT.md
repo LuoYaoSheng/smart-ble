@@ -56,11 +56,11 @@ G0/G1 仅将 **P001 首页**挂上正典组件层；其余 8 页仍在旧组件�
 
 | 端 | 接线 | 资产 |
 |---|---|---|
-| U-AND（uniapp 云打包）| `manifest.json → app-plus.distribute.splashscreen`（`androidStyle:"default"` + 四密度，schema 经 HBuilderX `app-safe-pack/makeapp.js:302` 核实）| `static/splash/{hdpi 480×762, xhdpi 720×1184, xxhdpi 1080×1818, xxxhdpi 1440×2424}.png`（竖版整幅：冰蓝底 #F8FBFF + 蓝渐变蓝牙徽记 + BLE Toolkit+ 字标）|
+| U-AND（uniapp 云打包）| `manifest.json → app-plus.distribute.splashscreen`（`androidStyle:"default"` + 四密度，schema 经 HBuilderX `app-safe-pack/makeapp.js:302` 核实）| `static/splash/{hdpi 480×762, xhdpi 720×1184, xxhdpi 1080×1818, xxxhdpi 1440×2424}.png`（竖版整幅：冰蓝底 #F8FBFF + 蓝渐变蓝牙徽记 + 蓝析BLE工具箱 字标）|
 | F-AND | `flutter_native_splash` 重生（color #F8FBFF + 透明底 logo 居中 + **Android 12 专项**：windowSplashScreenBackground/AnimatedIcon）| `assets/images/splash_logo.png`（1024² 透明底 lockup；生成后 PIL 连通域去孤点 + alpha 收紧，半透明残留 0.38%）|
 | U-WX | 不适用（微信启动屏由宿主控制，无自定义能力）| — |
 
-生成参数：`gpt-image-2`（ChatGPT2API 自托管 · c2a-files.i2kai.com）；文案经视觉模型逐字校验（"BLE Toolkit+" 无乱码）。
+生成参数：`gpt-image-2`（ChatGPT2API 自托管 · c2a-files.i2kai.com）；文案经视觉模型逐字校验（"蓝析BLE工具箱" 无乱码）。
 限制：uniapp 启动图**仅云打包生效**（标准基座真机运行显示基座启动图，HBuilderX 官方口径）；Android 12+ 系统启动屏在 F-AND 已专项处理、U-AND 云打包由打包器回退默认图标屏（后续需要再登记 Android12 icon 资产）。
 
 ## 4. 验证

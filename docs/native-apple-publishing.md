@@ -1,8 +1,10 @@
 # 原生 iOS 与 Mac 上架
 
+> **2026-10-19 更名：蓝析BLE工具箱。** 当前源码、产品配置和发布脚本已统一新名称。下文既有签名包路径、哈希和实测结论属于改名前的 BLE Toolkit+，不能作为新名称安装包的验收结果。当前同步范围见 [更名记录](product-name-sync-2026-10-19.md)。
+
 本轮正式上架选择 SwiftUI iOS 与 AppKit macOS。统一入口为仓库根目录 `SmartBLE-Apple.xcworkspace`，包含 `SmartBLEiOS` 和 `SmartBLEMac` 两个独立原生应用目标。原有 Flutter、Tauri 等实现保留。
 
-两端 Bundle ID 都是 `com.i2kai.open.smartble`，版本 `1.0.5`、build `101`。App Store Connect 创建一个 Smart BLE Open 应用记录并添加 iOS、macOS 两个平台；每个平台分别提交构建、截图与审核资料。这是 Apple 支持的多平台分发方式：[添加平台](https://developer.apple.com/help/app-store-connect/create-an-app-record/add-platforms)。
+两端 Bundle ID 都是 `com.i2kai.open.smartble`，版本 `1.0.5`、build `101`。App Store Connect 创建一个蓝析BLE工具箱应用记录并添加 iOS、macOS 两个平台；每个平台分别提交构建、截图与审核资料。这是 Apple 支持的多平台分发方式：[添加平台](https://developer.apple.com/help/app-store-connect/create-an-app-record/add-platforms)。
 
 ## 当前可用工程
 

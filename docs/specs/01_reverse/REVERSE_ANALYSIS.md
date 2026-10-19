@@ -1,4 +1,4 @@
-# 旧项目逆向分析报告 —— BLE Toolkit+（smart-ble uniapp 小程序）
+# 旧项目逆向分析报告 —— 蓝析BLE工具箱（smart-ble uniapp 小程序）
 
 > 生成日期：2026-09-02
 > 分析对象：`/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/uniapp/`（uni-app 工程，HBuilderX 直接导入）
@@ -12,16 +12,16 @@
 
 ## 1.1 产品定位
 
-BLE Toolkit+ 是开源项目 **Smart BLE** 的微信小程序客户端，定位为「面向 UniApp、微信小程序与 ESP32 协同验证的 BLE 调试工具」。
+蓝析BLE工具箱 是开源项目 **Smart BLE** 的微信小程序客户端，定位为「面向 UniApp、微信小程序与 ESP32 协同验证的 BLE 调试工具」。
 
 真实产品模型：**通用 BLE Inspector（检查器） + 可扩展设备 Profile（档案）系统**。核心不是某一个硬件，而是提供从发现 BLE 设备、查看广播、连接 GATT、调试通信、升级固件，到接入第一方硬件 Profile（Smart HID 配网）的完整工具链。
 
-- 来源：`manifest.json:2-4`（name "BLE Toolkit+"，description "蓝牙调试工具"）、`config/product.js`（PRODUCT_INFO.summary）、仓库根 `README.md`（产品家族表：uni-app 角色 = 「小程序与轻量传播入口」）、`docs/product-reconstruction/00_PRODUCT_OVERVIEW.md`（交叉验证一致）
+- 来源：`manifest.json:2-4`（name "蓝析BLE工具箱"，description "蓝牙调试工具"）、`config/product.js`（PRODUCT_INFO.summary）、仓库根 `README.md`（产品家族表：uni-app 角色 = 「小程序与轻量传播入口」）、`docs/product-reconstruction/00_PRODUCT_OVERVIEW.md`（交叉验证一致）
 
 命名沿革（同一产品三个名字，属历史遗留事实）：
 | 名字 | 出现位置 | 含义 |
 |---|---|---|
-| BLE Toolkit+ | `manifest.json:2`、`pages.json:6` | 当前对外名 |
+| 蓝析BLE工具箱 | `manifest.json:2`、`pages.json:6` | 当前对外名 |
 | LightBLE | `apps/uniapp/package.json:2` | 历史线名（README 称 "LightBLE 历史线"） |
 | HJWY_BLE | `project.config.json:20` | 微信开发者工具工程名 |
 | Smart BLE | 仓库根 `README.md` | 总项目名 |
@@ -175,7 +175,7 @@ BLE 设备发现入口：扫描、筛选、查看广播原始数据、按设备�
 tabBar 首项；微信分享 onShareAppMessage（`index/index.vue:96-101`）。
 
 ### 页面元素
-- 自绘导航栏 app-navbar（kicker "SmartBLE Mini" / 标题 "BLE Toolkit+" / 蓝牙状态点+文案：蓝牙就绪/蓝牙未开启/当前平台不支持 BLE，`index/index.vue:87-91`）
+- 自绘导航栏 app-navbar（kicker "SmartBLE Mini" / 标题 "蓝析BLE工具箱" / 蓝牙状态点+文案：蓝牙就绪/蓝牙未开启/当前平台不支持 BLE，`index/index.vue:87-91`）
 - scan-summary 扫描工具条：状态标签（扫描中/需重试/已完成/待开始）、「N 台设备 · M 台已连接」、开始/停止扫描大按钮、错误横幅（含 error.code + 重试按钮）
 - 「已配置 Smart HID」面板（有 knownDevices 时）：计数 chip、「全部历史」按钮、每行（名称/deviceId/「查看」「移除」）
 - 「附近设备」面板：标题 + 「筛选」折叠开关 + filter-panel（RSSI 滑杆与 4 预设 -100/-85/-70/-55、名称前缀、隐藏无名开关、重置）+ scroll-view 设备卡列表 + 空态（两种文案：有结果不匹配→「当前没有匹配设备/调整筛选试试」；无结果→「还没有扫描结果/点上方按钮开始扫描」）

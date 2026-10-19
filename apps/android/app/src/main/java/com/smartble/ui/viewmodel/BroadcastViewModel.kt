@@ -24,7 +24,7 @@ class BroadcastViewModel(application: Application) : AndroidViewModel(applicatio
     private val timeFmt = SimpleDateFormat("HH:mm:ss", Locale.US)
 
     // 表单字段（默认值与 flutter 一致）
-    private val _nameInput = MutableStateFlow("BLE Toolkit+")
+    private val _nameInput = MutableStateFlow("LanxiBLE")
     val nameInput: StateFlow<String> = _nameInput.asStateFlow()
 
     private val _uuidInput = MutableStateFlow("FFF0")

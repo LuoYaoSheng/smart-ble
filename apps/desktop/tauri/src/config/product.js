@@ -10,7 +10,7 @@
   'use strict';
 
   const PRODUCT_INFO = {
-    name: 'BLE Toolkit+',
+    name: '蓝析BLE工具箱',
     summary: '面向 UniApp 与 ESP32 协同验证的 BLE 调试工具。',
     website: 'https://lightble.i2kai.com/',
     feedback: 'https://gitee.com/luoyaosheng/smart-ble/issues',

@@ -1,4 +1,4 @@
-# Smart BLE HTML Prototype Coverage
+# 蓝析BLE工具箱 HTML Prototype Coverage
 
 `unified-device-discovery.html` is the interactive cross-platform behavior reference. It must preserve the content and core actions of every reachable UniApp page before runtime implementations are synchronized.
 

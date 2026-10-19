@@ -9,8 +9,8 @@ const status = release.overall_status
   <footer class="sb-footer">
     <div class="sb-footer-inner">
       <div class="sb-footer-brand">
-        <img src="/brand/icon.png" alt="BLE Toolkit+ icon" width="28" height="28">
-        <span>BLE Toolkit+</span>
+        <img src="/brand/icon.png" alt="蓝析BLE工具箱 icon" width="28" height="28">
+        <span>蓝析BLE工具箱</span>
       </div>
       <nav class="sb-footer-nav" aria-label="页脚导航">
         <a href="/#features">功能</a>
@@ -23,7 +23,7 @@ const status = release.overall_status
         当前状态 {{ status }}（v{{ version }}）·
         <a href="/release/latest.json">Release Metadata</a> ·
         安装包与固件尚未正式发布 ·
-        © 2026 BLE Toolkit+ · MIT License
+        © 2026 蓝析BLE工具箱 · MIT License
       </p>
     </div>
   </footer>

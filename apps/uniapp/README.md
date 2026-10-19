@@ -1,6 +1,6 @@
-# BLE Toolkit+（UniApp / App · H5）
+# 蓝析BLE工具箱（UniApp / App · H5）
 
-BLE Toolkit+ 是 Smart BLE 产品家族的轻量跨端入口（UniApp 一线多端：Android App 为主线，iOS 为后续目标，H5 为降级预览）。它提供通用 BLE 扫描、连接、GATT 读写、通知、广播能力，并通过 Profile 注册表扩展 Smart HID 等设备专属任务。
+蓝析BLE工具箱 是 Smart BLE 产品家族的轻量跨端入口（UniApp 一线多端：Android App 为主线，iOS 为后续目标，H5 为降级预览）。它提供通用 BLE 扫描、连接、GATT 读写、通知、广播能力，并通过 Profile 注册表扩展 Smart HID 等设备专属任务。
 
 > **平台范围（2026-09-11 用户裁决，2026-09-14 MAC-001 落正）**：微信小程序运行目标已整体退役——`dev:mp-weixin` / `build:mp-weixin`、微信 Peripheral 模块与微信真机门禁均已删除，不得回流。H5 是页面预览与文档形态，不支持真实 BLE。
 

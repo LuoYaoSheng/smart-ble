@@ -6,7 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="900"
         x:Class="SmartBLE.Desktop.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Title="BLE Toolkit+"
+        Title="蓝析BLE工具箱"
         Icon="/Assets/icon.png"
         MinWidth="940" MinHeight="640"
         Width="1200" Height="900"
@@ -31,7 +31,7 @@
                             BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
                             Padding="18,8,18,12">
                         <StackPanel Spacing="2">
-                            <TextBlock Classes="kicker" Text="BLE TOOLKIT+"/>
+                            <TextBlock Classes="kicker" Text="蓝析BLE工具箱"/>
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBlock Grid.Column="0" Text="扫描" FontSize="20" FontWeight="ExtraBold"/>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6"
@@ -593,7 +593,7 @@
                                               Stroke="White" Stretch="Uniform"/>
                                     </Border>
                                     <StackPanel Spacing="2" VerticalAlignment="Center">
-                                        <TextBlock Text="BLE Toolkit+" FontSize="15" FontWeight="Bold"/>
+                                        <TextBlock Text="蓝析BLE工具箱" FontSize="15" FontWeight="Bold"/>
                                         <TextBlock Text="{Binding AboutVersionLine}" FontSize="10"
                                                    Foreground="{DynamicResource CMut}"/>
                                     </StackPanel>
@@ -724,7 +724,7 @@
                             <StackPanel Spacing="1" Margin="0,18,0,0">
                                 <TextBlock Text="日志全局脱敏：敏感凭据显示为 token=***" FontSize="10"
                                            Foreground="{DynamicResource CPh}" HorizontalAlignment="Center"/>
-                                <TextBlock Text="BLE Toolkit+" FontSize="10"
+                                <TextBlock Text="蓝析BLE工具箱" FontSize="10"
                                            Foreground="{DynamicResource CPh}" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </StackPanel>

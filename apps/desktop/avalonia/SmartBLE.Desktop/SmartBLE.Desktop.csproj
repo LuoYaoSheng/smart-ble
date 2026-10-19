@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <Product>BLE Toolkit+</Product>
-    <Title>BLE Toolkit+</Title>
+    <Product>蓝析BLE工具箱</Product>
+    <Title>蓝析BLE工具箱</Title>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>

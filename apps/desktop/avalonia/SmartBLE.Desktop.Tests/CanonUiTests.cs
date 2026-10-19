@@ -11,15 +11,15 @@ public class CanonUiTests
     // —— P008 预算（app.js calcAdvertiseBytes：2+len / 2+字节 / 4+数据长） ——
 
     [Fact]
-    public void CalcAdvertiseBytes_DefaultFormUsesUnifiedProductName()
+    public void CalcAdvertiseBytes_DefaultFormUsesShortBroadcastName()
     {
-        // Application-generated default: BLE Toolkit+ (12 ASCII bytes).
-        // name=2+12=14 / uuid=2+2=4 / mfg=4+3=7 → 25
-        var b = CanonUi.CalcAdvertiseBytes(MainWindowViewModel.ProductName, "FFE0", "0001", "BLE");
-        Assert.Equal(14, b.Name);
+        // A short over-the-air name keeps the default within the legacy payload budget.
+        // LanxiBLE: name=2+8=10 / uuid=2+2=4 / mfg=4+3=7 → 21 (+3 flags = 24).
+        var b = CanonUi.CalcAdvertiseBytes(MainWindowViewModel.DefaultBroadcastName, "FFE0", "0001", "BLE");
+        Assert.Equal(10, b.Name);
         Assert.Equal(4, b.Uuid);
         Assert.Equal(7, b.Mfg);
-        Assert.Equal(25, b.Total);
+        Assert.Equal(21, b.Total);
     }
 
     [Theory]

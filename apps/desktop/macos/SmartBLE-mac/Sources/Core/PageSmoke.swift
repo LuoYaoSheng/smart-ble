@@ -413,17 +413,17 @@ enum PageSmoke {
         do {
             let v = views()
             let tabs = ["扫描", "已连接", "广播", "关于"].map { button(titled: $0, in: v) != nil }
-            let hasP001 = anyLabel(contains: "BLE TOOLKIT+", in: v)
+            let hasP001 = anyLabel(contains: "蓝析BLE工具箱", in: v)
                 && button(titled: "开始扫描", in: v) != nil
                 && button(titled: "筛选", in: v) != nil
-            check("UIS-01", window.title == "BLE Toolkit+" && tabs.allSatisfy { $0 } && hasP001,
+            check("UIS-01", window.title == "蓝析BLE工具箱" && tabs.allSatisfy { $0 } && hasP001,
                   "title=\(window.title) tabs=\(tabs.map { $0 ? 1 : 0 }) p001=\(hasP001)")
         }
 
         // UIS-02 四 Tab 走查（每页导航栏 + 页面特征内容）
         do {
             var results: [String] = []
-            for (tab, expect) in [("已连接", "还没有连接中的设备"), ("广播", "平台：Desktop · macOS"), ("关于", "BLE Toolkit+"), ("扫描", "附近设备")] {
+            for (tab, expect) in [("已连接", "还没有连接中的设备"), ("广播", "平台：Desktop · macOS"), ("关于", "蓝析BLE工具箱"), ("扫描", "附近设备")] {
                 guard let btn = button(titled: tab, in: views()) else {
                     results.append("\(tab)=nobtn")
                     continue
@@ -601,7 +601,7 @@ enum PageSmoke {
             button(titled: "关于", in: views())?.performClick(nil)
             await settle(400)
             let v = views()
-            let brand = anyLabel(contains: "BLE Toolkit+", in: v)
+            let brand = anyLabel(contains: "蓝析BLE工具箱", in: v)
             let menuIds = ["p009-openweb", "p009-feedback", "p009-versions", "p009-shareapp"]
             let menus = menuIds.map { button(actionId: $0, in: v) != nil }
             let menuTitles = ["官方网站", "问题反馈", "版本记录", "分享应用"]

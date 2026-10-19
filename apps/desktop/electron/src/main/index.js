@@ -164,7 +164,7 @@ function createWindow() {
       contextIsolation: true,
       sandbox: true // BLE runs in the main process; renderer needs only the IPC preload
     },
-    title: 'BLE Toolkit+',
+    title: '蓝析BLE工具箱',
     backgroundColor: '#F2F2F7',
     show: false
   });
@@ -515,7 +515,7 @@ ipcMain.handle('ble:startAdvertising', async (event, name, serviceUuids, manufac
 
     // 构建广播配置 (适配支持的底层库)
     const advConfig = {
-        name: includeName ? (name || 'BLE Toolkit+') : undefined,
+        name: includeName ? (name || '蓝析BLE工具箱') : undefined,
         serviceUuids: [uuid]
     };
     if (manufacturerId && manufacturerData) {

@@ -1,4 +1,4 @@
-# HTML Prototype QA Report —— BLE Toolkit+ V0 原型质量验收
+# HTML Prototype QA Report —— 蓝析BLE工具箱 V0 原型质量验收
 
 > 依据标准：《AI 生成 HTML 原型质量验收标准 v1.0》（用户提供，2026-09-02）
 > 角色：产品测试负责人 · **本轮未修改 HTML**（纯验收）

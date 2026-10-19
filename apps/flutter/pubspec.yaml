@@ -1,5 +1,5 @@
 name: smart_ble
-description: BLE Toolkit+ - 跨平台蓝牙调试工具
+description: 蓝析BLE工具箱 - 跨平台蓝牙调试工具
 publish_to: 'none'
 version: 1.0.5+101
 

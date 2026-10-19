@@ -22,7 +22,8 @@ public partial class MainWindowViewModel : ObservableObject
     private static readonly ReleaseMetadata.Model Meta = ReleaseMetadata.Load();
 
     // 产品常量（config/product.js 同源：名称 / 外链 / 功能特性）
-    public const string ProductName = "BLE Toolkit+";
+    public const string ProductName = "蓝析BLE工具箱";
+    public const string DefaultBroadcastName = "LanxiBLE";
     public const string ProductWebsite = "https://lightble.i2kai.com/";
     public const string ProductFeedback = "https://gitee.com/luoyaosheng/smart-ble/issues";
     public static readonly string[] ProductFeatures =
@@ -1056,7 +1057,7 @@ public partial class MainWindowViewModel : ObservableObject
     // ═══════════════════════ P008 广播（31B 预算真值 + WinRT 真发射，20260921 跨端联调实装） ═══════════════════════
 
     [ObservableProperty]
-    private string _bcName = ProductName;
+    private string _bcName = DefaultBroadcastName;
 
     [ObservableProperty]
     private string _bcUuid = "FFE0";

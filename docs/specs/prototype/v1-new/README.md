@@ -1,4 +1,4 @@
-# BLE Toolkit+ 基准原型 V1（高保真）
+# 蓝析BLE工具箱 基准原型 V1（高保真）
 
 > 按《产品基准原型 Base Prototype 规范 v1.0》产出的**平台无关产品交互基准**，微信小程序形态（375×812 移动基准）。
 > 严格遵循冻结输入：[PRD](../../02_product/PRD.md) · [PAGE_SPEC](../../03_flow/PAGE_SPEC.md) · [Design System](../../07_design_system/)（TOKEN/COMPONENT/PATTERN）。

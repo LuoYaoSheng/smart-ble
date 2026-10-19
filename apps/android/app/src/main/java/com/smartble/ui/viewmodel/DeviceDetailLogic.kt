@@ -37,7 +37,7 @@ fun buildDeviceExportText(
     }
 
     return buildString {
-        appendLine("BLE Toolkit+ 数据导出")
+        appendLine("蓝析BLE工具箱 数据导出")
         appendLine("导出时间: $exportTime")
         appendLine()
         appendLine("设备信息")

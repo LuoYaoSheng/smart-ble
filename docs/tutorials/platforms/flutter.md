@@ -1,6 +1,6 @@
 # 🚀 Flutter 移动端跨平台实战指南
 
-作为 Smart BLE Toolkit+ 的主力载体，Flutter 以其“一套代码跑通 Android / iOS 流畅原生帧率”的霸气傲视群雄。
+作为 Smart 蓝析BLE工具箱 的主力载体，Flutter 以其“一套代码跑通 Android / iOS 流畅原生帧率”的霸气傲视群雄。
 
 如果您正在参与 `apps/flutter/` 目录的二次开发，本手册是您的护航宝典。
 

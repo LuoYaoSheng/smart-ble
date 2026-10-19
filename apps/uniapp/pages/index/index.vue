@@ -1,7 +1,7 @@
 <template>
 	<view class="ble-shell index-shell">
 		<AppNavbar
-			kicker="BLE TOOLKIT+"
+			kicker="蓝析BLE工具箱"
 			title="扫描"
 			:status-text="bleStatusText"
 			:status-tone="bleStatusTone"

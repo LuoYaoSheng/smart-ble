@@ -1,4 +1,4 @@
-# SmartBLE · Avalonia Windows 客户端
+# 蓝析BLE工具箱 · Avalonia Windows 客户端
 
 唯一项目根目录为 `smart-ble/`。此实现使用 Avalonia / .NET 8 与 Windows WinRT BLE，当前构建脚本产出 Windows x64 自包含目录，CI 附件下载为 ZIP。ARM64 仍是待构建、待设备验证的目标；必须保留完整目录，单个 EXE 不能独立分发，该目录不是安装器或已签名正式发行。
 

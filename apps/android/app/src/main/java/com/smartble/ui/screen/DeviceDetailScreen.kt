@@ -281,7 +281,7 @@ fun DeviceDetailScreen(
                 onExport = {
                     val send = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
-                        putExtra(Intent.EXTRA_SUBJECT, "BLE Toolkit+ 导出 - $deviceName")
+                        putExtra(Intent.EXTRA_SUBJECT, "蓝析BLE工具箱 导出 - $deviceName")
                         putExtra(Intent.EXTRA_TEXT, viewModel.buildExportText())
                     }
                     context.startActivity(Intent.createChooser(send, "导出设备数据"))

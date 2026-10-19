@@ -34,7 +34,7 @@ function bBytes(){
    Android 系统层构建器（平台还原图层 · android.css）
    ============================================================ */
 let ASYS_PICK = null;
-function asysDialog({ico='lock', app='BLE Toolkit+', title, desc='', pin='', sub='', btns=[]}){
+function asysDialog({ico='lock', app='蓝析BLE工具箱', title, desc='', pin='', sub='', btns=[]}){
   document.getElementById('layer').innerHTML=`<div class="asys-scrim">
     <div class="asys-dlg">
       <div class="asys-app">${app}</div>
@@ -86,7 +86,7 @@ function asysShare(kind){
 /* 系统设置 · 应用权限页（去设置目的地） */
 function asysPermSettings(onAllow){
   document.getElementById('layer').innerHTML=`<div class="asys-page">
-    <div class="asys-ph">${C.ic('chev-r','sm')} 应用 › BLE Toolkit+ › 权限</div>
+    <div class="asys-ph">${C.ic('chev-r','sm')} 应用 › 蓝析BLE工具箱 › 权限</div>
     <div style="padding:6px 0">
       <div class="asys-row"><span class="mid">位置<div class="d">允许扫描 BLE 设备（FINE_LOCATION）</div></span>
         <button class="asys-btn" data-act="asys-pick" data-v="allow-loc">允许</button></div>

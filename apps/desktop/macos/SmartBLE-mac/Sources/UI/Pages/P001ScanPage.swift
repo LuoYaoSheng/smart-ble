@@ -47,7 +47,7 @@ final class P001ScanPage: NSViewController, PageProtocol {
         dot.heightAnchor.constraint(equalToConstant: 8).isActive = true
         let btWord = makeLabel(ble.btState.word, size: 11, weight: .semibold, color: DS.mut)
         let btChip = hstack([dot, btWord], spacing: 6)
-        views.append(navbar(kicker: "BLE TOOLKIT+", title: "扫描", trailing: [btChip]))
+        views.append(navbar(kicker: "蓝析BLE工具箱", title: "扫描", trailing: [btChip]))
 
         // ② 扫描工具条
         let scanLb: String

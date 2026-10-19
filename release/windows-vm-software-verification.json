@@ -104,5 +104,7 @@
   "status": "WINDOWS_ARM64_SOFTWARE_SCOPE_PASS",
   "candidate_run": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38041746455",
   "software_run": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38041746475",
-  "hardware_scope": "No Bluetooth adapter; user deferred physical BLE/GATT/provisioning/OTA."
+  "hardware_scope": "No Bluetooth adapter; user deferred physical BLE/GATT/provisioning/OTA.",
+  "current_product_display_name": "蓝析BLE工具箱",
+  "branding_scope": "PRE_RENAME_EVIDENCE_REBUILD_REQUIRED"
 }

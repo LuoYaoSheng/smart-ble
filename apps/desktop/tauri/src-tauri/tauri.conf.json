@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "BLE Toolkit+",
+    "productName": "蓝析BLE工具箱",
     "version": "1.0.5"
   },
   "tauri": {
@@ -59,7 +59,10 @@
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
-        "timestampUrl": ""
+        "timestampUrl": "",
+        "wix": {
+          "language": "zh-CN"
+        }
       }
     },
     "security": {
@@ -73,7 +76,7 @@
         "fullscreen": false,
         "height": 800,
         "resizable": true,
-        "title": "BLE Toolkit+",
+        "title": "蓝析BLE工具箱",
         "width": 1200,
         "minWidth": 900,
         "minHeight": 600

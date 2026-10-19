@@ -138,7 +138,7 @@ struct ScanView: View {
     }
 
     private var navbar: some View {
-        NativeNavbar(kicker: "BLE TOOLKIT+", title: "扫描") {
+        NativeNavbar(kicker: "蓝析BLE工具箱", title: "扫描") {
             HStack(spacing: 6) {
                 Circle()
                     .fill(bluetoothStatusColor)

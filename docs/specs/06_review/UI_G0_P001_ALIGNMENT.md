@@ -12,7 +12,7 @@
 
 | # | 检查项 | 原型 p001 | U-WX | U-AND | F-AND | 状态 |
 |---|---|---|---|---|---|---|
-| 1 | **Navbar** | `.navbar`：kicker「BLE TOOLKIT+」(10/w800/+2px 字距/品牌蓝) + 标题「扫描」(20/w800) + bt-chip（8px 圆点+三态词 11/w500） | `components/ui/AppNavbar.vue`（正典组件，token 全引用） | 同 U-WX（rpx 自适应） | `lib/ui/design/app_navbar.dart` AppNavbar（本次改挂） | ✅ 一致 |
+| 1 | **Navbar** | `.navbar`：kicker「蓝析BLE工具箱」(10/w800/+2px 字距/品牌蓝) + 标题「扫描」(20/w800) + bt-chip（8px 圆点+三态词 11/w500） | `components/ui/AppNavbar.vue`（正典组件，token 全引用） | 同 U-WX（rpx 自适应） | `lib/ui/design/app_navbar.dart` AppNavbar（本次改挂） | ✅ 一致 |
 | 2 | bt-chip 三态 | 就绪=success 点+微光 / 未开启=danger 点 / 平台不支持=ph 点；词：蓝牙就绪/蓝牙未开启/平台不支持 | `bleStatusText/Tone` 三态映射（index.vue） | 同 U-WX | `btStatusWord/btStatusTone`（widget_test 断言词表） | ✅ 一致 |
 | 3 | **扫描按钮** | btn primary(`scan`「开始扫描」) ⇄ danger(`stop`「停止扫描」)；左标签三态（扫描中·5s 会话+live 脉冲点 / 扫描完成·发现 N 台 / 待开始扫描） | scan-summary（ble-btn 别名层→正典 token） | 同 U-WX | `_buildScanTool` + `design/app_button.dart` AppButton（本次改挂） | ✅ 一致 |
 | 4 | **筛选** | `.filter` 四行：RSSI 预设×4（强[-40]/较好[-60]/一般[-70]/弱[-85]，激活 primary 实底白字）+ 滑杆(-100..-40 step5) + 名称前缀输入 + 隐藏无名开关(success) + 重置过滤(soft sm)；实时生效 | `components/filter-panel/filter-panel.vue`（hex→var 已收敛） | 同 U-WX | `widgets/filter_panel.dart`（存量实现，正典四档；widget_test 断言展开/收起） | ✅ 一致（F-AND 为存量实现，规格并入 COMPONENT_CONTRACT C3） |

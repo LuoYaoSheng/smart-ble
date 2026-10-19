@@ -27,10 +27,10 @@ test('Windows install scripts resolve the node-gyp version supporting Visual Stu
 });
 
 test('Linux AppImage product filename is safe while preserving the canonical display brand', () => {
-  assert.equal(manifest.build.productName, 'BLE Toolkit+');
+  assert.equal(manifest.build.productName, '蓝析BLE工具箱');
   assert.equal(manifest.build.linux.executableName, 'smart-ble-open');
   assert.match(manifest.build.linux.executableName, /^[A-Za-z0-9._ -]+$/);
-  assert.equal(manifest.build.artifactName, 'BLE-Toolkit-Plus-${version}-${os}-${arch}.${ext}');
+  assert.equal(manifest.build.artifactName, 'Lanxi-BLE-Toolkit-${version}-${os}-${arch}.${ext}');
 });
 
 test('native install and Electron rebuild scripts run serially with rebuilding enabled', () => {
@@ -43,8 +43,8 @@ test('native install and Electron rebuild scripts run serially with rebuilding e
 test('Windows setup and portable outputs have distinct target-specific names for each CPU', () => {
   const setup = manifest.build.nsis.artifactName;
   const portable = manifest.build.portable.artifactName;
-  assert.equal(setup, 'BLE-Toolkit-Plus-${version}-${os}-${arch}-setup.${ext}');
-  assert.equal(portable, 'BLE-Toolkit-Plus-${version}-${os}-${arch}-portable.${ext}');
+  assert.equal(setup, 'Lanxi-BLE-Toolkit-${version}-${os}-${arch}-setup.${ext}');
+  assert.equal(portable, 'Lanxi-BLE-Toolkit-${version}-${os}-${arch}-portable.${ext}');
   for (const arch of ['x64', 'arm64']) {
     const values = { version: manifest.version, os: 'win', arch, ext: 'exe' };
     const expand = pattern => pattern.replace(/\$\{(\w+)\}/g, (_, key) => values[key]);

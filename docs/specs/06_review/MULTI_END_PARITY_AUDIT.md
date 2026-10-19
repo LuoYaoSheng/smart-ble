@@ -258,14 +258,14 @@ uniapp `build:mp-weixin` 通过（dist 含 ILL 镜像 `0 0 118 86`，`placeholde
 
 | 编号 | 差异 | 归因 | 严重度 | 状态 |
 |---|---|---|---|---|
-| U-P001-001 | 导航栏文案倒置：kicker「SmartBLE Mini」/title「BLE Toolkit+」（正典 kicker `BLE TOOLKIT+`/title `扫描`）；蓝牙状态词 5+ 态（「当前平台不支持 BLE」等）且胶囊底 chip（正典 3 态词 + 无底 dot+text）；kicker 弱化灰 | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| U-P001-001 | 导航栏文案倒置：kicker「SmartBLE Mini」/title「蓝析BLE工具箱」（正典 kicker `蓝析BLE工具箱`/title `扫描`）；蓝牙状态词 5+ 态（「当前平台不支持 BLE」等）且胶囊底 chip（正典 3 态词 + 无底 dot+text）；kicker 弱化灰 | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
 | U-P001-002 | 扫描工具条卡片化：额外「扫描」标题/状态 chip（待开始/需重试/已完成）/「N 台设备 · N 台已连接」计数行/无图标通栏大按钮（正典=纯行：scanLb 三态左 + 带 scan/stop 图标按钮右） | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
 | U-P001-003 | 「附近设备」无中性计数 chip、无 chip 图标；列表被包进大 ble-card 容器（正典 .sec-t 平铺 + 设备卡独立成卡） | UNIAPP_IMPLEMENTATION_DRIFT | P2 | 已修 |
 | U-P001-004 | 过滤面板自成 header（扫描过滤器/展开收起/摘要 chips）+预设档 -100/-85/-70/-55（正典 强[-40]/较好[-60]/一般[-70]/弱[-85]）+滑杆 max 0 step 1（正典 -40/5）+「信号强度」标签（正典 最弱信号/阈值 N dBm）+占位「例如 SHID / Light / Test」+开关 #1B6DFF（正典 #17C7A8）+红色药丸重置（正典 soft sm） | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
 | U-P001-005 | 设备卡：头像「BLE/ON」文字（正典首字母渐变）、「未知设备」fallback（正典 未命名 BLE 设备/（未命名））、小米/华为生态猜测 chip（产品级发明，正典无）、meta 长引导文案（正典仅 sig+dBm）、四色信号条（正典 q4/q3 绿/q2 黄/q1 红）、JS 17 字符截断（正典 CSS 省略）、动作无图标、actionLabel「Smart HID 配网」（正典 配置 Smart HID）、footer 分隔线 | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
 | U-P001-006 | 错误横幅：标题「扫描失败（code）」拼串、无 warn 字形/code chip/ghost-danger 重试（正典 B8：danger-weak 底+左 3px 边+code chip+refresh 重试） | UNIAPP_IMPLEMENTATION_DRIFT | P2 | 已修 |
 | U-P001-007 | 广播弹窗：居中 modal+textarea 全量 dump+通栏大按钮（正典=底部弹层+kv 四行+深色 ad-sec 逐段/整包+缺失逐项标注+sm 按钮） | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
-| F-P001-001 | AppBar title「BLE TOOLKIT+」无 kicker/无「扫描」标题；状态词 5 态（蓝牙已开启/已关闭/不可用/未授权/状态未知）+off 灰点（正典 3 态词+off 红点），自绘导航栏缺失 | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| F-P001-001 | AppBar title「蓝析BLE工具箱」无 kicker/无「扫描」标题；状态词 5 态（蓝牙已开启/已关闭/不可用/未授权/状态未知）+off 灰点（正典 3 态词+off 红点），自绘导航栏缺失 | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |
 | F-P001-002 | 体序倒置：FilterPanel 在 scantool 之上；无 .sec-t（附近设备标题/计数 chip/筛选 txtlink）；FilterPanel 自有 header（过滤条件/chev-d/计数徽章） | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |
 | F-P001-003 | 工具条：标签在按钮上方+通栏大按钮+自创「发现 N 台设备/显示 N/N 台」徽章行（正典=行内 label+右按钮，计数归 .sec-t chip） | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |
 | F-P001-004 | 过滤行：预设 全部/-90/-70/-50+滑杆 max -30（正典四档强/较好/一般/弱+max -40 step 5）+checkbox 隐藏无名（正典 switch 绿轨）+通栏重置按钮（正典 soft sm）+占位「输入设备名称前缀...」 | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |

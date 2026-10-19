@@ -152,7 +152,7 @@ struct VersionHistoryView: View {
     }
 
     private func copyVersion() {
-        let value = "BLE Toolkit+ v\(metadata.appVersion) (\(metadata.appBuildCode)) · \(metadata.channel) · \(metadata.overallStatus)"
+        let value = "蓝析BLE工具箱 v\(metadata.appVersion) (\(metadata.appBuildCode)) · \(metadata.channel) · \(metadata.overallStatus)"
         #if os(iOS)
         UIPasteboard.general.string = value
         #elseif os(macOS)

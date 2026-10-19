@@ -11,7 +11,7 @@ BLE 只负责：设备发现 / 配网 / 状态查询。**HID 实时控制不走 
 ## 2. 流程总览
 
 ```text
-BLE Toolkit+（小程序）
+蓝析BLE工具箱（小程序）
   → 扫描 Provisioning Service UUID
   → 连接（明文直连，无系统配对）
   → 读 Device Info

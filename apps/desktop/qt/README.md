@@ -1,4 +1,4 @@
-# SmartBLE · Qt / PySide6 Windows 客户端
+# 蓝析BLE工具箱 · Qt / PySide6 Windows 客户端
 
 唯一项目根目录为 `smart-ble/`。本实现使用 PySide6 和 bleak / WinRT，当前发布候选目标为 Windows x64；本轮没有原生 ARM64 包或真机证据。
 

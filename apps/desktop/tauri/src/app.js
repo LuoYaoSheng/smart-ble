@@ -37,7 +37,7 @@ const PERIPHERAL_SUPPORT = {
         ? 'macOS 支持自定义广播名称'
         : '自定义广播名称在此平台上可能无效',
     recommendation: PLATFORM.isMacOS
-        ? '建议使用 macOS 原生 BLE Toolkit+'
+        ? '建议使用 macOS 原生 蓝析BLE工具箱'
         : '请使用对应平台的原生应用获取完整支持'
 };
 
@@ -803,7 +803,7 @@ function renderVersionsPage() {
 
     // P010 复制版本信息（剪贴板 + 按钮态反馈）
     body.querySelector('#versionsCopyBtn')?.addEventListener('click', (e) => {
-        const info = `BLE Toolkit+ v${c.display_version} · ${c.channel_label} · 构建 v+${sha7 || 'unknown'} · ${c.platforms.map((p) => `${p.name} ${p.display_status}`).join(' / ')}`;
+        const info = `蓝析BLE工具箱 v${c.display_version} · ${c.channel_label} · 构建 v+${sha7 || 'unknown'} · ${c.platforms.map((p) => `${p.name} ${p.display_status}`).join(' / ')}`;
         const btn = e.currentTarget;
         const done = (ok) => {
             const label = btn.querySelector('span');
@@ -1483,7 +1483,7 @@ function updateCharacteristicValue(deviceId, serviceUuid, charUuid, value) {
 // P008 广播表单读取
 function readBroadcastForm() {
     return {
-        name: elements.broadcastName?.value || 'BLE Toolkit+',
+        name: elements.broadcastName?.value || 'LanxiBLE',
         uuid: (elements.broadcastServiceUuid?.value || '').trim(),
         mfgId: (elements.broadcastManufacturerId?.value || '').trim(),
         mfgData: elements.broadcastManufacturerData?.value || '',

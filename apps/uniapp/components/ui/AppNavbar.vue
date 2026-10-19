@@ -22,7 +22,7 @@
 import { ref } from 'vue';
 
 defineProps({
-	kicker: { type: String, default: 'BLE TOOLKIT+' },
+	kicker: { type: String, default: '蓝析BLE工具箱' },
 	title: { type: String, required: true },
 	statusText: { type: String, default: '' },
 	statusTone: { type: String, default: '' }

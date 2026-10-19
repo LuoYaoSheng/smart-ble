@@ -1,4 +1,4 @@
-# SmartBLE Desktop for macOS
+# 蓝析BLE工具箱 Desktop for macOS
 
 Native macOS BLE debugging tool built with AppKit and CoreBluetooth.
 

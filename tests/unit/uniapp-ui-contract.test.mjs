@@ -138,7 +138,7 @@ assert.equal(/\bversionHistory\b/.test(versionSource), false, 'Version History m
 assert.equal(/['"`]v?1\.0\.\d+['"`]/.test(versionSource), false, 'Version page must not hardcode product version literals');
 assert.match(versionSource, /暂无正式发布版本/);
 assert.equal(versionSource.includes('智能蓝牙助手'), false, 'Version History share title must use the current product identity');
-assert.match(versionSource, /BLE Toolkit\+/);
+assert.match(versionSource, /蓝析BLE工具箱/);
 
 const aboutSource = fs.readFileSync(path.join(uniappRoot, 'pages/about/index.vue'), 'utf8');
 // 2026-09-10（F028 移除）：关于页不得再含推广区/小程序跳转

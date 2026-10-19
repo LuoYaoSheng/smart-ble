@@ -1,6 +1,6 @@
 ---
 title: 项目状态与路线图
-description: BLE Toolkit+（smart-ble）平台矩阵、流程状态、产物计划、已知限制与证据元数据——面向协作者与审核者的全量工程状态。
+description: 蓝析BLE工具箱（smart-ble）平台矩阵、流程状态、产物计划、已知限制与证据元数据——面向协作者与审核者的全量工程状态。
 ---
 
 # 项目状态与路线图
@@ -29,12 +29,12 @@ function surfaceStatus(surface) {
 
   <section class="smartble-status-band" aria-label="公开状态">
     <div class="smartble-version-hero">
-      <strong>BLE Toolkit+</strong>
+      <strong>蓝析BLE工具箱</strong>
       <span>{{ version }}</span>
       <div class="smartble-status-pill smartble-status-pill--preview">{{ overall }}</div>
     </div>
     <p>
-      BLE Toolkit+ 是多平台多框架的 BLE 工具家族：首个正式发布目标（主线）是 <strong>UniApp Android</strong>、
+      蓝析BLE工具箱 是多平台多框架的 BLE 工具家族：首个正式发布目标（主线）是 <strong>UniApp Android</strong>、
       <strong>Apple 原生 iOS</strong>、<strong>ESP32 固件</strong> 与
       <strong>Smart HID 第一方 Profile</strong>；Android 原生（Kotlin）、Apple 原生（iOS / macOS）、Flutter
       与桌面多框架为并行在研实现线，均可从源码构建。

@@ -1,4 +1,4 @@
-# SmartBLE - macOS/iOS 原生版
+# 蓝析BLE工具箱 - macOS/iOS 原生版
 
 使用 SwiftUI + CoreBluetooth 实现的原生 Apple 平台 BLE 调试工具。
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BLE Toolkit+</string>
+    <string name="app_name">蓝析BLE工具箱</string>
 
     <!-- Device List -->
     <string name="scan_devices">扫描设备</string>

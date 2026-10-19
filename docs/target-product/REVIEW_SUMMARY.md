@@ -18,7 +18,7 @@ supersedes: []
 
 ## 1. 产品范围
 
-**Smart BLE = 开源的跨平台 BLE 调试、学习与硬件联动工具。首版主线：UniApp Android App + 微信小程序（BLE Toolkit+）。**
+**Smart BLE = 开源的跨平台 BLE 调试、学习与硬件联动工具。首版主线：UniApp Android App + 微信小程序（蓝析BLE工具箱）。**
 
 固定包含 13 项：Android App、微信小程序、H5 降级、iOS 目标定义（NOT_RELEASED）、LightBLE fixture_peripheral、fixture_observer、Smart HID 第一方 Profile、10 个 App 页面、公开落地页 WEB-001、HTML 交互原型、四端证据体系、VERSION/Release Metadata/下载/SHA/二维码/已知限制、开源开发者文档与 Profile 扩展指南。
 

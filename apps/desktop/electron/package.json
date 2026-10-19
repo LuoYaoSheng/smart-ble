@@ -1,7 +1,7 @@
 {
   "name": "smart-ble-desktop",
   "version": "1.0.5",
-  "description": "BLE Toolkit+ desktop application",
+  "description": "蓝析BLE工具箱 desktop application",
   "homepage": "https://github.com/LuoYaoSheng/smart-ble",
   "main": "src/main/index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "electron"
   ],
   "author": {
-    "name": "Smart BLE Open",
+    "name": "蓝析BLE工具箱",
     "email": "121912336@qq.com"
   },
   "license": "MIT",
@@ -33,7 +33,7 @@
   },
   "build": {
     "appId": "com.smartble.electron",
-    "productName": "BLE Toolkit+",
+    "productName": "蓝析BLE工具箱",
     "directories": {
       "output": "dist"
     },
@@ -86,12 +86,12 @@
       ]
     },
     "nativeRebuilder": "sequential",
-    "artifactName": "BLE-Toolkit-Plus-${version}-${os}-${arch}.${ext}",
+    "artifactName": "Lanxi-BLE-Toolkit-${version}-${os}-${arch}.${ext}",
     "nsis": {
-      "artifactName": "BLE-Toolkit-Plus-${version}-${os}-${arch}-setup.${ext}"
+      "artifactName": "Lanxi-BLE-Toolkit-${version}-${os}-${arch}-setup.${ext}"
     },
     "portable": {
-      "artifactName": "BLE-Toolkit-Plus-${version}-${os}-${arch}-portable.${ext}"
+      "artifactName": "Lanxi-BLE-Toolkit-${version}-${os}-${arch}-portable.${ext}"
     },
     "afterPack": "scripts/verify-native-pack.cjs",
     "afterAllArtifactBuild": "scripts/verify-universal-pack.cjs"

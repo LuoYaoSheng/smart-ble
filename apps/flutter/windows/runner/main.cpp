@@ -28,7 +28,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   Win32Window::Point origin(10, 10);
   // 桌面壳家族口径：E-WIN/V-WIN 同为 1200x900（T-WIN 1200x800）
   Win32Window::Size size(1200, 900);
-  if (!window.Create(L"BLE Toolkit+", origin, size)) {
+  if (!window.Create(L"蓝析BLE工具箱", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

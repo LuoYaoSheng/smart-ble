@@ -11,7 +11,7 @@
 
 | # | 路径 | 导航栏标题 | 页面性质 | 入口来源 |
 |---|------|-----------|---------|---------|
-| 1 | pages/index/index | 自绘导航「BLE Toolkit+」 | tab 首页·扫描 | 冷启动默认页 / tabBar / 多处 switchTab 回跳 |
+| 1 | pages/index/index | 自绘导航「蓝析BLE工具箱」 | tab 首页·扫描 | 冷启动默认页 / tabBar / 多处 switchTab 回跳 |
 | 2 | pages/hid/add | 配置 Smart HID | 配网向导（核心页） | 首页 SHID 卡片「Smart HID 配网」；hid/detail「重新配置」。参数 `deviceId` |
 | 3 | pages/hid/detail | 设备详情 | Smart HID 历史设备详情 | **仅** hid/add 成功后「查看设备」(redirectTo)。无列表入口 |
 | 4 | pages/hid/diagnostics | 诊断 | Smart HID 体检 | hid/add 恢复按钮「进入诊断」；hid/detail「运行诊断」。参数 `deviceId` |
@@ -28,7 +28,7 @@
 
 **页面内容（自上而下）**
 
-1. 自绘导航栏：标题「BLE Toolkit+」+ 蓝牙状态灯（蓝牙就绪/蓝牙未开启）
+1. 自绘导航栏：标题「蓝析BLE工具箱」+ 蓝牙状态灯（蓝牙就绪/蓝牙未开启）
 2. 扫描卡：附近设备大数字计数、`扫描到 N 台 · 已连接 M 台`、**开始扫描/停止扫描**按钮（扫描中变红色■）、扫描失败红色横幅（错误码 + 消息 + 重试按钮）
 3. pill 双 tab：`扫描设备` / `已连接`
 4. 「筛选」开关联动面板：RSSI 滑杆（-100~0 dBm）、名称前缀输入框（占位提示「例如 SHID / Light / Test」）、隐藏无名设备开关
@@ -276,7 +276,7 @@
 
 - **重复**：无。
 - **丢失**：版本记录停在 v1.0.4（2024-04-29）——Smart HID 配网向导、Profile 匹配、诊断页等后来加的能力全部没有条目（versionFallback 同为 1.0.4）。
-- **遗留**：分享标题「智能蓝牙助手」与全局品牌「BLE Toolkit+」不一致（首页分享用的是后者），真机分享卡片会显示旧名字。
+- **遗留**：分享标题「智能蓝牙助手」与全局品牌「蓝析BLE工具箱」不一致（首页分享用的是后者），真机分享卡片会显示旧名字。
 
 ### 12.9 全局死代码链（store/hid.js + services/smart-hid）
 

@@ -280,7 +280,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
     );
   }
 
-  /// 自绘导航栏 → 正典组件 AppNavbar（kicker「BLE TOOLKIT+」+ 标题 + 蓝牙三态 chip）
+  /// 自绘导航栏 → 正典组件 AppNavbar（kicker「蓝析BLE工具箱」+ 标题 + 蓝牙三态 chip）
   Widget _buildNavbar(AsyncValue<BleState> bleState) {
     final state = bleState.valueOrNull;
     return AppNavbar(

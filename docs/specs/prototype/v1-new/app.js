@@ -91,7 +91,7 @@ function renderReview(){
   const names={p001:'扫描首页',p002:'SHID 配网向导',p003:'SHID 设备详情',p004:'SHID 历史（已移除）',p005:'SHID 诊断',p006:'GATT 调试',p007:'已连接设备',p008:'BLE 广播',p009:'关于',p010:'版本记录'};
   const scen=(SCEN[S.cur]||[]).map((x,i)=>`<button class="sc-btn" data-act="scen" data-i="${i}">${x.label}</button>`).join('')||'<div style="color:#7C8DA6;font-size:11px;padding:4px 2px">本页无场景（静态页 / 空态在页面内）</div>';
   document.getElementById('review').innerHTML=`
-    <h1>BLE Toolkit+ 基准原型 V1</h1>
+    <h1>蓝析BLE工具箱 基准原型 V1</h1>
     <div class="sub">9 页 · 29 功能 · 六态可模拟 · 微信小程序形态（375×812）<br>规范：PRD + PAGE_SPEC + 07_design_system · 全模拟数据 · 无后端</div>
     <h2>页面（PAGE001-010）</h2>
     ${order.map(id=> id==='p004'

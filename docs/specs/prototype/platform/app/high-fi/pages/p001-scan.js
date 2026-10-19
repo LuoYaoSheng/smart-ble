@@ -1,6 +1,6 @@
 /* PAGE001 扫描首页 —— F001 扫描 / F002 权限前置 / F003 筛选 / F004 广播数据 / F005 名称 fallback */
 PAGES['p001'] = {
-  num:'PAGE001', title:'扫描', kind:'tab', kicker:'BLE TOOLKIT+',
+  num:'PAGE001', title:'扫描', kind:'tab', kicker:'蓝析BLE工具箱',
   feats:['F001','F002','F003','F004','F005'],
   defaults: () => ({
     bt:'on', scanning:false, scanned:false, scanError:null, shown:[],

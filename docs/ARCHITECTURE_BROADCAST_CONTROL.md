@@ -1,4 +1,4 @@
-# 🌌 Smart BLE: 无连接纯广播群控生态架构白皮书
+# 🌌 蓝析BLE工具箱: 无连接纯广播群控生态架构白皮书
 
 > **文档版本**: v1.0.0-draft  
 > **核心概念**: `GAP Broadcaster/Observer` 拓扑、`Manufacturer Specific Data` 载荷窃听、极速节流控制 (Throttler)。

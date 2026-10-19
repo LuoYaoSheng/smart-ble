@@ -30,7 +30,7 @@ class BroadcastPage extends ConsumerStatefulWidget {
 
 class _BroadcastPageState extends ConsumerState<BroadcastPage> {
   final TextEditingController _nameController =
-      TextEditingController(text: 'BLE Toolkit+');
+      TextEditingController(text: 'LanxiBLE');
   final TextEditingController _uuidController =
       TextEditingController(text: 'FFF0');
   final TextEditingController _mfrIdController =
@@ -226,7 +226,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
     try {
       final success = await _peripheralManager.startAdvertising(
         name: _nameController.text.isEmpty
-            ? 'BLE Toolkit+'
+            ? 'LanxiBLE'
             : _nameController.text,
         serviceUuid: uuid,
         manufacturerId: _mfrIdController.text,

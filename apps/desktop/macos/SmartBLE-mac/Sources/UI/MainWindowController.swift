@@ -1,6 +1,6 @@
 //
 // MainWindowController.swift — 应用壳（对齐原型内核 app.js 形态）
-// · 窗口 740×620（演示窗 740×600 + 底部 TabBar），标题 BLE Toolkit+
+// · 窗口 740×620（演示窗 740×600 + 底部 TabBar），标题 蓝析BLE工具箱
 // · pagehost（滚动列）+ TabBar 四项（扫描/已连接/广播/关于）+ layer（modal/sheet）+ toasts
 // · 导航语义 = Router（switchTab/go/back/redirect/smartGo）
 // · 窗口关闭 → 退出确认（10_platform §4：常驻，退出确认；活动会话明示断开后果）
@@ -183,7 +183,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
             backing: .buffered,
             defer: false
         )
-        window.title = "BLE Toolkit+"
+        window.title = "蓝析BLE工具箱"
         window.center()
         window.minSize = NSSize(width: 560, height: 540)
         window.backgroundColor = DS.bg

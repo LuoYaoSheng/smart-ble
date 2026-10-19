@@ -1,0 +1,10 @@
+[Desktop Entry]
+Categories={{categories}}
+{{#if comment}}
+Comment={{comment}}
+{{/if}}
+Exec={{exec}}
+Icon={{icon}}
+Name=蓝析BLE工具箱
+Terminal=false
+Type=Application

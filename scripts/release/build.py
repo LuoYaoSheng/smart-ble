@@ -31,6 +31,27 @@ def run(args, cwd=ROOT, env=None):
     subprocess.run([executable, *args[1:]], cwd=cwd, env=env or os.environ.copy(), check=True)
 
 
+def effective_tauri_config(application_directory, system):
+    """Match Tauri 1's automatic platform JSON Merge Patch (RFC 7396)."""
+    directory = Path(application_directory)
+    config = json.loads((directory / 'tauri.conf.json').read_text(encoding='utf-8'))
+    suffix = {'Linux': 'linux', 'Windows': 'windows', 'Darwin': 'macos'}[system]
+    override = directory / f'tauri.{suffix}.conf.json'
+
+    def merge(target, patch):
+        if not isinstance(patch, dict):
+            return patch
+        result = dict(target) if isinstance(target, dict) else {}
+        for key, value in patch.items():
+            if value is None:
+                result.pop(key, None)
+            else:
+                result[key] = merge(result.get(key), value)
+        return result
+
+    return merge(config, json.loads(override.read_text(encoding='utf-8'))) if override.is_file() else config
+
+
 def tauri_application(metadata, config, application_directory, system):
     manifest = (Path(application_directory) / 'Cargo.toml').resolve()
     packages = [p for p in metadata['packages'] if Path(p['manifest_path']).resolve() == manifest]
@@ -52,6 +73,8 @@ def tauri_application(metadata, config, application_directory, system):
         name = re.sub(r'([A-Z]+)([A-Z][a-z])', r'\1-\2', name)
         name = re.sub(r'([a-z0-9])([A-Z])', r'\1-\2', name)
         name = re.sub(r'[\W_]+', '-', name).strip('-').lower()
+    if system == 'Linux' and not re.fullmatch(r'[a-z0-9][a-z0-9+.-]+', name):
+        raise RuntimeError('Linux Tauri productName must resolve to an ASCII package name; load the platform configuration')
     return Path(metadata['target_directory']) / 'release' / (f'{name}.exe' if system == 'Windows' else name)
 
 
@@ -141,13 +164,13 @@ def main():
                 run(['xcodebuild', '-exportArchive', '-archivePath', str(archive), '-exportOptionsPlist', str(options_path), '-exportPath', str(out / 'export')], env=env)
                 patterns = [str(out.relative_to(ROOT) / 'export/*.ipa')]
             else:
-                patterns = [zip_directory(archive, f'BLE-Toolkit-Plus-{version}-ios-archive.zip')]
+                patterns = [zip_directory(archive, f'Lanxi-BLE-Toolkit-{version}-ios-archive.zip')]
         elif args.target == 'flutter-ios':
             run(['flutter', 'build', 'ipa', '--release', '--no-codesign'], ROOT / 'apps/flutter', env)
-            patterns = [zip_directory(ROOT / 'apps/flutter/build/ios/archive/Runner.xcarchive', f'BLE-Toolkit-Plus-{version}-flutter-ios-archive.zip')]
+            patterns = [zip_directory(ROOT / 'apps/flutter/build/ios/archive/Runner.xcarchive', f'Lanxi-BLE-Toolkit-{version}-flutter-ios-archive.zip')]
         elif args.target == 'macos':
             run(['bash', 'scripts/macos/make-app-bundle.sh'])
-            patterns = [zip_directory(ROOT / f'apps/desktop/macos/dist/{variant}/BLE Toolkit+.app', f'BLE-Toolkit-Plus-{version}-macos-{variant}-universal.zip') for variant in ('direct', 'mas')]
+            patterns = [zip_directory(ROOT / f'apps/desktop/macos/dist/{variant}/蓝析BLE工具箱.app', f'Lanxi-BLE-Toolkit-{version}-macos-{variant}-universal.zip') for variant in ('direct', 'mas')]
         elif args.target == 'flutter-macos':
             run(['flutter', 'build', 'macos', '--release', '--config-only'], ROOT / 'apps/flutter', env)
             build_dir = ROOT / 'apps/flutter/build/macos'
@@ -156,7 +179,7 @@ def main():
             if len(applications) != 1:
                 raise RuntimeError('Flutter macOS build must contain exactly one application bundle')
             report['native_application'] = verify_macos_application(applications[0], version)
-            patterns = [zip_directory(applications[0], f'BLE-Toolkit-Plus-{version}-flutter-macos-universal.zip')]
+            patterns = [zip_directory(applications[0], f'Lanxi-BLE-Toolkit-{version}-flutter-macos-universal.zip')]
         elif args.target == 'electron':
             run(['npm', 'ci', '--foreground-scripts'], ROOT / 'apps/desktop/electron', env)
             command = ['npm', 'run', {'Darwin': 'build:mac', 'Windows': 'build:win', 'Linux': 'build:linux'}[host], '--', '--publish', 'never']
@@ -165,7 +188,7 @@ def main():
             extensions = {'Darwin': ('dmg', 'zip'), 'Windows': ('exe',), 'Linux': ('AppImage', 'deb', 'rpm')}[host]
             os_tag = {'Darwin': 'mac', 'Windows': 'win', 'Linux': 'linux'}[host]
             cpu_tag = 'universal' if host == 'Darwin' else architecture
-            prefix = f'apps/desktop/electron/dist/BLE-Toolkit-Plus-{version}-{os_tag}-{cpu_tag}'
+            prefix = f'apps/desktop/electron/dist/Lanxi-BLE-Toolkit-{version}-{os_tag}-{cpu_tag}'
             if host == 'Windows':
                 patterns = [f'{prefix}-{kind}.exe' for kind in ('setup', 'portable')]
             else:
@@ -173,7 +196,7 @@ def main():
                 # Ask the pinned builder rather than guessing a format's CPU suffix.
                 script = 'const u=require("builder-util"); console.log(JSON.stringify(JSON.parse(process.argv[2]).map(e=>u.getArtifactArchName(u.Arch[process.argv[1]],e))))'
                 arch_names = json.loads(subprocess.check_output(['node', '-e', script, cpu_tag, json.dumps(extensions)], cwd=ROOT / 'apps/desktop/electron', text=True, encoding='utf-8', env=env))
-                patterns = [f'apps/desktop/electron/dist/BLE-Toolkit-Plus-{version}-{os_tag}-{cpu}.{extension}' for cpu, extension in zip(arch_names, extensions)]
+                patterns = [f'apps/desktop/electron/dist/Lanxi-BLE-Toolkit-{version}-{os_tag}-{cpu}.{extension}' for cpu, extension in zip(arch_names, extensions)]
         elif args.target == 'tauri':
             run(['cargo', 'test', '--locked', '--lib'], ROOT / 'apps/desktop/tauri/src-tauri', env)
             cmd = ['cargo', 'tauri', 'build']
@@ -191,7 +214,7 @@ def main():
             elif host in ('Linux', 'Windows'):
                 app_directory = ROOT / 'apps/desktop/tauri/src-tauri'
                 metadata = json.loads(subprocess.check_output(['cargo', 'metadata', '--no-deps', '--format-version', '1'], cwd=app_directory, text=True, encoding='utf-8', env=env))
-                config = json.loads((app_directory / 'tauri.conf.json').read_text(encoding='utf-8'))
+                config = effective_tauri_config(app_directory, host)
                 application = tauri_application(metadata, config, app_directory, host)
                 report['native_application'] = verify_application(application, architecture) if host == 'Windows' else verify_linux_application(application, architecture)
             bundle_extensions = {'Darwin': ('dmg',), 'Windows': ('msi', 'exe'), 'Linux': ('deb', 'AppImage', 'rpm')}[host]
@@ -200,7 +223,7 @@ def main():
             run(['dotnet', 'test', '-c', 'Release'], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop.Tests', env)
             run(['dotnet', 'publish', '-c', 'Release', '-r', f'win-{architecture}', '--self-contained', 'true', '-o', str(out / 'app')], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop', env)
             report['native_application'] = verify_application(out / 'app/SmartBLE.Desktop.exe', architecture)
-            patterns = [zip_directory(out / 'app', f'BLE-Toolkit-Plus-{version}-avalonia-windows-{architecture}.zip')]
+            patterns = [zip_directory(out / 'app', f'Lanxi-BLE-Toolkit-{version}-avalonia-windows-{architecture}.zip')]
         elif args.target == 'qt':
             run([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt', 'pyinstaller'], ROOT / 'apps/desktop/qt', env)
             test_env = {**env, 'QT_QPA_PLATFORM': 'offscreen'}
@@ -221,7 +244,7 @@ def main():
             qt_application = out / 'app/SmartBLE'
             report['native_application'] = verify(images(qt_application), architecture)
             report['native_application'].update(format='PE package', verified_application=str(qt_application / 'SmartBLE.exe'), machine=hex(machine(qt_application / 'SmartBLE.exe')))
-            patterns = [zip_directory(out / 'app/SmartBLE', f'BLE-Toolkit-Plus-{version}-qt-windows-{architecture}.zip')]
+            patterns = [zip_directory(out / 'app/SmartBLE', f'Lanxi-BLE-Toolkit-{version}-qt-windows-{architecture}.zip')]
         elif args.target == 'wails':
             run(['npm', 'run', 'build'], ROOT / 'apps/desktop/wails/frontend', env)
             run(['go', 'test', './...', '-run', '^(TestUnknownDeviceNeverFallsBackToAnotherConnection|TestCharacteristicKeysIncludeOwningService|TestDisconnectCancelsPendingConnectionGeneration)$'], ROOT / 'apps/desktop/wails', env)

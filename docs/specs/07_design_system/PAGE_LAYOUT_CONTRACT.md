@@ -50,7 +50,7 @@
 
 | 序 | 区块 | 规格要点 |
 |---|---|---|
-| 1 | AppNavbar | kicker「BLE TOOLKIT+」/ title「扫描」/ bt-chip 三态（on 就绪 success 点·off 未开启 danger 点·unsupported 平台不支持 muted 点） |
+| 1 | AppNavbar | kicker「蓝析BLE工具箱」/ title「扫描」/ bt-chip 三态（on 就绪 success 点·off 未开启 danger 点·unsupported 平台不支持 muted 点） |
 | 2 | 扫描工具条 scantool | 行高 ~40；左标签三态文案（`扫描中 · 5s 会话`+live 脉冲点 6px primary / `扫描完成 · 发现 N 台` / `待开始扫描`，`--fs-cap` `--c-mut`）；右主按钮（未扫=primary `scan`「开始扫描」/ 扫描中=danger `stop`「停止扫描」） |
 | 3 | 错误横幅（条件） | danger-weak 底 + 左 3px danger 条 + 「扫描失败」+ code mono 胶囊 + 消息 + 重试(ghost sm dangerText `refresh`) |
 | 4 | 组标题 sec-t | `chip` 22 primary + 「附近设备」+ 计数 chip(neutral) + 右「筛选/收起筛选」文字链 |

@@ -23,7 +23,7 @@
 
 | # | 检查项 | prototype | U-WX | U-AND | F-AND |
 |---|---|---|---|---|---|
-| 1 | **Navbar** | kicker「BLE TOOLKIT+」+ 标题「扫描」+ bt-chip 三态（proto-01/07/08） | ✅ PASS（code，AppNavbar 同 U-AND） | ✅ PASS（真机：三态词逐字 + 就绪绿点/未开启红点两态实证，uand-01/07；状态栏不重叠） | ✅ PASS（真机 fand-01/07；三态词 widget_test 断言） |
+| 1 | **Navbar** | kicker「蓝析BLE工具箱」+ 标题「扫描」+ bt-chip 三态（proto-01/07/08） | ✅ PASS（code，AppNavbar 同 U-AND） | ✅ PASS（真机：三态词逐字 + 就绪绿点/未开启红点两态实证，uand-01/07；状态栏不重叠） | ✅ PASS（真机 fand-01/07；三态词 widget_test 断言） |
 | 2 | **TabBar** | 四项 scan/link/cast/info，激活品牌蓝（proto-01 底栏） | ✅ PASS（png 资产对，G0 修复后烤色像素校验） | ✅ PASS（uand-01 原生 tabBar：蓝放大镜 + 灰蓝×3，G0 真机复验） | ✅ PASS（fand-01 BottomNavigationBar + AppIcon 字形；PARITY-ICON 测试锁定） |
 |   | | | 载体差异：**ALLOWED_PLATFORM_DIFF**（U-WX/U-AND=原生 tabBar png 对；F-AND=BottomNavigationBar 字形；VISUAL_CONTRACT §2 白名单） | 同左 | 同左 |
 | 3 | **ScanToolbar** | 左标签三态 + live 脉冲点 + primary「开始扫描」⇄ danger「停止扫描」（proto-01/02） | ✅ PASS（code） | ✅ PASS（真机三态全实证：待开始扫描/扫描中·5s 会话/扫描完成·发现 8 台，dump 逐字；danger 按钮 6722 红像素，uand-02） | ✅ PASS（fand-01/02/03；danger 按钮 9437 红像素；三态词 widget_test 断言） |

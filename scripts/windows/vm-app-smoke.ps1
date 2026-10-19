@@ -1,7 +1,7 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)][string]$Executable,
     [int]$ProcessId = 0,
-    [string]$ExpectedTitle = 'BLE Toolkit+',
+    [string]$ExpectedTitle = '蓝析BLE工具箱',
     [Parameter(Mandatory=$true)][string]$OutputDirectory
 )
 $ErrorActionPreference = 'Stop'

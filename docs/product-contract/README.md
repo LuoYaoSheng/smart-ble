@@ -1,6 +1,6 @@
-# BLE Toolkit+ 产品规范（整体）
+# 蓝析BLE工具箱 产品规范（整体）
 
-> 本目录是 BLE Toolkit+ 的**整体产品规范**：产品必须提供哪些功能、用户如何完成一条完整任务、每个页面显示什么、各平台如何适配、达到什么证据才算通过——全平台共用这一份。微信小程序与 Android（UniApp 工程）是第一个完整实现运行时；iOS、H5、桌面按同一契约扩展。
+> 本目录是 蓝析BLE工具箱 的**整体产品规范**：产品必须提供哪些功能、用户如何完成一条完整任务、每个页面显示什么、各平台如何适配、达到什么证据才算通过——全平台共用这一份。微信小程序与 Android（UniApp 工程）是第一个完整实现运行时；iOS、H5、桌面按同一契约扩展。
 >
 > 网页阅读入口：[lightble.i2kai.com/product-contract/](https://lightble.i2kai.com/product-contract/)（同目录 [index.md](./index.md)）。
 > 工程实现事实与平台扩展分析见 [specs/](../specs/README.md)。

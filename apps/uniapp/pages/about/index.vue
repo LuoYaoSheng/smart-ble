@@ -49,7 +49,7 @@
 			</view>
 		</view>
 
-		<view class="footer"><text>© {{ currentYear }} BLE Toolkit+. All rights reserved.</text></view>
+		<view class="footer"><text>© {{ currentYear }} 蓝析BLE工具箱. All rights reserved.</text></view>
 		</view>
 		</scroll-view>
 		</view>

@@ -1,4 +1,4 @@
-# BLE Toolkit+ 产品需求文档（PRD）
+# 蓝析BLE工具箱 产品需求文档（PRD）
 
 > 版本：1.0（基于旧项目逆向分析的产物化描述）
 > 生成日期：2026-09-02
@@ -21,7 +21,7 @@
 
 ## 1.1 产品定位
 
-BLE Toolkit+ 是开源项目 **Smart BLE** 的微信小程序客户端，一句话定位：
+蓝析BLE工具箱 是开源项目 **Smart BLE** 的微信小程序客户端，一句话定位：
 
 > **面向 UniApp、微信小程序与 ESP32 协同验证的 BLE 调试工具。**
 
@@ -33,7 +33,7 @@ BLE Toolkit+ 是开源项目 **Smart BLE** 的微信小程序客户端，一句�
 
 | 项 | 值 | 来源 |
 |---|---|---|
-| 产品名 | BLE Toolkit+（历史名 LightBLE / 工程名 HJWY_BLE，总项目名 Smart BLE） | manifest.json / package.json / project.config.json / README |
+| 产品名 | 蓝析BLE工具箱（历史名 LightBLE / 工程名 HJWY_BLE，总项目名 Smart BLE） | manifest.json / package.json / project.config.json / README |
 | 当前版本 | 1.0.5（versionCode 101），渠道 preview，总体状态 PREVIEW | manifest.json / release-metadata.generated.js |
 | 主投放平台 | 微信小程序（appid wxf6c58b1dcac4c82d） | project.config.json:19 |
 | 次要平台 | uni-app App（Android 原生插件广播 / iOS future）、H5（UNSUPPORTED） | release-metadata 平台矩阵 |

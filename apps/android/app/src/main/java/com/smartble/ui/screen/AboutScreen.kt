@@ -119,7 +119,7 @@ fun AboutContent(
             DsMenuRow(icon = DsIcons.Send, label = "问题反馈", onClick = { showFeedback = true })
             DsMenuRow(icon = DsIcons.Share, label = "分享应用", onClick = { shareApp(context) }, showDivider = false)
         }
-        DsFoot("日志全局脱敏：敏感凭据显示为 token=***\n© 2026 BLE Toolkit+")
+        DsFoot("日志全局脱敏：敏感凭据显示为 token=***\n© 2026 蓝析BLE工具箱")
         Spacer(modifier = Modifier.height(8.dp))
     }
 
@@ -218,7 +218,7 @@ private fun BrandRow(version: String) {
             Icon(DsIcons.Bt, contentDescription = null, modifier = Modifier.size(20.dp), tint = Color.White)
         }
         Column {
-            Text("BLE Toolkit+", fontSize = 16.sp, fontWeight = FontWeight.W700, color = cText)
+            Text("蓝析BLE工具箱", fontSize = 16.sp, fontWeight = FontWeight.W700, color = cText)
             Text(
                 "$version · 零后端 · 零本地持久化",
                 fontSize = 11.sp,
@@ -231,11 +231,11 @@ private fun BrandRow(version: String) {
 }
 
 private fun shareApp(context: android.content.Context) {
-    val text = "BLE Toolkit+ —— 跨平台 BLE 调试工具 $WEBSITE"
+    val text = "蓝析BLE工具箱 —— 跨平台 BLE 调试工具 $WEBSITE"
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_TEXT, text)
-        putExtra(Intent.EXTRA_SUBJECT, "BLE Toolkit+")
+        putExtra(Intent.EXTRA_SUBJECT, "蓝析BLE工具箱")
     }
     runCatching { context.startActivity(Intent.createChooser(intent, "分享应用")) }
 }

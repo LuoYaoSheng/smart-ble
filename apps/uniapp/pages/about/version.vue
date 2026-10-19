@@ -3,7 +3,7 @@
 		<AppSubnav title="版本记录" />
 		<view class="container">
 			<view class="card current-card">
-				<view class="card-kicker">BLE Toolkit+ 当前版本</view>
+				<view class="card-kicker">蓝析BLE工具箱 当前版本</view>
 				<view class="current-row">
 					<text class="current-version version-name">{{ model.current.version || model.current.display_version }}</text>
 				<text class="status-pill">{{ model.current.status }}</text>

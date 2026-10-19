@@ -1,4 +1,4 @@
-# Smart BLE 页面能力覆盖审计（PAGE_CAPABILITY_COVERAGE_AUDIT）
+# 蓝析BLE工具箱 页面能力覆盖审计（PAGE_CAPABILITY_COVERAGE_AUDIT）
 
 > 版本：1.0 · 审计日期：2026-09-03 · 第 12 份评审文件
 > 审计角色：页面能力覆盖完整性审计（只审不改——本轮**未修改任何代码或规范**）

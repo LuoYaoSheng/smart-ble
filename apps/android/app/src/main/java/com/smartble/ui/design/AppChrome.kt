@@ -72,7 +72,7 @@ enum class BtTone { On, Off }
 fun AppNavbar(
     title: String,
     modifier: Modifier = Modifier,
-    kicker: String = "BLE TOOLKIT+",
+    kicker: String = "蓝析BLE工具箱",
     statusText: String = "",
     statusTone: BtTone? = null,
     trailing: (@Composable () -> Unit)? = null,

@@ -1,4 +1,4 @@
-# Smart BLE 组件交互与流程规范
+# 蓝析BLE工具箱 组件交互与流程规范
 
 由于 `Smart BLE` 作为一个跨多端的生态组合工程（Vue 3 / Flutter / Android Compose / iOS SwiftUI / Tauri 等），不同平台之间往往容易导致 UI 控制流分化、代码大量堆积。为此我们将所有 UI 层分解为**五大标准细粒度组件**。
 

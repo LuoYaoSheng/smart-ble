@@ -3,7 +3,7 @@
 ## 标题
 
 ```
-Show HN: Smart BLE – Cross-platform BLE debugging tool with 8+ implementations
+Show HN: 蓝析BLE工具箱 – Cross-platform BLE debugging tool with 8+ implementations
 ```
 
 ---
@@ -13,7 +13,7 @@ Show HN: Smart BLE – Cross-platform BLE debugging tool with 8+ implementations
 ```markdown
 Hi HN,
 
-I built Smart BLE [1], a cross-platform Bluetooth Low Energy debugging tool.
+I built 蓝析BLE工具箱 [1], a cross-platform Bluetooth Low Energy debugging tool.
 
 ## Why
 
@@ -69,9 +69,9 @@ Feedback welcome!
 
 可以尝试不同的标题风格：
 
-1. `Show HN: Smart BLE – Cross-platform BLE debugging tool`
+1. `Show HN: 蓝析BLE工具箱 – Cross-platform BLE debugging tool`
 2. `Show HN: I built an open-source BLE tool with 8+ platform implementations`
-3. `Show HN: Smart BLE – Open-source Bluetooth debugging with ESP32 firmware`
+3. `Show HN: 蓝析BLE工具箱 – Open-source Bluetooth debugging with ESP32 firmware`
 
 ### 发布时间
 

@@ -85,7 +85,7 @@ class _AboutPageState extends State<AboutPage> {
 
   void _shareApp() {
     Share.share(
-      'BLE Toolkit+ —— 跨平台 BLE 调试工具 ${ProductConfig.website}',
+      '蓝析BLE工具箱 —— 跨平台 BLE 调试工具 ${ProductConfig.website}',
       subject: ProductConfig.name,
     );
   }

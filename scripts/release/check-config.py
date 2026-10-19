@@ -4,6 +4,7 @@ import json
 import plistlib
 import re
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -19,7 +20,24 @@ def require(condition, message):
 
 mac_identity = plistlib.loads((ROOT / 'apps/desktop/macos/SmartBLE-mac/Info.plist').read_bytes())
 require(mac_identity.get('CFBundleIdentifier') == identity, 'Native Mac App Store bundle ID differs from the unified Apple product')
-require(display_name == 'BLE Toolkit+', 'Unified application display name must be BLE Toolkit+')
+require(display_name == '蓝析BLE工具箱', 'Unified application display name must be 蓝析BLE工具箱')
+require(product['product'] == display_name, 'Product title and display name must agree')
+require(product.get('artifact_prefix') == 'Lanxi-BLE-Toolkit', 'Download artifact prefix must be portable ASCII')
+android_strings = ET.parse(ROOT / 'apps/android/app/src/main/res/values/strings.xml')
+require(android_strings.find("string[@name='app_name']").text == display_name, 'Android application label differs from product identity')
+for relative, marker in (
+    ('apps/flutter/lib/config/product.dart', f"name = '{display_name}'"),
+    ('apps/flutter/windows/runner/main.cpp', f'L"{display_name}"'),
+    ('apps/desktop/qt/main.py', f'setApplicationDisplayName("{display_name}")'),
+    ('docs/.vitepress/config.mjs', f'title: "{display_name}"'),
+):
+    require(marker in (ROOT / relative).read_text(encoding='utf-8'), f'{relative}: inconsistent product name')
+tauri = json.loads((ROOT / 'apps/desktop/tauri/src-tauri/tauri.conf.json').read_text(encoding='utf-8'))
+require(tauri['package']['productName'] == display_name and tauri['tauri']['windows'][0]['title'] == display_name, 'Tauri product/window name differs from product identity')
+wails = json.loads((ROOT / 'apps/desktop/wails/wails.json').read_text(encoding='utf-8'))
+require(wails['info']['productName'] == display_name, 'Wails product name differs from product identity')
+avalonia = ET.parse(ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop/SmartBLE.Desktop.csproj')
+require(avalonia.find('.//Product').text == display_name, 'Avalonia product name differs from product identity')
 for relative in ('apps/ios/SmartBLE/Resources/Info.plist', 'apps/flutter/ios/Runner/Info.plist',
                  'apps/desktop/macos/SmartBLE-mac/Info.plist', 'apps/flutter/macos/Runner/Info.plist'):
     data = plistlib.loads((ROOT / relative).read_bytes())

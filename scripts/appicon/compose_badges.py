@@ -249,7 +249,7 @@ def rounded_tile(img: Image.Image, size: int) -> Image.Image:
 
 
 SPLASH_BG = "#F8FBFF"   # 正典 cBg 冰蓝（启动图 → 首页自然衔接）
-WORDMARK = "BLE Toolkit+"  # 与两端 android:label 一致；Pillow 渲染，杜绝 AI 拼写
+WORDMARK = "蓝析BLE工具箱"  # 与两端 android:label 一致；Pillow 渲染，杜绝 AI 拼写
 INK = "#18222E"         # 正典 cText
 
 UNIAPP_SPLASH_SIZES = {  # manifest distribute.splashscreen.android 引用的四密度竖屏

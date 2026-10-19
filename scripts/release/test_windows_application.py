@@ -35,15 +35,18 @@ class WindowsApplicationTests(unittest.TestCase):
         metadata = {'target_directory': '/project/target', 'packages': [{
             'manifest_path': str(app / 'Cargo.toml'),
             'targets': [{'name': 'smart_ble_tauri', 'kind': ['cdylib', 'rlib']}, {'name': 'smart-ble-tauri', 'kind': ['bin']}]}]}
-        config = {'package': {'productName': 'BLE Toolkit+'}}
-        self.assertEqual(tauri_application(metadata, config, app, 'Windows'), Path('/project/target/release/BLE Toolkit+.exe'))
+        config = {'package': {'productName': '蓝析BLE工具箱'}}
+        self.assertEqual(tauri_application(metadata, config, app, 'Windows'), Path('/project/target/release/蓝析BLE工具箱.exe'))
         self.assertEqual(tauri_application(metadata, {}, app, 'Windows'), Path('/project/target/release/smart-ble-tauri.exe'))
-        self.assertEqual(tauri_application(metadata, config, app, 'Linux'), Path('/project/target/release/ble-toolkit'))
+        with self.assertRaisesRegex(RuntimeError, 'ASCII package name'):
+            tauri_application(metadata, config, app, 'Linux')
+        linux_config = {'package': {'productName': 'lanxi-ble-toolkit'}}
+        self.assertEqual(tauri_application(metadata, linux_config, app, 'Linux'), Path('/project/target/release/lanxi-ble-toolkit'))
         metadata['packages'][0]['targets'].append({'name': 'another-app', 'kind': ['bin']})
         with self.assertRaisesRegex(RuntimeError, 'main Rust binary'):
             tauri_application(metadata, config, app, 'Windows')
         metadata['packages'][0]['default_run'] = 'smart-ble-tauri'
-        self.assertEqual(tauri_application(metadata, config, app, 'Windows'), Path('/project/target/release/BLE Toolkit+.exe'))
+        self.assertEqual(tauri_application(metadata, config, app, 'Windows'), Path('/project/target/release/蓝析BLE工具箱.exe'))
 
 
 if __name__ == '__main__':

@@ -336,7 +336,7 @@ class ScanPage(QWidget):
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
 
-        navbar = NavBar("BLE TOOLKIT+", "扫描")
+        navbar = NavBar("蓝析BLE工具箱", "扫描")
         self._bt_chip = BtChip("初始化中…")
         navbar.add_right(self._bt_chip)
         root.addWidget(navbar)
@@ -950,7 +950,7 @@ class BroadcastPage(QWidget):
         fhead = QLabel("广播内容")
         fhead.setObjectName("CardHead")
         fv.addWidget(fhead)
-        self._f_name = QLineEdit("BLE Toolkit+")
+        self._f_name = QLineEdit("LanxiBLE")
         self._f_uuid = QLineEdit("FFE0")
         self._f_mfg_id = QLineEdit("0001")
         self._f_mfg_data = QLineEdit("BLE")
@@ -1149,7 +1149,7 @@ class AboutPage(QWidget):
         iv.addWidget(_AboutLogo())
         brand = QVBoxLayout()
         brand.setSpacing(2)
-        app_name = QLabel("BLE Toolkit+")
+        app_name = QLabel("蓝析BLE工具箱")
         app_name.setFont(qfont(15, QFont.Weight.Bold))
         brand.addWidget(app_name)
         verline = QLabel(f"{version} · preview · 零后端 · 零本地持久化")
@@ -1220,7 +1220,7 @@ class MainWindow(QMainWindow):
     def __init__(self, availability_reader=None) -> None:
         super().__init__()
         # 壳家族口径：E/V/F/G 同为 1200x900，标题 SmartBLE
-        self.setWindowTitle("BLE Toolkit+")
+        self.setWindowTitle("蓝析BLE工具箱")
         self.resize(1200, 900)
         self.setMinimumWidth(940)
         self._ble = BleService(self, availability_reader=availability_reader)
@@ -1393,8 +1393,8 @@ class MainWindow(QMainWindow):
 
 def main() -> int:
     app = QApplication(sys.argv)
-    app.setApplicationName("BLE Toolkit+")
-    app.setApplicationDisplayName("BLE Toolkit+")
+    app.setApplicationName("蓝析BLE工具箱")
+    app.setApplicationDisplayName("蓝析BLE工具箱")
     app.setStyleSheet(QSS)
     icon_path = HERE / "assets" / "app.ico"
     if icon_path.exists():

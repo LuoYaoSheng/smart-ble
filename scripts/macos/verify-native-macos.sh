@@ -99,7 +99,7 @@ if grep -q "spctl: rejected" "$LOGDIR/bundle.log"; then
 else
   record NVP-02 FAIL "spctl outcome unexpected (see bundle.log)"
 fi
-BUNDLE_BIN="$REPO_ROOT/apps/desktop/macos/dist/direct/BLE Toolkit+.app/Contents/MacOS/SmartBLE-mac"
+BUNDLE_BIN="$REPO_ROOT/apps/desktop/macos/dist/direct/蓝析BLE工具箱.app/Contents/MacOS/SmartBLE-mac"
 ("$BUNDLE_BIN" > "$LOGDIR/bundle-run.log" 2>&1 & BP=$!
  sleep 8; kill -TERM "$BP" 2>/dev/null; wait "$BP" 2>/dev/null || true)
 if grep -q "蓝牙已开启" "$LOGDIR/bundle-run.log" && grep -q "外围模式已就绪" "$LOGDIR/bundle-run.log"; then
@@ -131,7 +131,7 @@ else
   record NVD-01 FAIL "universal binary missing (see bundle.log)"
 fi
 # NVD-02：MAS 必填字段完整性（脚本内已断言，此处复核关键键）
-MAS_PLIST="$REPO_ROOT/apps/desktop/macos/dist/mas/BLE Toolkit+.app/Contents/Info.plist"
+MAS_PLIST="$REPO_ROOT/apps/desktop/macos/dist/mas/蓝析BLE工具箱.app/Contents/Info.plist"
 if [ -f "$MAS_PLIST" ] && \
    /usr/libexec/PlistBuddy -c 'Print :LSApplicationCategoryType' "$MAS_PLIST" > /dev/null 2>&1 && \
    /usr/libexec/PlistBuddy -c 'Print :ITSAppUsesNonExemptEncryption' "$MAS_PLIST" > /dev/null 2>&1 && \
@@ -141,16 +141,16 @@ else
   record NVD-02 FAIL "MAS plist fields missing"
 fi
 # NVD-03：图标存在且为有效 icns
-if file "$REPO_ROOT/apps/desktop/macos/dist/mas/BLE Toolkit+.app/Contents/Resources/AppIcon.icns" 2>/dev/null | grep -q "icns"; then
+if file "$REPO_ROOT/apps/desktop/macos/dist/mas/蓝析BLE工具箱.app/Contents/Resources/AppIcon.icns" 2>/dev/null | grep -q "icns"; then
   record NVD-03 PASS "AppIcon.icns present in bundle Resources"
 else
   record NVD-03 FAIL "AppIcon.icns missing/invalid"
 fi
 # NVD-04：沙盒 entitlements + hardened runtime 嵌入
-MAS_BIN="$REPO_ROOT/apps/desktop/macos/dist/mas/BLE Toolkit+.app/Contents/MacOS/SmartBLE-mac"
-if codesign --verify --strict "$REPO_ROOT/apps/desktop/macos/dist/mas/BLE Toolkit+.app" 2>/dev/null && \
-   codesign -d --entitlements :- "$REPO_ROOT/apps/desktop/macos/dist/mas/BLE Toolkit+.app" 2>/dev/null | grep 'app-sandbox' > /dev/null && \
-   codesign -dv "$REPO_ROOT/apps/desktop/macos/dist/mas/BLE Toolkit+.app" 2>&1 | grep -i 'runtime' > /dev/null; then
+MAS_BIN="$REPO_ROOT/apps/desktop/macos/dist/mas/蓝析BLE工具箱.app/Contents/MacOS/SmartBLE-mac"
+if codesign --verify --strict "$REPO_ROOT/apps/desktop/macos/dist/mas/蓝析BLE工具箱.app" 2>/dev/null && \
+   codesign -d --entitlements :- "$REPO_ROOT/apps/desktop/macos/dist/mas/蓝析BLE工具箱.app" 2>/dev/null | grep 'app-sandbox' > /dev/null && \
+   codesign -dv "$REPO_ROOT/apps/desktop/macos/dist/mas/蓝析BLE工具箱.app" 2>&1 | grep -i 'runtime' > /dev/null; then
   record NVD-04 PASS "ad-hoc + app-sandbox entitlement + hardened runtime"
 else
   record NVD-04 FAIL "entitlements/runtime/signature (see bundle.log)"
@@ -171,13 +171,13 @@ fi
 # 判活先落盘再 grep 文件：pipefail 下 `ps aux | grep -q` 受 SIGPIPE 竞态影响（ps 输出长时误判失败）。
 MAS_LAUNCH_OK=0
 for attempt in 1 2; do
-  open -n "$REPO_ROOT/apps/desktop/macos/dist/mas/BLE Toolkit+.app" > "$LOGDIR/nvd06-open.log" 2>&1
+  open -n "$REPO_ROOT/apps/desktop/macos/dist/mas/蓝析BLE工具箱.app" > "$LOGDIR/nvd06-open.log" 2>&1
   sleep 6
   ps aux > "$LOGDIR/nvd06-ps.txt" 2>/dev/null || true
   if grep -q "[S]martBLE-macOS-MAS.app/Contents/MacOS" "$LOGDIR/nvd06-ps.txt"; then
     MAS_LAUNCH_OK=1
   fi
-  pkill -f "mas/BLE Toolkit+.app/Contents/MacOS" 2>/dev/null || true
+  pkill -f "mas/蓝析BLE工具箱.app/Contents/MacOS" 2>/dev/null || true
   sleep 1
   [ "$MAS_LAUNCH_OK" -eq 1 ] && break
 done
@@ -206,7 +206,7 @@ else
 fi
 # NVD-09：spctl 预期拒绝 + Swift 系统运行库可移植性
 if grep -q 'spctl: rejected' "$LOGDIR/bundle.log" && grep -q '/usr/lib/swift/libswiftCore.dylib' \
-     <(otool -L "$REPO_ROOT/apps/desktop/macos/dist/direct/BLE Toolkit+.app/Contents/MacOS/SmartBLE-mac"); then
+     <(otool -L "$REPO_ROOT/apps/desktop/macos/dist/direct/蓝析BLE工具箱.app/Contents/MacOS/SmartBLE-mac"); then
   record NVD-09 PASS "gatekeeper expected-reject + system swift runtime (portable)"
 else
   record NVD-09 FAIL "spctl/otool check (see bundle.log)"

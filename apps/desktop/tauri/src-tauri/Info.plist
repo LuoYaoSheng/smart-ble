@@ -5,9 +5,9 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>BLE Toolkit+</string>
+	<string>蓝析BLE工具箱</string>
 	<key>CFBundleExecutable</key>
-	<string>BLE Toolkit+</string>
+	<string>蓝析BLE工具箱</string>
 	<key>CFBundleIconFile</key>
 	<string>icon.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>BLE Toolkit+</string>
+	<string>蓝析BLE工具箱</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

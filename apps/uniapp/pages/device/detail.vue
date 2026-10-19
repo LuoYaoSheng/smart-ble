@@ -189,7 +189,7 @@ onUnload(() => {
 
 // #ifdef MP-WEIXIN
 onShareAppMessage(() => ({
-	title: '分享一个好用的 BLE 工具: BLE Toolkit+',
+	title: '分享一个好用的 BLE 工具: 蓝析BLE工具箱',
 	path: '/pages/index/index'
 }));
 // #endif

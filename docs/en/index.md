@@ -2,15 +2,15 @@
 layout: home
 
 hero:
-  name: "BLE Toolkit+"
+  name: "蓝析BLE工具箱"
   text: "An open-source BLE tool family for every BLE device"
   tagline: "Debug · Learn · Multi-platform multi-framework comparison · Hardware-in-the-loop — one product spec, covering Android, iOS / macOS, desktop, Web, ESP32 firmware and the Smart HID profile."
   image:
     src: /brand/hero-duo.webp
-    alt: BLE Toolkit+ app screenshots (Android preview, captured from device)
+    alt: 蓝析BLE工具箱 app screenshots (Android preview, captured from device)
   actions:
     - theme: brand
-      text: Get BLE Toolkit+
+      text: Get 蓝析BLE工具箱
       link: /en/#get
     - theme: alt
       text: Docs (Chinese)
@@ -25,7 +25,7 @@ hero:
   <section id="get" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Get</div>
-      <h2>Get BLE Toolkit+</h2>
+      <h2>Get 蓝析BLE工具箱</h2>
       <p>Current version v1.0.5 · PREVIEW (development preview). Every framework × platform has its own download slot — shown as "in preparation" until real packages ship, all buildable from source today.</p>
     </div>
     <div class="sb-get-grid">

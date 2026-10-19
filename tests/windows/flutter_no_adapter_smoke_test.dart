@@ -207,7 +207,7 @@ void main() {
       debugPrint('[WINDOWS-NO-ADAPTER] broadcast support retry=PASS');
 
       await selectTab(tester, '关于', 'info');
-      expect(find.text('BLE Toolkit+'), findsOneWidget);
+      expect(find.text('蓝析BLE工具箱'), findsOneWidget);
       expect(find.text('应用信息'), findsOneWidget);
       await selectTab(tester, '扫描', 'scan');
       await waitForScanTerminal(

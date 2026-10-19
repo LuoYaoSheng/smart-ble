@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get app_name => 'BLE Toolkit+';
+  String get app_name => '蓝析BLE工具箱';
 
   @override
   String get tab_scan => 'Scan';

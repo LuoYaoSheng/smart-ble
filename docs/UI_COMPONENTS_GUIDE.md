@@ -1,4 +1,4 @@
-# SmartBLE 跨平台 UI 组件库指南
+# 蓝析BLE工具箱 跨平台 UI 组件库指南
 
 SmartBLE 项目在涉及 Web/Electron/Tauri/移动端 的界面开发时，通过 Web Components 机制统一了各端的交互标准。此文档介绍了各个独立组件的职责、引用方式和平台差异说明。
 

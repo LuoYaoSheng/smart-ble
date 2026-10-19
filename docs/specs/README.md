@@ -1,4 +1,4 @@
-# Smart BLE 产品基准规范（specs）
+# 蓝析BLE工具箱 产品基准规范（specs）
 
 > **2026-10-10 用户范围修订**：单一 smart-ble 工程，所有现有技术实现和对应支持平台都必须正确并完成发布准备。旧文档的 REFERENCE/Experimental 投入分级不免除验收；发布渠道为 App Store、国内 Android 商店和桌面正式分发。旧阶段记录保留作历史，本轮状态统一见根 `release/platform-matrix.json` 与 `docs/plans/2026-10-10-unified-project-release.md`。微信目标仍退役。实现/构建/真机/签名/商店各门分别取证。
 

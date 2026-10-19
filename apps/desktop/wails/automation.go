@@ -289,12 +289,12 @@ type screenshotErr string
 func (e screenshotErr) Error() string { return string(e) }
 func errScreenshot(s string) error    { return screenshotErr(s) }
 
-// findOurWindow 按标题找 SmartBLE 主窗并校验属主为本进程（坑位账 #1：僵尸窗口）。
+// findOurWindow 按标题找蓝析BLE工具箱主窗并校验属主为本进程（坑位账 #1：僵尸窗口）。
 func findOurWindow() (windows.HWND, error) {
-	title, _ := windows.UTF16PtrFromString("SmartBLE")
+	title, _ := windows.UTF16PtrFromString("蓝析BLE工具箱")
 	hwnd, _, _ := procFindWindowW.Call(0, uintptr(unsafe.Pointer(title)))
 	if hwnd == 0 {
-		return 0, errScreenshot("window 'SmartBLE' not found")
+		return 0, errScreenshot("window '蓝析BLE工具箱' not found")
 	}
 	var pid uint32
 	_, _, _ = procGetWindowThreadProc.Call(hwnd, uintptr(unsafe.Pointer(&pid)))

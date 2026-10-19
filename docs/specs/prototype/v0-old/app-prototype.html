@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLE Toolkit+ 交互原型 · 基于旧项目逆向（9 页；2026-09-02 决策移除 PAGE004）</title>
+<title>蓝析BLE工具箱 交互原型 · 基于旧项目逆向（9 页；2026-09-02 决策移除 PAGE004）</title>
 <style>
   :root{
     --brand:#1B6DFF; --mint:#17C7A8; --red:#F2555F; --amber:#FF9F43;
@@ -227,7 +227,7 @@
 <body>
 
 <aside class="review">
-  <h1>BLE Toolkit+ 评审原型</h1>
+  <h1>蓝析BLE工具箱 评审原型</h1>
   <div class="sub">旧项目逆向重建 · 单文件 · 全模拟数据 · 无后端<br>对应 PRD：docs/02_product/PRD.md</div>
   <h2>页面直达</h2>
   <div id="pgnav"></div>
@@ -251,7 +251,7 @@
 
 <script>
 /* =========================================================
-   BLE Toolkit+ 交互原型（PAGE001/002/003/005/006/007/008/009/010；PAGE004 已按 2026-09-02 用户决策移除）
+   蓝析BLE工具箱 交互原型（PAGE001/002/003/005/006/007/008/009/010；PAGE004 已按 2026-09-02 用户决策移除）
    事实源：docs/01_reverse/REVERSE_ANALYSIS.md → docs/02_product/PRD.md → docs/03_flow/PAGE_SPEC.md
    ========================================================= */
 
@@ -329,7 +329,7 @@ const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&
 /* ---------- 导航 ---------- */
 const TABS = ['p001','p007','p008','p009'];
 const PAGES = {
-  p001:{tag:'PAGE001 · PRD §6', title:'BLE Toolkit+', tab:true},
+  p001:{tag:'PAGE001 · PRD §6', title:'蓝析BLE工具箱', tab:true},
   p002:{tag:'PAGE002 · PRD §6', title:'配置 Smart HID'},
   p003:{tag:'PAGE003 · PRD §6', title:'Smart HID 设备'},
   p005:{tag:'PAGE005 · PRD §6', title:'诊断'},
@@ -422,7 +422,7 @@ function renderP001(){
   return `
   <div class="navbar">
     <div class="kicker">SMARTBLE MINI</div>
-    <div class="row"><div class="title">BLE Toolkit+</div>
+    <div class="row"><div class="title">蓝析BLE工具箱</div>
       <div class="bt-chip"><span class="bt-dot ${st.bt==='on'?'on':''}"></span>${btText}</div></div>
   </div>
   <div class="content">
@@ -824,7 +824,7 @@ function renderP009(){
   <div class="content">
     <div class="card" style="display:flex;gap:13px;align-items:center">
       <div style="width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,rgba(27,109,255,.15),rgba(123,224,255,.2));display:flex;align-items:center;justify-content:center;font-size:26px">🔵</div>
-      <div style="flex:1;min-width:0"><div style="font-size:18px;font-weight:800">BLE Toolkit+</div>
+      <div style="flex:1;min-width:0"><div style="font-size:18px;font-weight:800">蓝析BLE工具箱</div>
         <div class="sec-c">Version 1.0.5 · v1.0.5-preview</div>
         <div class="sec-c" style="margin-top:4px">面向 UniApp、微信小程序与 ESP32 协同验证的 BLE 调试工具</div>
         <div style="display:flex;gap:5px;margin-top:7px"><span class="chip brand">UniApp · Vue 3</span><span class="chip brand">PREVIEW</span></div></div>
@@ -854,7 +854,7 @@ function renderP009(){
       <div class="menu-item" data-act="p009-feedback">问题反馈 <span class="ar">›</span></div>
       <div class="menu-item" data-act="p009-share">分享应用 <span class="ar">›</span></div>
     </div>
-    <div class="sec-c" style="text-align:center;padding:4px 0 14px">© 2026 BLE Toolkit+. All rights reserved.</div>
+    <div class="sec-c" style="text-align:center;padding:4px 0 14px">© 2026 蓝析BLE工具箱. All rights reserved.</div>
   </div>`;
 }
 

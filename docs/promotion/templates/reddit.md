@@ -3,7 +3,7 @@
 ## 标题
 
 ```
-[Release] Smart BLE - An open-source cross-platform BLE debugging tool with 8+ implementations and ESP32 firmware
+[Release] 蓝析BLE工具箱 - An open-source cross-platform BLE debugging tool with 8+ implementations and ESP32 firmware
 ```
 
 ---
@@ -13,7 +13,7 @@
 ```markdown
 Hi everyone,
 
-I'd like to share my open-source project — **Smart BLE**, a cross-platform Bluetooth Low Energy debugging tool.
+I'd like to share my open-source project — **蓝析BLE工具箱**, a cross-platform Bluetooth Low Energy debugging tool.
 
 ## Background
 
@@ -105,25 +105,25 @@ Feedback and contributions are welcome!
 
 ### r/ESP32
 
-- **标题**: `[Project] Smart BLE - Cross-platform BLE debugging tool with ESP32 firmware support`
+- **标题**: `[Project] 蓝析BLE工具箱 - Cross-platform BLE debugging tool with ESP32 firmware support`
 - **标签**: `Project`, `BLE`, `Bluetooth`
 - **发布时间**: 美国时间 9:00-11:00
 
 ### r/Bluetooth
 
-- **标题**: `[Release] Smart BLE - Open-source cross-platform BLE debugging tool`
+- **标题**: `[Release] 蓝析BLE工具箱 - Open-source cross-platform BLE debugging tool`
 - **标签**: `Release`, `Open Source`, `Development`
 - **发布时间**: 美国时间 9:00-11:00
 
 ### r/noble
 
-- **标题**: `[Showcase] Smart BLE - BLE debugging tool using noble for desktop`
+- **标题**: `[Showcase] 蓝析BLE工具箱 - BLE debugging tool using noble for desktop`
 - **标签**: `noble`, `BLE`, `Showcase`
 - **发布时间**: 美国时间 9:00-11:00
 
 ### r/FlutterDev
 
-- **标题**: `[Showcase] Smart BLE - Cross-platform BLE debugging tool built with Flutter`
+- **标题**: `[Showcase] 蓝析BLE工具箱 - Cross-platform BLE debugging tool built with Flutter`
 - **标签**: `Showcase`, `Bluetooth`, `flutter_blue_plus`
 - **发布时间**: 美国时间 9:00-11:00
 

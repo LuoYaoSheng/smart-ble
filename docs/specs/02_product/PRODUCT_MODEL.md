@@ -25,7 +25,7 @@
 
 | 项 | 值 |
 |---|---|
-| 产品名 / 版本 | BLE Toolkit+ 1.0.5（preview，PREVIEW） |
+| 产品名 / 版本 | 蓝析BLE工具箱 1.0.5（preview，PREVIEW） |
 | 主平台 | 微信小程序（appid wxf6c58b1dcac4c82d） |
 | 次平台 | uni-app App（Android 广播 / iOS future）、H5 UNSUPPORTED |
 | 技术形态 | uni-app + Vue 3 + Pinia，自建设计系统 |
