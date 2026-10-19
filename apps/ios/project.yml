@@ -28,14 +28,18 @@ packages:
     path: ../../core/apple/SmartHidCore
 targets:
   SmartBLEiOS:
+    productName: "蓝析BLE工具箱"
     type: application
     platform: iOS
     deploymentTarget: "15.0"
     sources:
       - path: Sources
-    resources:
+        excludes: [Resources]
       - path: Sources/Resources
+        buildPhase: resources
       - path: SmartBLE/Resources
+        buildPhase: resources
+        excludes: [Info.plist, SmartBLE.entitlements]
     dependencies:
       - package: SmartHidCore
     settings:

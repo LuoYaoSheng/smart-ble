@@ -13,7 +13,7 @@ import sys
 import zipfile
 from pathlib import Path
 from android_artifact import inspect_native_libraries, sdk_tool
-from native_application import verify_linux_application, verify_macos_application
+from native_application import verify_ios_application, verify_linux_application, verify_macos_application
 from verify_windows_architecture import images, machine, verify, verify_application
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -157,6 +157,9 @@ def main():
             cmd = ['xcodebuild', '-project', 'SmartBLE.xcodeproj', '-scheme', 'SmartBLEiOS', '-configuration', 'Release', '-destination', 'generic/platform=iOS', '-archivePath', str(archive)]
             cmd += [f'DEVELOPMENT_TEAM={env["SMART_BLE_APPLE_TEAM"]}'] if args.signed else ['CODE_SIGNING_ALLOWED=NO']
             run(cmd + ['archive'], ROOT / 'apps/ios', env)
+            application, = (archive / 'Products/Applications').glob('*.app')
+            product = json.loads((ROOT / 'release/product-identity.json').read_text(encoding='utf-8'))
+            report['native_application'] = verify_ios_application(application, version, product['display_name'])
             if args.signed:
                 options = {'method': 'app-store-connect', 'destination': 'export', 'signingStyle': 'automatic', 'teamID': env['SMART_BLE_APPLE_TEAM'], 'uploadSymbols': True}
                 options_path = out / 'ExportOptions.plist'
@@ -170,10 +173,19 @@ def main():
             patterns = [zip_directory(ROOT / 'apps/flutter/build/ios/archive/Runner.xcarchive', f'Lanxi-BLE-Toolkit-{version}-flutter-ios-archive.zip')]
         elif args.target == 'macos':
             run(['bash', 'scripts/macos/make-app-bundle.sh'])
+            report['native_applications'] = {variant: verify_macos_application(ROOT / f'apps/desktop/macos/dist/{variant}/蓝析BLE工具箱.app', version) for variant in ('direct', 'mas')}
             patterns = [zip_directory(ROOT / f'apps/desktop/macos/dist/{variant}/蓝析BLE工具箱.app', f'Lanxi-BLE-Toolkit-{version}-macos-{variant}-universal.zip') for variant in ('direct', 'mas')]
         elif args.target == 'flutter-macos':
-            run(['flutter', 'build', 'macos', '--release', '--config-only'], ROOT / 'apps/flutter', env)
+            # Flutter's embed step can copy removed Dart native assets from a
+            # previous build. Recreate only this platform's generated payload,
+            # leaving other concurrent Flutter platform builds untouched.
+            native_assets = ROOT / 'apps/flutter/build/native_assets/macos'
+            if native_assets.exists():
+                shutil.rmtree(native_assets)
             build_dir = ROOT / 'apps/flutter/build/macos'
+            for previous_app in (build_dir / 'Build/Products/Release').glob('*.app'):
+                shutil.rmtree(previous_app)
+            run(['flutter', 'build', 'macos', '--release', '--config-only'], ROOT / 'apps/flutter', env)
             run(['xcodebuild', '-workspace', 'Runner.xcworkspace', '-scheme', 'Runner', '-configuration', 'Release', '-destination', 'generic/platform=macOS', '-derivedDataPath', str(build_dir), f'OBJROOT={build_dir}/Build/Intermediates.noindex', f'SYMROOT={build_dir}/Build/Products', 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'COMPILER_INDEX_STORE_ENABLE=NO', 'build'], ROOT / 'apps/flutter/macos', env)
             applications = list((ROOT / 'apps/flutter/build/macos/Build/Products/Release').glob('*.app'))
             if len(applications) != 1:
@@ -185,6 +197,9 @@ def main():
             command = ['npm', 'run', {'Darwin': 'build:mac', 'Windows': 'build:win', 'Linux': 'build:linux'}[host], '--', '--publish', 'never']
             if host == 'Darwin': command.append('--universal')
             run(command, ROOT / 'apps/desktop/electron', env)
+            if host == 'Darwin':
+                application, = (ROOT / 'apps/desktop/electron/dist/mac-universal').glob('*.app')
+                report['native_application'] = verify_macos_application(application, version)
             extensions = {'Darwin': ('dmg', 'zip'), 'Windows': ('exe',), 'Linux': ('AppImage', 'deb', 'rpm')}[host]
             os_tag = {'Darwin': 'mac', 'Windows': 'win', 'Linux': 'linux'}[host]
             cpu_tag = 'universal' if host == 'Darwin' else architecture
