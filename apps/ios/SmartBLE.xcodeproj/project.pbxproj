@@ -29,8 +29,10 @@
 		5669025A5A57E48D9EEFADCC /* radar.svg in Resources */ = {isa = PBXBuildFile; fileRef = D4732E6CD458D0E53506B9DB /* radar.svg */; };
 		57537C7182D48D0BB032C814 /* about-hero.png in Resources */ = {isa = PBXBuildFile; fileRef = 1182918520BEA6E16E071F11 /* about-hero.png */; };
 		633C94A76093D159A92F37CB /* tab-scan.svg in Resources */ = {isa = PBXBuildFile; fileRef = DB960B568BF716F01E75939B /* tab-scan.svg */; };
+		64EB06FE0B92DC135133405B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DAFA759771A506F300753F58 /* LaunchScreen.storyboard */; };
 		6696F7BB157029F12D505B04 /* tab-scan.png in Resources */ = {isa = PBXBuildFile; fileRef = 214EC627A3E1D4D8CCA10D18 /* tab-scan.png */; };
 		68DF476C49CA0238E0B54BD7 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = 379EDFD1A1865294CCF5CCBB /* share.png */; };
+		699D5A0518A53C6449888160 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 43ACEC837FACDAAA55EA34F8 /* PrivacyInfo.xcprivacy */; };
 		6A398D16FA74E82ABC20078F /* BackgroundSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6423512D30729298DC84DC /* BackgroundSelfTest.swift */; };
 		6DCF321F6600F24CF5E1EB53 /* VersionHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF1B6E77489C8AC6C3ECAC0 /* VersionHistoryView.swift */; };
 		6F88CC4C9F9D9C85A883134C /* BLEModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E7C88C56F5158B76242441 /* BLEModels.swift */; };
@@ -53,6 +55,7 @@
 		A9783902C0395C8D0FD25DDF /* ScaledFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8061AE3B97A2AAF6ABD4BBC2 /* ScaledFont.swift */; };
 		A9F8C08269495D941B20F684 /* brand_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 16B84EDEAA2DEDB0F1D69892 /* brand_icon.png */; };
 		AF90DC11BCEA2443999D36D6 /* ProvisioningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2574585324CB104700E0434 /* ProvisioningView.swift */; };
+		BA7D739F7A24914E1BAFADB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CC79131BEE50FF725401A0CA /* Assets.xcassets */; };
 		BD3B1F7ACB4B72188ABCAEFD /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F506E73F4818C8C49EE0B /* AboutView.swift */; };
 		BE73AEB9EE5747CC1968A919 /* link.svg in Resources */ = {isa = PBXBuildFile; fileRef = 0AEF5FEA1618A22575AE0793 /* link.svg */; };
 		BE99955DE93D1F5C3AAD8F47 /* DeviceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB8A6CEF567DD328E7BA62 /* DeviceDetailView.swift */; };
@@ -97,11 +100,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SmartBLEiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03FCB845E116BD052EB881F7 /* ScaledFontTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaledFontTests.swift; sourceTree = "<group>"; };
 		07D15368FDB6F074D15A8402 /* DeviceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceCard.swift; sourceTree = "<group>"; };
 		082D316469BAA45C08860A49 /* HidProvisionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidProvisionManager.swift; sourceTree = "<group>"; };
 		0AEF5FEA1618A22575AE0793 /* link.svg */ = {isa = PBXFileReference; path = link.svg; sourceTree = "<group>"; };
+		0FB2F937CABD1E0DBE60FC98 /* 蓝析BLE工具箱.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "蓝析BLE工具箱.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1182918520BEA6E16E071F11 /* about-hero.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "about-hero.png"; sourceTree = "<group>"; };
 		137F253935B8138373A74D80 /* LogPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogPanel.swift; sourceTree = "<group>"; };
 		13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSharedCoreWiringTests.swift; sourceTree = "<group>"; };
@@ -116,6 +119,7 @@
 		39729EE1F35ECA27CD1C6D57 /* SmartHidQrScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartHidQrScanner.swift; sourceTree = "<group>"; };
 		3B5EC11B28D06A472BE58F69 /* tab-cast.svg */ = {isa = PBXFileReference; path = "tab-cast.svg"; sourceTree = "<group>"; };
 		42A816227B7BB813884F682C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		43ACEC837FACDAAA55EA34F8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		462DA3B443181DB32C47D13E /* ServicePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicePanel.swift; sourceTree = "<group>"; };
 		4CC42244C97C0B70F43BD70C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4E41D4D2C89B1487693E71F2 /* SmartHidCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SmartHidCore; path = ../../core/apple/SmartHidCore; sourceTree = SOURCE_ROOT; };
@@ -151,6 +155,7 @@
 		CA7C6628309E85F067A29348 /* link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = link.png; sourceTree = "<group>"; };
 		CAAC8A5AE64E60A45F81D477 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		CC56BBFE341687CB91A8A352 /* HidProvisionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidProvisionManagerTests.swift; sourceTree = "<group>"; };
+		CC79131BEE50FF725401A0CA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD00758FA9E1472EF9D44AAE /* box.svg */ = {isa = PBXFileReference; path = box.svg; sourceTree = "<group>"; };
 		D24DD3605F4F3CD0706C750F /* NativePageContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativePageContractTests.swift; sourceTree = "<group>"; };
 		D3C8A3330117FC4EC6D55498 /* DataConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConverter.swift; sourceTree = "<group>"; };
@@ -159,6 +164,7 @@
 		D6BCAF2E71B8AF57EA743C28 /* HidDeviceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidDeviceDetailView.swift; sourceTree = "<group>"; };
 		D8A6671DD294AC769FEBC338 /* BroadcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastView.swift; sourceTree = "<group>"; };
 		DA521172CCE7B2C0D1D797CF /* NativeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeComponents.swift; sourceTree = "<group>"; };
+		DAFA759771A506F300753F58 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DB960B568BF716F01E75939B /* tab-scan.svg */ = {isa = PBXFileReference; path = "tab-scan.svg"; sourceTree = "<group>"; };
 		DDDC19B0D22B1B8D86C4C147 /* about_hero.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = about_hero.png; sourceTree = "<group>"; };
 		DEDDFE96A80D8CEA4E5DCD37 /* release-manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "release-manifest.json"; sourceTree = "<group>"; };
@@ -268,6 +274,7 @@
 			isa = PBXGroup;
 			children = (
 				D202D305B895CB95AF4F1FCB /* Packages */,
+				4FE4BB57CA49EB79B0D7779F /* SmartBLE */,
 				DC29378558504D916094B1C1 /* Sources */,
 				E15FBA08F868FDC35E52C296 /* Tests */,
 				D4F575CA4A1F02C47DB76674 /* Products */,
@@ -280,6 +287,14 @@
 				DEDDFE96A80D8CEA4E5DCD37 /* release-manifest.json */,
 			);
 			path = Release;
+			sourceTree = "<group>";
+		};
+		4FE4BB57CA49EB79B0D7779F /* SmartBLE */ = {
+			isa = PBXGroup;
+			children = (
+				D9A227F0428C5BDED2238F9E /* Resources */,
+			);
+			path = SmartBLE;
 			sourceTree = "<group>";
 		};
 		5B60B2FB338B0A2F8323C460 /* Resources */ = {
@@ -358,11 +373,21 @@
 		D4F575CA4A1F02C47DB76674 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */,
+				0FB2F937CABD1E0DBE60FC98 /* 蓝析BLE工具箱.app */,
 				8A64A4937D6D7D446DBFD205 /* SmartBLETests.xctest */,
 				64BC9EE8BC96882601EF97FA /* SmartBLEUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D9A227F0428C5BDED2238F9E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CC79131BEE50FF725401A0CA /* Assets.xcassets */,
+				DAFA759771A506F300753F58 /* LaunchScreen.storyboard */,
+				43ACEC837FACDAAA55EA34F8 /* PrivacyInfo.xcprivacy */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		DC29378558504D916094B1C1 /* Sources */ = {
@@ -418,7 +443,7 @@
 				8F9D803588D9FB74511D876F /* SmartHidCore */,
 			);
 			productName = SmartBLEiOS;
-			productReference = 0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */;
+			productReference = 0FB2F937CABD1E0DBE60FC98 /* 蓝析BLE工具箱.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6264790AE0994A11A55F705C /* SmartBLEUITests */ = {
@@ -513,7 +538,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA7D739F7A24914E1BAFADB4 /* Assets.xcassets in Resources */,
+				64EB06FE0B92DC135133405B /* LaunchScreen.storyboard in Resources */,
 				848E04F4CA4D5554B65EBE9C /* Localizable.strings in Resources */,
+				699D5A0518A53C6449888160 /* PrivacyInfo.xcprivacy in Resources */,
 				57537C7182D48D0BB032C814 /* about-hero.png in Resources */,
 				86DE1391F763FA1C6895A088 /* about_hero.png in Resources */,
 				02984DA30B01E06660866F19 /* box.png in Resources */,

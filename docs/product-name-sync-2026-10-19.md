@@ -46,3 +46,14 @@ App Store Connect、国内 Android 商店、桌面下载页及其他已发布内
 - 广播短名 `LanxiBLE` 搭配默认 UUID/厂商数据为 21 字节，包含 3 字节 Flags 后为 24 字节。
 
 本轮没有执行新名称的分发签名、商店上传或渠道后台改名。签名产物、网站上线与微信审核状态应以各自实际结果为准。
+
+
+## 安装包重构建续验（2026-10-19）
+
+在上述源码同步之后，已整理 **39 份**新名称产物：Android 5 份正式签名 APK/AAB、原生 iOS IPA 1 份、原生 Mac App Store PKG 1 份、其他 Mac 实现候选 4 份、Windows 候选 16 份、Linux 候选 12 份。文件名、实际应用名称、实际原生架构及交付文件 SHA256 已核验。逐文件证据见仓库 `release/package-rebuild-2026-10-19.json`，Apple 原生签名详情见[上架说明](native-apple-publishing.md)。
+
+本轮还修复了 iOS 工程未打入现有图标、启动屏和隐私清单，以及 Flutter Mac 历史 native_assets 缓存混入已移除的单架构 framework 两个打包问题。发布脚本现在检查 iOS 实际包内资源及 Mac 包内全部 Mach-O，而非只确认源文件和主程序。
+
+UniApp 已通过 HBuilderX 安心模式生成真实 Android 签名 APK。云端未返回请求的 x86_64，当前包仅含 ARMv7/ARM64；这一缺口保留在发布矩阵。干净检出先运行 `npm run prepare:app-icons --prefix apps/uniapp` 可重现本次全部 17 种图标，再执行资源编译与 HBuilderX 原生打包；macOS 使用系统 sips，其他系统需要已有 Python + Pillow。
+
+本轮不等同于完成商店上架：Apple/Android 包已本地验签，Windows/Linux 和其他 Mac 实现仍是候选；其他 Mac 应用 bundle 未完整签名，不能用主程序的 linker ad-hoc 签名代替正式分发签名。真实 BLE、安装升级、商店资料、服务端验证和商店上传继续单独记录。官网没有新增尚未正式发布的下载链接。

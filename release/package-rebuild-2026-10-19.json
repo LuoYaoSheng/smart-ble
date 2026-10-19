@@ -1,0 +1,1212 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-19",
+  "product_name": "蓝析BLE工具箱",
+  "version": "1.0.5",
+  "build_number": 101,
+  "status": "CURRENT_NAME_PACKAGES_BUILT_AND_VERIFIED",
+  "artifact_count": 39,
+  "total_bytes": 2246095366,
+  "selected_apple_store_implementations": {
+    "ios": "swiftui",
+    "macos": "appkit"
+  },
+  "application_id": "com.i2kai.open.smartble",
+  "apple_team": "72MZZQB893",
+  "platform_counts": {
+    "android": 5,
+    "ios": 1,
+    "macos": 5,
+    "windows": 16,
+    "linux": 12
+  },
+  "artifacts": [
+    {
+      "path": ".tmp/release-delivery/2026-10-19/android/蓝析BLE工具箱-1.0.5-Android-Kotlin-release.apk",
+      "bytes": 12025016,
+      "sha256": "33c82032ff9c70d7500e1c7c9895ce0cd2af031aa2f528096d6d9b0cfa925c34",
+      "native_abis": [],
+      "elf_16kb": "NOT_APPLICABLE",
+      "libraries_64bit": [],
+      "application_id": "com.i2kai.open.smartble",
+      "build_number": "101",
+      "target_sdk": 36,
+      "zip_16kb": "PASS",
+      "signature_verified": true,
+      "build_output_path": "apps/android/app/build/outputs/apk/release/app-release.apk",
+      "application_label": "蓝析BLE工具箱",
+      "apk_package_line": "package: name='com.i2kai.open.smartble' versionCode='101' versionName='1.0.5' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+      "actual_native_code_line": "NO_NATIVE_LIBRARIES_BYTECODE_ARCHITECTURE_INDEPENDENT",
+      "label_verified": true,
+      "platform": "android",
+      "implementation": "kotlin",
+      "status": "DISTRIBUTION_SIGNED",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/android/蓝析BLE工具箱-1.0.5-Android-Kotlin-release.aab",
+      "bytes": 11730156,
+      "sha256": "97925678821e5f3c9227f3c39935215c48ef5a54502feb06a4fba7a1dcf86eee",
+      "native_abis": [],
+      "elf_16kb": "NOT_APPLICABLE",
+      "libraries_64bit": [],
+      "signature_verified": true,
+      "build_output_path": "apps/android/app/build/outputs/bundle/release/app-release.aab",
+      "platform": "android",
+      "implementation": "kotlin",
+      "status": "DISTRIBUTION_SIGNED",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/android/蓝析BLE工具箱-1.0.5-Android-Flutter-release.apk",
+      "bytes": 73557322,
+      "sha256": "5dbece3f12ac4c8dcf540a8fc0760d1df90d1126f34dd1e921bae6c64b4cd1d9",
+      "native_abis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86_64"
+      ],
+      "elf_16kb": "PASS",
+      "libraries_64bit": [
+        {
+          "path": "lib/arm64-v8a/libapp.so",
+          "min_load_alignment": 65536
+        },
+        {
+          "path": "lib/arm64-v8a/libbarhopper_v3.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libdartjni.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libflutter.so",
+          "min_load_alignment": 65536
+        },
+        {
+          "path": "lib/arm64-v8a/libimage_processing_util_jni.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libsurface_util_jni.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/x86_64/libapp.so",
+          "min_load_alignment": 65536
+        },
+        {
+          "path": "lib/x86_64/libbarhopper_v3.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/x86_64/libdartjni.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/x86_64/libflutter.so",
+          "min_load_alignment": 65536
+        },
+        {
+          "path": "lib/x86_64/libimage_processing_util_jni.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/x86_64/libsurface_util_jni.so",
+          "min_load_alignment": 16384
+        }
+      ],
+      "application_id": "com.i2kai.open.smartble",
+      "build_number": "101",
+      "target_sdk": 36,
+      "zip_16kb": "PASS",
+      "signature_verified": true,
+      "build_output_path": "apps/flutter/build/app/outputs/flutter-apk/app-release.apk",
+      "application_label": "蓝析BLE工具箱",
+      "apk_package_line": "package: name='com.i2kai.open.smartble' versionCode='101' versionName='1.0.5' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+      "actual_native_code_line": "native-code: 'arm64-v8a' 'armeabi-v7a' 'x86_64'",
+      "label_verified": true,
+      "platform": "android",
+      "implementation": "flutter",
+      "status": "DISTRIBUTION_SIGNED",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/android/蓝析BLE工具箱-1.0.5-Android-Flutter-release.aab",
+      "bytes": 56008161,
+      "sha256": "f514ac33196c6cdc84ac1e3bd6d630a8e9f8dd1e718002cd49e75090d359a172",
+      "native_abis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86_64"
+      ],
+      "elf_16kb": "PASS",
+      "libraries_64bit": [
+        {
+          "path": "base/lib/arm64-v8a/libapp.so",
+          "min_load_alignment": 65536
+        },
+        {
+          "path": "base/lib/arm64-v8a/libbarhopper_v3.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "base/lib/arm64-v8a/libdartjni.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "base/lib/arm64-v8a/libflutter.so",
+          "min_load_alignment": 65536
+        },
+        {
+          "path": "base/lib/arm64-v8a/libimage_processing_util_jni.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "base/lib/arm64-v8a/libsurface_util_jni.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "base/lib/x86_64/libapp.so",
+          "min_load_alignment": 65536
+        },
+        {
+          "path": "base/lib/x86_64/libbarhopper_v3.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "base/lib/x86_64/libdartjni.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "base/lib/x86_64/libflutter.so",
+          "min_load_alignment": 65536
+        },
+        {
+          "path": "base/lib/x86_64/libimage_processing_util_jni.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "base/lib/x86_64/libsurface_util_jni.so",
+          "min_load_alignment": 16384
+        }
+      ],
+      "signature_verified": true,
+      "build_output_path": "apps/flutter/build/app/outputs/bundle/release/app-release.aab",
+      "platform": "android",
+      "implementation": "flutter",
+      "status": "DISTRIBUTION_SIGNED",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/android/蓝析BLE工具箱-1.0.5-Android-UniApp-release.apk",
+      "build_output_path": "apps/uniapp/unpackage/release/apk/__UNI__F150954__20261019094344.apk",
+      "bytes": 22005830,
+      "sha256": "a1ba20dbf2b19bed6ab465bd239efcb460a9aadbf8b48101505d74ba7ed8f3ed",
+      "application_id": "com.i2kai.open.smartble",
+      "build_number": "101",
+      "target_sdk": 36,
+      "zip_16kb": "PASS",
+      "signature_verified": true,
+      "application_label": "蓝析BLE工具箱",
+      "label_verified": true,
+      "apk_package_line": "package: name='com.i2kai.open.smartble' versionCode='101' versionName='1.0.5' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+      "native_abis": [
+        "arm64-v8a",
+        "armeabi-v7a"
+      ],
+      "elf_16kb": "PASS",
+      "libraries_64bit": [
+        {
+          "path": "lib/arm64-v8a/libweexcore.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libgifimage.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libnative-filters.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libweexjss.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/liblamemp3.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libnative-imagetranscoder.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libuts-runtime.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libpl_droidsonroids_gif.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libstatic-webp.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libimagepipeline.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libweexjsb.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libbreakpad-core.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/lib39285EFA.so",
+          "min_load_alignment": 65536
+        },
+        {
+          "path": "lib/arm64-v8a/libdcblur.so",
+          "min_load_alignment": 16384
+        },
+        {
+          "path": "lib/arm64-v8a/libweexjst.so",
+          "min_load_alignment": 16384
+        }
+      ],
+      "platform": "android",
+      "implementation": "uniapp",
+      "status": "DISTRIBUTION_SIGNED",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31"
+    },
+    {
+      "platform": "ios",
+      "path": ".tmp/release-delivery/2026-10-19/apple/蓝析BLE工具箱-1.0.5-ios-原生-AppStore.ipa",
+      "bytes": 4015080,
+      "sha256": "56bd09fc5e880c6aa253b067664b9d4af4465048c52ffcf7dc813a4f098d844b",
+      "implementation": "swiftui",
+      "status": "APP_STORE_SIGNED_EXPORT_LOCAL_VERIFICATION_PASS",
+      "source_commit": "6cb8b8e45fab4ca2534cd620785309610ee07bdb",
+      "store_upload": "NOT_RUN"
+    },
+    {
+      "platform": "macos",
+      "path": ".tmp/release-delivery/2026-10-19/apple/蓝析BLE工具箱-1.0.5-macos-原生-AppStore.pkg",
+      "bytes": 3465298,
+      "sha256": "1d4f67b8b6509d77fbf4c35ffd0a017fdff1d3dd90f7a352fa4ed896763fb5a9",
+      "implementation": "appkit",
+      "status": "APP_STORE_SIGNED_EXPORT_LOCAL_VERIFICATION_PASS",
+      "source_commit": "6cb8b8e45fab4ca2534cd620785309610ee07bdb",
+      "store_upload": "NOT_RUN"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/tauri/arm64/蓝析BLE工具箱-1.0.5-tauri-windows-arm64.msi",
+      "implementation": "tauri",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 3706880,
+      "sha256": "77450fed9c582ddcd75def76dc085a185be87714bbb83adc2c59dfe2323443d2",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158545132,
+      "artifact_name": "tauri-windows-11-arm-candidate",
+      "github_artifact_digest": "sha256:4303d67dfab13b90ad8c2a9f08383c497305589cdedb2e5a12cc45664f9aee34",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "installer",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/tauri/arm64/蓝析BLE工具箱-1.0.5-tauri-windows-arm64-setup.exe",
+      "implementation": "tauri",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 2524293,
+      "sha256": "64b2b6b36492494b53687c702949f24de66ffe29876cb54efcc23a0ed1706534",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158545132,
+      "artifact_name": "tauri-windows-11-arm-candidate",
+      "github_artifact_digest": "sha256:4303d67dfab13b90ad8c2a9f08383c497305589cdedb2e5a12cc45664f9aee34",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "installer",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/tauri/x64/蓝析BLE工具箱-1.0.5-tauri-linux-x64.deb",
+      "implementation": "tauri",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 4313920,
+      "sha256": "3572bfcf0cc0c5c5ced508dfe9229daf59a6fd2e5deb74dbe5a20f20c983f2a5",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158475244,
+      "artifact_name": "tauri-ubuntu-22.04-candidate",
+      "github_artifact_digest": "sha256:c1466b1af608dc6c5a4a5f99187fd5825069b6d1efdf2019e434c118e337ee76",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/tauri/x64/蓝析BLE工具箱-1.0.5-tauri-linux-x64.AppImage",
+      "implementation": "tauri",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 90326208,
+      "sha256": "12ab403571528b7f016857f280341315cd2541ce2ccd9675d403c38c0a886054",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158475244,
+      "artifact_name": "tauri-ubuntu-22.04-candidate",
+      "github_artifact_digest": "sha256:c1466b1af608dc6c5a4a5f99187fd5825069b6d1efdf2019e434c118e337ee76",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/tauri/x64/蓝析BLE工具箱-1.0.5-tauri-linux-x64.rpm",
+      "implementation": "tauri",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 4312980,
+      "sha256": "d03a68f174f4c3effaa13eab4d3d35bd4d3300aa840597a0a8db0be4c91ccf56",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158475244,
+      "artifact_name": "tauri-ubuntu-22.04-candidate",
+      "github_artifact_digest": "sha256:c1466b1af608dc6c5a4a5f99187fd5825069b6d1efdf2019e434c118e337ee76",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/tauri/x64/蓝析BLE工具箱-1.0.5-tauri-windows-x64.msi",
+      "implementation": "tauri",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 3883008,
+      "sha256": "29f76903ac52a955603be373cd0b8daaecc0eddad246562fdcbd09dba020ff3c",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158441020,
+      "artifact_name": "tauri-windows-latest-candidate",
+      "github_artifact_digest": "sha256:f099f98b7c9b99de5e7ce0ea4e9e59e48c0dd20a08c97d0ca7980a4285d88531",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "installer",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/tauri/x64/蓝析BLE工具箱-1.0.5-tauri-windows-x64-setup.exe",
+      "implementation": "tauri",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 2756450,
+      "sha256": "6c3d72bf2fe05c72383db8563c23eb94638a0d8b86207aaa17e91e296e54b286",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158441020,
+      "artifact_name": "tauri-windows-latest-candidate",
+      "github_artifact_digest": "sha256:f099f98b7c9b99de5e7ce0ea4e9e59e48c0dd20a08c97d0ca7980a4285d88531",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "installer",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/tauri/arm64/蓝析BLE工具箱-1.0.5-tauri-linux-arm64.deb",
+      "implementation": "tauri",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 4198792,
+      "sha256": "6d46991ee495e316b06e3540e660172d2f6e6952e2d544a055880b9be0231144",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158400401,
+      "artifact_name": "tauri-ubuntu-22.04-arm-candidate",
+      "github_artifact_digest": "sha256:24ee6042c10eedb5fa69942512bb13374c6a5ebbda75e5dba2b3831afaee3f0c",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/tauri/arm64/蓝析BLE工具箱-1.0.5-tauri-linux-arm64.AppImage",
+      "implementation": "tauri",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 89026944,
+      "sha256": "55868778c00509fbbc2135cd65b170667db637315849cdd0694f31c7fbbfb3ca",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158400401,
+      "artifact_name": "tauri-ubuntu-22.04-arm-candidate",
+      "github_artifact_digest": "sha256:24ee6042c10eedb5fa69942512bb13374c6a5ebbda75e5dba2b3831afaee3f0c",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/tauri/arm64/蓝析BLE工具箱-1.0.5-tauri-linux-arm64.rpm",
+      "implementation": "tauri",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 4197713,
+      "sha256": "47baa4615976dc04e88db4fda186aaafbb2f3ed2c13787103e7a36e2605964b3",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158400401,
+      "artifact_name": "tauri-ubuntu-22.04-arm-candidate",
+      "github_artifact_digest": "sha256:24ee6042c10eedb5fa69942512bb13374c6a5ebbda75e5dba2b3831afaee3f0c",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/electron/x64/蓝析BLE工具箱-1.0.5-electron-windows-x64-setup.exe",
+      "implementation": "electron",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 116381755,
+      "sha256": "4066afa4d1b3a5ce1c85c3f73422a9676b471b4db349df529f1210e2600c427f",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158370187,
+      "artifact_name": "electron-windows-latest-candidate",
+      "github_artifact_digest": "sha256:0464cf48143cb597a838f36d3356ed4a6dc4873e4cde71b99f96807f270f6cda",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "installer",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/electron/x64/蓝析BLE工具箱-1.0.5-electron-windows-x64-portable.exe",
+      "implementation": "electron",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 116143884,
+      "sha256": "319922d5611d2bdba98bc50d82e8343e3271aeaca47ae0ab5d97f9f52747e7fd",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158370187,
+      "artifact_name": "electron-windows-latest-candidate",
+      "github_artifact_digest": "sha256:0464cf48143cb597a838f36d3356ed4a6dc4873e4cde71b99f96807f270f6cda",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "portable_executable",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/electron/arm64/蓝析BLE工具箱-1.0.5-electron-linux-arm64.AppImage",
+      "implementation": "electron",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 130639926,
+      "sha256": "04135d32a2653cebe1e8a453d05bd91298079236333ed1c06d7c45ba301b6ba5",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158270004,
+      "artifact_name": "electron-ubuntu-22.04-arm-candidate",
+      "github_artifact_digest": "sha256:9e0115f0884cfdeeb4fa2747854cd6033636e9197ba56804afa26e2131679190",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/electron/arm64/蓝析BLE工具箱-1.0.5-electron-linux-arm64.deb",
+      "implementation": "electron",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 97671316,
+      "sha256": "712716af83462d7569bcf949b57219cd59814d0a66aef13e63512b62a93f230e",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158270004,
+      "artifact_name": "electron-ubuntu-22.04-arm-candidate",
+      "github_artifact_digest": "sha256:9e0115f0884cfdeeb4fa2747854cd6033636e9197ba56804afa26e2131679190",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/electron/arm64/蓝析BLE工具箱-1.0.5-electron-linux-arm64.rpm",
+      "implementation": "electron",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 87069753,
+      "sha256": "b17ec1813a7d8caf726d8cd7fb2385ff4fd99e8263454a365a5ce4f7e02f9add",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158270004,
+      "artifact_name": "electron-ubuntu-22.04-arm-candidate",
+      "github_artifact_digest": "sha256:9e0115f0884cfdeeb4fa2747854cd6033636e9197ba56804afa26e2131679190",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/flutter/arm64/蓝析BLE工具箱-1.0.5-flutter-windows-arm64.zip",
+      "implementation": "flutter",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 12207919,
+      "sha256": "b7e88f784ce25162112d419d5ce0138b92e9c19d0114d1434327f3007fe1e1d6",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158205398,
+      "artifact_name": "flutter-windows-11-arm-candidate",
+      "github_artifact_digest": "sha256:a7396027864fbbe60b4618abfa6fbcdf46a836bb3a557c07f5ceaf3de1684a8f",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "PASS",
+      "delivery_repack": {
+        "scope": "Renamed root folder only; every payload member SHA256 rechecked against the CI archive",
+        "source_archive": ".tmp/release-delivery/2026-10-19/desktop-ci/archives/flutter-windows-11-arm-candidate.zip",
+        "source_archive_sha256": "a7396027864fbbe60b4618abfa6fbcdf46a836bb3a557c07f5ceaf3de1684a8f",
+        "launch": "蓝析BLE工具箱/smart_ble.exe"
+      },
+      "packaging": "portable_bundle",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/avalonia/arm64/蓝析BLE工具箱-1.0.5-avalonia-windows-arm64.zip",
+      "implementation": "avalonia",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 55176080,
+      "sha256": "40fb1e77215b11a0dee0e1e4c21e5fb3b048460ac3b4cc1842c3b70c478c21d7",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158195083,
+      "artifact_name": "avalonia-windows-11-arm-candidate",
+      "github_artifact_digest": "sha256:f2fd620e4c0f71dfa64928b91c90a8802956b5e949420d783933f9104a4e4357",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "portable_bundle",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/electron/x64/蓝析BLE工具箱-1.0.5-electron-linux-x64.AppImage",
+      "implementation": "electron",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 129811123,
+      "sha256": "5a1ae581c12781163b979a4f7f61378d2eefbafb699cbe57fa5819d402416de6",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158190089,
+      "artifact_name": "electron-ubuntu-22.04-candidate",
+      "github_artifact_digest": "sha256:fc91ad707a662ff11229b076e420c140a5d74e9c0486f5b4f43ae1c4de043679",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/electron/x64/蓝析BLE工具箱-1.0.5-electron-linux-x64.deb",
+      "implementation": "electron",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 102957904,
+      "sha256": "9ec0f9c567d2e85d5ab8c88d6063b8eec5c41a819bc9ee31547ed41b4ddd54c4",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158190089,
+      "artifact_name": "electron-ubuntu-22.04-candidate",
+      "github_artifact_digest": "sha256:fc91ad707a662ff11229b076e420c140a5d74e9c0486f5b4f43ae1c4de043679",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Linux/electron/x64/蓝析BLE工具箱-1.0.5-electron-linux-x64.rpm",
+      "implementation": "electron",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 92021077,
+      "sha256": "b3b81d1c92f353e7af732a30481ebaeabb9fba6633d35f8307600b7a527e9fa7",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12158190089,
+      "artifact_name": "electron-ubuntu-22.04-candidate",
+      "github_artifact_digest": "sha256:fc91ad707a662ff11229b076e420c140a5d74e9c0486f5b4f43ae1c4de043679",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "platform": "linux"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/wails/x64/蓝析BLE工具箱-1.0.5-wails-windows-x64.exe",
+      "implementation": "wails",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 13107712,
+      "sha256": "8821d10f8cd9be9a2e6676002b85ad151041b6426e01790a336a793be59a5ba9",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12157975624,
+      "artifact_name": "wails-windows-latest-candidate",
+      "github_artifact_digest": "sha256:8c57a70158d515f66dfac0777c8956dc181d923da614221c49a855e290b2c723",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "portable_executable",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/wails/arm64/蓝析BLE工具箱-1.0.5-wails-windows-arm64.exe",
+      "implementation": "wails",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 12282368,
+      "sha256": "d98cc1cc94fca299f2198af2889d0ad9b994e5fe2edacf8aad5e050f008a84be",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12157832010,
+      "artifact_name": "wails-windows-11-arm-candidate",
+      "github_artifact_digest": "sha256:167de05e5f49b26cd8aab6356f48944ef681b83832c8f653272512d8b4e5a0c8",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "portable_executable",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/qt/arm64/蓝析BLE工具箱-1.0.5-qt-windows-arm64.zip",
+      "implementation": "qt",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 41302102,
+      "sha256": "38b64755c22461489fee1806c189109141a332c248591e116f7755ff1f6d157a",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12157812351,
+      "artifact_name": "qt-windows-11-arm-candidate",
+      "github_artifact_digest": "sha256:cf9fddccda264588ab34876f56416569c7d0c85ba51fd05548f8a57c58e63195",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "portable_bundle",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/qt/x64/蓝析BLE工具箱-1.0.5-qt-windows-x64.zip",
+      "implementation": "qt",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 52745301,
+      "sha256": "7625b5ae3c2bb8d25ea2fa621a501cb47663d5aeaf5ec827080f865ef3133357",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12157593564,
+      "artifact_name": "qt-windows-latest-candidate",
+      "github_artifact_digest": "sha256:099c4bc0f30a518342a36e24dbb2273eefb47f7f6f5c7aff4ba6709522afb193",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "portable_bundle",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/electron/arm64/蓝析BLE工具箱-1.0.5-electron-windows-arm64-setup.exe",
+      "implementation": "electron",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 109627644,
+      "sha256": "500579b0ca0075dd3aa2be81cbffc7c219084ebc65fce261eccd35e2b6704287",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12157534392,
+      "artifact_name": "electron-windows-11-arm-candidate",
+      "github_artifact_digest": "sha256:5b1c6f1e328cc652c37e2d97391dc183be5f4c83d7240f12be373615f3cc5da2",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "installer",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/electron/arm64/蓝析BLE工具箱-1.0.5-electron-windows-arm64-portable.exe",
+      "implementation": "electron",
+      "architecture": "arm64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 109390086,
+      "sha256": "e630771490298e33ce46f905d36f34a97cfa606702404513207113825f7dec86",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12157534392,
+      "artifact_name": "electron-windows-11-arm-candidate",
+      "github_artifact_digest": "sha256:5b1c6f1e328cc652c37e2d97391dc183be5f4c83d7240f12be373615f3cc5da2",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "portable_executable",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/avalonia/x64/蓝析BLE工具箱-1.0.5-avalonia-windows-x64.zip",
+      "implementation": "avalonia",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 55251380,
+      "sha256": "bcc318077c2c970c46fcd9aa445fe40005b9bbebda8899a609eca98707ee2f44",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12157308392,
+      "artifact_name": "avalonia-windows-latest-candidate",
+      "github_artifact_digest": "sha256:94d6cdd554a738fc69afcca0236267415db2fea4bedf59a571b72a175a44ccc6",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "ZIP_MEMBER_CRC_AND_BUILD_REPORT_SHA256_PASS",
+      "packaging": "portable_bundle",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/Windows/flutter/x64/蓝析BLE工具箱-1.0.5-flutter-windows-x64.zip",
+      "implementation": "flutter",
+      "architecture": "x64",
+      "display_name": "蓝析BLE工具箱",
+      "bytes": 13175880,
+      "sha256": "9be050e8b6c1c76a05e5fc2ff52626e867601f568dd3173a0081990d7ec6832d",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_run_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "artifact_id": 12157049305,
+      "artifact_name": "flutter-windows-latest-candidate",
+      "github_artifact_digest": "sha256:b71deea974c4e4d4728021de74899b578527548717c9dfbe66997b6ae7ddd2f2",
+      "signing": "DISTRIBUTION_SIGNING_NOT_DONE",
+      "status": "UNSIGNED_RELEASE_CANDIDATE",
+      "hardware_validation": "NOT_RUN",
+      "install_upgrade_validation": "NOT_RUN",
+      "integrity": "PASS",
+      "delivery_repack": {
+        "scope": "Renamed root folder only; every payload member SHA256 rechecked against the CI archive",
+        "source_archive": ".tmp/release-delivery/2026-10-19/desktop-ci/archives/flutter-windows-latest-candidate.zip",
+        "source_archive_sha256": "b71deea974c4e4d4728021de74899b578527548717c9dfbe66997b6ae7ddd2f2",
+        "launch": "蓝析BLE工具箱/smart_ble.exe"
+      },
+      "packaging": "portable_bundle",
+      "platform": "windows"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/desktop-macos/electron/蓝析BLE工具箱-1.0.5-Electron-macos-universal.dmg",
+      "source_path": "apps/desktop/electron/dist/Lanxi-BLE-Toolkit-1.0.5-mac-universal.dmg",
+      "bytes": 238308051,
+      "sha256": "c2550a473f2f74d02919dedf8bfc9cc76ab84ad73e2ae07043bee5a7ac3b77db",
+      "implementation": "electron",
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ],
+      "packaged_display_name": "蓝析BLE工具箱",
+      "all_packaged_macho_architecture_verification": "PASS",
+      "verified_macho_count": 21,
+      "actual_archive_extraction_or_readonly_mount": "PASS",
+      "signature_state": "UNSIGNED_APP_BUNDLE_ADHOC_EXECUTABLE",
+      "codesign_verify": "EXPECTED_FAIL_UNSIGNED_CANDIDATE",
+      "notarization": "NOT_VERIFIED",
+      "store_ready": false,
+      "platform": "macos",
+      "status": "UNSIGNED_ALTERNATIVE_CANDIDATE",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/desktop-macos/electron/蓝析BLE工具箱-1.0.5-Electron-macos-universal.zip",
+      "source_path": "apps/desktop/electron/dist/Lanxi-BLE-Toolkit-1.0.5-mac-universal.zip",
+      "bytes": 237116193,
+      "sha256": "9917ef466d534ab011523e154066b55146f4cf254258305e845f09624d872c83",
+      "implementation": "electron",
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ],
+      "packaged_display_name": "蓝析BLE工具箱",
+      "all_packaged_macho_architecture_verification": "PASS",
+      "verified_macho_count": 21,
+      "actual_archive_extraction_or_readonly_mount": "PASS",
+      "signature_state": "UNSIGNED_APP_BUNDLE_ADHOC_EXECUTABLE",
+      "codesign_verify": "EXPECTED_FAIL_UNSIGNED_CANDIDATE",
+      "notarization": "NOT_VERIFIED",
+      "store_ready": false,
+      "platform": "macos",
+      "status": "UNSIGNED_ALTERNATIVE_CANDIDATE",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/desktop-macos/flutter-macos/蓝析BLE工具箱-1.0.5-Flutter-macos-universal.zip",
+      "source_path": ".tmp/release/flutter-macos-darwin-arm64/candidate/Lanxi-BLE-Toolkit-1.0.5-flutter-macos-universal.zip",
+      "bytes": 21336863,
+      "sha256": "75c57e82b324d2879ea53771d85ad9f680719cb1fbcf38d3f4c9f024bf710f6a",
+      "implementation": "flutter-macos",
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ],
+      "packaged_display_name": "蓝析BLE工具箱",
+      "all_packaged_macho_architecture_verification": "PASS",
+      "verified_macho_count": 14,
+      "actual_archive_extraction_or_readonly_mount": "PASS",
+      "signature_state": "UNSIGNED_APP_BUNDLE_ADHOC_EXECUTABLE",
+      "codesign_verify": "EXPECTED_FAIL_UNSIGNED_CANDIDATE",
+      "notarization": "NOT_VERIFIED",
+      "store_ready": false,
+      "platform": "macos",
+      "status": "UNSIGNED_ALTERNATIVE_CANDIDATE",
+      "source_commit": "6cb8b8e45fab4ca2534cd620785309610ee07bdb"
+    },
+    {
+      "path": ".tmp/release-delivery/2026-10-19/desktop-macos/tauri/蓝析BLE工具箱-1.0.5-Tauri-macos-universal.dmg",
+      "source_path": "apps/desktop/tauri/src-tauri/target/universal-apple-darwin/release/bundle/dmg/蓝析BLE工具箱_1.0.5_universal.dmg",
+      "bytes": 10316998,
+      "sha256": "489f9d14ae2f8c4b922a48c88c0b832799aa37d4d9f3101963fae3bb599cbafc",
+      "implementation": "tauri",
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ],
+      "packaged_display_name": "蓝析BLE工具箱",
+      "all_packaged_macho_architecture_verification": "PASS",
+      "verified_macho_count": 1,
+      "actual_archive_extraction_or_readonly_mount": "PASS",
+      "signature_state": "UNSIGNED_APP_BUNDLE_ADHOC_EXECUTABLE",
+      "codesign_verify": "EXPECTED_FAIL_UNSIGNED_CANDIDATE",
+      "notarization": "NOT_VERIFIED",
+      "store_ready": false,
+      "platform": "macos",
+      "status": "UNSIGNED_ALTERNATIVE_CANDIDATE",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31"
+    }
+  ],
+  "verification": {
+    "delivery_hashes_recomputed": "PASS_39_OF_39",
+    "display_names": "PASS",
+    "actual_native_architectures": "PASS_FOR_DELIVERED_PACKAGES",
+    "release_script_tests": "PASS_18_TESTS",
+    "ios_packaged_icons_launch_and_privacy": "PASS",
+    "macos_all_packaged_macho_slices": "PASS",
+    "android_apk_aab_product_signatures": "PASS",
+    "candidate_ci": {
+      "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+      "head_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "status": "success",
+      "jobs_passed": 24,
+      "jobs_total": 24,
+      "jobs": [
+        {
+          "name": "windows-implementations (windows-11-arm, wails)",
+          "id": 117845293805,
+          "status": "success"
+        },
+        {
+          "name": "desktop (ubuntu-22.04, tauri)",
+          "id": 117845293888,
+          "status": "success"
+        },
+        {
+          "name": "apple (flutter-macos)",
+          "id": 117845293914,
+          "status": "success"
+        },
+        {
+          "name": "apple (macos)",
+          "id": 117845293919,
+          "status": "success"
+        },
+        {
+          "name": "desktop (ubuntu-22.04-arm, tauri)",
+          "id": 117845293940,
+          "status": "success"
+        },
+        {
+          "name": "windows-implementations (windows-latest, wails)",
+          "id": 117845293950,
+          "status": "success"
+        },
+        {
+          "name": "apple (ios)",
+          "id": 117845293961,
+          "status": "success"
+        },
+        {
+          "name": "windows-implementations (windows-11-arm, qt)",
+          "id": 117845293973,
+          "status": "success"
+        },
+        {
+          "name": "desktop (macos-latest, tauri)",
+          "id": 117845293976,
+          "status": "success"
+        },
+        {
+          "name": "desktop (windows-11-arm, electron)",
+          "id": 117845293981,
+          "status": "success"
+        },
+        {
+          "name": "desktop (ubuntu-22.04-arm, electron)",
+          "id": 117845294003,
+          "status": "success"
+        },
+        {
+          "name": "windows-implementations (windows-11-arm, avalonia)",
+          "id": 117845294041,
+          "status": "success"
+        },
+        {
+          "name": "mobile (android)",
+          "id": 117845294172,
+          "status": "success"
+        },
+        {
+          "name": "apple (flutter-ios)",
+          "id": 117845294177,
+          "status": "success"
+        },
+        {
+          "name": "desktop (windows-11-arm, tauri)",
+          "id": 117845294187,
+          "status": "success"
+        },
+        {
+          "name": "desktop (windows-latest, tauri)",
+          "id": 117845294204,
+          "status": "success"
+        },
+        {
+          "name": "desktop (ubuntu-22.04, electron)",
+          "id": 117845294236,
+          "status": "success"
+        },
+        {
+          "name": "flutter-windows (windows-11-arm)",
+          "id": 117845294337,
+          "status": "success"
+        },
+        {
+          "name": "mobile (flutter-android)",
+          "id": 117845294351,
+          "status": "success"
+        },
+        {
+          "name": "desktop (macos-latest, electron)",
+          "id": 117845294388,
+          "status": "success"
+        },
+        {
+          "name": "windows-implementations (windows-latest, qt)",
+          "id": 117845294518,
+          "status": "success"
+        },
+        {
+          "name": "windows-implementations (windows-latest, avalonia)",
+          "id": 117845294590,
+          "status": "success"
+        },
+        {
+          "name": "flutter-windows (windows-latest)",
+          "id": 117845294976,
+          "status": "success"
+        },
+        {
+          "name": "desktop (windows-latest, electron)",
+          "id": 117845295331,
+          "status": "success"
+        }
+      ]
+    },
+    "software_ci": {
+      "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929333",
+      "head_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "status": "success",
+      "jobs_passed": 8,
+      "jobs_total": 8,
+      "jobs": [
+        {
+          "name": "Electron (install + lint)",
+          "id": 117845233233,
+          "status": "success"
+        },
+        {
+          "name": "Tauri (Linux build → deb/appimage)",
+          "id": 117845233483,
+          "status": "success"
+        },
+        {
+          "name": "UniApp (full verify-uniapp.sh + h5 build)",
+          "id": 117845233842,
+          "status": "success"
+        },
+        {
+          "name": "Release metadata & gates",
+          "id": 117845233887,
+          "status": "success"
+        },
+        {
+          "name": "Flutter (analyze + test)",
+          "id": 117845234088,
+          "status": "success"
+        },
+        {
+          "name": "Android (build + test, JDK 17)",
+          "id": 117845234389,
+          "status": "success"
+        },
+        {
+          "name": "Apple (Core test + iOS xcodebuild test + native macOS build)",
+          "id": 117845234684,
+          "status": "success"
+        },
+        {
+          "name": "ESP32 firmware (PlatformIO)",
+          "id": 117845234928,
+          "status": "success"
+        }
+      ]
+    },
+    "packaging_fix_software_ci": {
+      "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39186864267",
+      "head_commit": "6cb8b8e45fab4ca2534cd620785309610ee07bdb",
+      "status": "PASS",
+      "jobs_passed": 8,
+      "jobs_total": 8,
+      "jobs": [
+        {
+          "name": "Flutter (analyze + test)",
+          "id": 117851015188,
+          "status": "PASS"
+        },
+        {
+          "name": "Tauri (Linux build → deb/appimage)",
+          "id": 117851015334,
+          "status": "PASS"
+        },
+        {
+          "name": "Apple (Core test + iOS xcodebuild test + native macOS build)",
+          "id": 117851015453,
+          "status": "PASS"
+        },
+        {
+          "name": "Electron (install + lint)",
+          "id": 117851015496,
+          "status": "PASS"
+        },
+        {
+          "name": "UniApp (full verify-uniapp.sh + h5 build)",
+          "id": 117851015507,
+          "status": "PASS"
+        },
+        {
+          "name": "Release metadata & gates",
+          "id": 117851015525,
+          "status": "PASS"
+        },
+        {
+          "name": "ESP32 firmware (PlatformIO)",
+          "id": 117851015536,
+          "status": "PASS"
+        },
+        {
+          "name": "Android (build + test, JDK 17)",
+          "id": 117851015591,
+          "status": "PASS"
+        }
+      ],
+      "note": "Packaging-fix source snapshot; subsequent changes only add the independently validated UniApp icon preparation command and build receipts/documentation."
+    }
+  },
+  "notes": [
+    "Packages have individual source commits and source-tree receipts. Windows/Linux and Tauri macOS use the fresh 2026-10-19 main CI build; their application/core trees are unchanged by subsequent packaging checks and documentation.",
+    "The iOS resource omission was repaired and the final signed IPA rebuilt; the first incomplete IPA is rejected and excluded.",
+    "UniApp cloud safe-mode completed after login; its delivered APK contains ARMv7/ARM64. Requested x86_64 was not produced by the cloud SDK and remains an explicit architecture gap.",
+    "The UniApp icon preparation command was added after packaging. Generated PNG hashes exactly match those used by the verified APK; application runtime sources and signed manifest were not changed.",
+    "Flutter macOS was rebuilt after removing stale, no-longer-declared native assets. All 14 shipped Mach-O images are universal; no stale objective_c framework remains.",
+    "Windows/Linux and alternative Mac implementations are candidates. Alternative Mac app bundles lack a complete application signature; an ad-hoc executable signature does not imply bundle signing or store readiness.",
+    "Apple IPA/PKG and Android APK/AAB signing were verified locally. Store upload, server validation, current-package installation/upgrade and real BLE remain separate gates.",
+    "No public Release, store submission, or website download claim was published. H5/App resource archives are excluded from this installer count."
+  ],
+  "hardware_validation": "NOT_RUN",
+  "install_upgrade_validation": "NOT_RUN",
+  "store_submission": "NOT_RUN",
+  "evidence_reports": {
+    "android": ".tmp/release-delivery/2026-10-19/android/report.json",
+    "apple": "release/apple-native-store-build.json",
+    "windows_linux": ".tmp/release-delivery/2026-10-19/desktop-ci/desktop-delivery-report.json",
+    "other_macos": ".tmp/release-delivery/2026-10-19/desktop-macos/desktop-macos-delivery.json"
+  }
+}

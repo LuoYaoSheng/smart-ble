@@ -31,4 +31,63 @@ def verify_macos_application(bundle, version=None):
     architectures = subprocess.check_output(['lipo', '-archs', str(executable)], text=True, encoding='utf-8').split()
     if set(architectures) != {'x86_64', 'arm64'}:
         raise RuntimeError(f'Application must contain both macOS architectures: {executable}')
-    return {'architectures': sorted(architectures), 'format': 'Mach-O universal', 'verified_application': str(executable)}
+    # Check the actual runnable payload, not only the apphost. Flutter native
+    # assets and Electron addons can otherwise silently remain host-only.
+    magic_values = {bytes.fromhex(value) for value in (
+        'feedface', 'cefaedfe', 'feedfacf', 'cffaedfe',
+        'cafebabe', 'bebafeca', 'cafebabf', 'bfbafeca',
+    )}
+    seen = set()
+    images = []
+    macho_paths = set()
+    for path in sorted(bundle.rglob('*')):
+        if not path.is_file():
+            continue
+        actual = path.resolve()
+        if actual in seen:
+            continue
+        seen.add(actual)
+        with path.open('rb') as stream:
+            if stream.read(4) not in magic_values:
+                continue
+        macho_paths.add(actual)
+        slices = subprocess.check_output(['lipo', '-archs', str(path)], text=True, encoding='utf-8').split()
+        if set(slices) != {'x86_64', 'arm64'}:
+            raise RuntimeError(f'Packaged Mach-O must contain both macOS architectures: {path} ({", ".join(slices)})')
+        images.append({'path': str(path.relative_to(bundle)), 'architectures': sorted(slices)})
+    if executable.resolve() not in macho_paths:
+        raise RuntimeError(f'Application executable was not found in the Mach-O payload: {executable}')
+    return {'architectures': sorted(architectures), 'format': 'Mach-O universal',
+            'verified_application': str(executable), 'verified_macho_count': len(images), 'macho_images': images}
+
+
+def verify_ios_application(bundle, version=None, display_name=None):
+    """Check resources in the actual application, rather than source-file presence."""
+    bundle = Path(bundle)
+    info = plistlib.loads((bundle / 'Info.plist').read_bytes())
+    if version is not None and info.get('CFBundleShortVersionString') != version:
+        raise RuntimeError('Packaged iOS application version differs from VERSION')
+    if display_name is not None and any(info.get(key) != display_name for key in ('CFBundleName', 'CFBundleDisplayName')):
+        raise RuntimeError('Packaged iOS application display name differs from product identity')
+    privacy = bundle / 'PrivacyInfo.xcprivacy'
+    if not privacy.is_file():
+        raise RuntimeError('Packaged iOS application lacks PrivacyInfo.xcprivacy')
+    privacy_data = plistlib.loads(privacy.read_bytes())
+    if not isinstance(privacy_data.get('NSPrivacyTracking'), bool):
+        raise RuntimeError('Packaged iOS privacy manifest lacks its tracking declaration')
+    for key in ('CFBundleIcons', 'CFBundleIcons~ipad'):
+        icon = info.get(key, {}).get('CFBundlePrimaryIcon', {})
+        if not icon.get('CFBundleIconName') or not icon.get('CFBundleIconFiles'):
+            raise RuntimeError(f'Packaged iOS application lacks compiled app icons: {key}')
+    if not (bundle / 'Assets.car').is_file():
+        raise RuntimeError('Packaged iOS application lacks compiled Assets.car')
+    launch = info.get('UILaunchStoryboardName')
+    if not launch or not (bundle / (launch + '.storyboardc')).is_dir():
+        raise RuntimeError('Packaged iOS application lacks its launch storyboard')
+    executable = bundle / info['CFBundleExecutable']
+    architectures = subprocess.check_output(['lipo', '-archs', str(executable)], text=True, encoding='utf-8').split()
+    if architectures != ['arm64']:
+        raise RuntimeError(f'iOS distribution executable must be arm64: {executable}')
+    return {'architectures': architectures, 'format': 'Mach-O', 'verified_application': str(executable),
+            'display_name': info.get('CFBundleDisplayName'), 'privacy_manifest': 'PASS',
+            'compiled_app_icons': 'PASS', 'launch_storyboard': 'PASS'}

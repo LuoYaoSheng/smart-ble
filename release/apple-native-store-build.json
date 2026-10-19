@@ -1,31 +1,49 @@
 {
   "status": "SIGNED_EXPORTS_VERIFIED_UPLOAD_NOT_RUN",
-  "display_name": "BLE Toolkit+",
+  "display_name": "蓝析BLE工具箱",
   "team_id": "72MZZQB893",
   "application_id": "com.i2kai.open.smartble",
   "version": "1.0.5",
   "build": 101,
+  "source_commit": "6cb8b8e45fab4ca2534cd620785309610ee07bdb",
+  "source_trees": {
+    "apps/ios": "071780e43f9a28c4bb3426696204f8fe96bf5f11",
+    "apps/desktop/macos": "be70f28eee3d0e00a4806230a614e3a4c9626189",
+    "core": "aa60d71874fa9771fbb4698f53191a7de1a64617"
+  },
+  "xcode": "Xcode 26.1.1\nBuild version 17B100",
   "artifacts": [
     {
-      "path": ".tmp/release/apple-native/ios-renamed-export/BLE Toolkit+.ipa",
-      "bytes": 3038702,
-      "sha256": "983c74e30681dff81796ce0bd4bb6afd026a9d7c2585456efcc02c68d8057c36"
+      "platform": "ios",
+      "path": ".tmp/release-delivery/2026-10-19/apple/蓝析BLE工具箱-1.0.5-ios-原生-AppStore.ipa",
+      "bytes": 4015080,
+      "sha256": "56bd09fc5e880c6aa253b067664b9d4af4465048c52ffcf7dc813a4f098d844b"
     },
     {
-      "path": ".tmp/release/apple-native/macos-renamed-export/BLE Toolkit+.pkg",
-      "bytes": 3464968,
-      "sha256": "b7c83ea07f64ef5bc84ab95fd3db8e104a766354b1c86da7da61dcdbe4c2bc53"
+      "platform": "macos",
+      "path": ".tmp/release-delivery/2026-10-19/apple/蓝析BLE工具箱-1.0.5-macos-原生-AppStore.pkg",
+      "bytes": 3465298,
+      "sha256": "1d4f67b8b6509d77fbf4c35ffd0a017fdff1d3dd90f7a352fa4ed896763fb5a9"
     }
   ],
   "hardware": "NOT_RUN",
   "store_upload": "NOT_RUN",
+  "server_validation": "NOT_RUN",
   "ios_verification": {
-    "display_name": "PASS",
+    "display_name": "蓝析BLE工具箱",
     "codesign": "PASS",
     "team": "72MZZQB893",
     "profile_type": "APP_STORE",
     "debuggable": false,
-    "device_restricted": false
+    "device_restricted": false,
+    "architectures": [
+      "arm64"
+    ],
+    "privacy_manifest": "PASS",
+    "format": "Mach-O",
+    "verified_application": ".tmp/release-delivery/2026-10-19/apple/verification/ios/Payload/蓝析BLE工具箱.app/蓝析BLE工具箱",
+    "compiled_app_icons": "PASS",
+    "launch_storyboard": "PASS"
   },
   "macos_verification": {
     "display_name": "PASS",
@@ -39,8 +57,21 @@
     "app_sandbox": true,
     "bluetooth": true,
     "camera": true,
-    "debuggable": false
+    "debuggable": false,
+    "privacy_manifest": true,
+    "format": "Mach-O universal",
+    "verified_application": ".tmp/release-delivery/2026-10-19/apple/verification/macos/com.i2kai.open.smartble.pkg/Payload/蓝析BLE工具箱.app/Contents/MacOS/蓝析BLE工具箱",
+    "verified_macho_count": 1,
+    "macho_images": [
+      {
+        "path": "Contents/MacOS/蓝析BLE工具箱",
+        "architectures": [
+          "arm64",
+          "x86_64"
+        ]
+      }
+    ]
   },
-  "current_product_display_name": "蓝析BLE工具箱",
-  "branding_scope": "PRE_RENAME_EVIDENCE_REBUILD_REQUIRED"
+  "archive_signing_note": "Fresh Xcode Release archives were signed locally with the selected team Apple Distribution identity and existing App Store profiles before Xcode app-store-connect export; a development identity from another team was not used.",
+  "source_scope": "Application and shared-core trees match source_commit. iOS resource fixes were built from the worktree before that snapshot was committed; unrelated Windows/Linux packages retain their own CI source commit."
 }
