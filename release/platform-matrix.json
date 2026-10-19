@@ -11,7 +11,7 @@
     "tencent-myapp",
     "desktop-distribution"
   ],
-  "status": "BRANDING_UPDATED_REBUILD_REQUIRED",
+  "status": "CURRENT_NAME_PACKAGES_BUILT_HARDWARE_AND_CHANNEL_GATES_OPEN",
   "rule": "Every implementation requires current-source build, functional and hardware evidence. Candidate packages and static checks are not store-ready releases.",
   "implementations": [
     {
@@ -22,15 +22,32 @@
         "h5"
       ],
       "packaging": "HBuilderX native build; H5 is a browser-limited surface",
-      "build": "RESOURCES_BUILT_NATIVE_BLOCKED",
+      "build": "SIGNED_ANDROID_APK_BUILT_H5_AND_APP_RESOURCES_BUILT",
       "hardware": "NOT_RUN",
-      "distribution": "NOT_RUN",
+      "distribution": "SIGNED_ANDROID_STORE_SUBMISSION_NOT_RUN",
       "software_checks": {
         "status": "PASS",
         "unit_files": 27,
         "static_gates": 15
       },
-      "native_packaging_reason": "HBuilderX/custom native base and signing still require verification; H5/App resource compilation is not a native package."
+      "native_packaging_reason": "HBuilderX 5.26 cloud safe-mode completed after login; native plugin, product release certificate, APK label, ID/version and 16KB alignment verified. Cloud SDK did not return requested x86_64; that ABI remains unverified.",
+      "current_name_packages": {
+        "date": "2026-10-19",
+        "manifest": "release/package-rebuild-2026-10-19.json",
+        "display_name_verified": "PASS"
+      },
+      "candidate_architectures_built": {
+        "android": [
+          "armeabi-v7a",
+          "arm64-v8a"
+        ]
+      },
+      "architecture_gap": {
+        "android": [
+          "x86_64"
+        ],
+        "status": "REQUESTED_BUT_NOT_PRODUCED_BY_CLOUD_SDK"
+      }
     },
     {
       "id": "flutter",
@@ -58,7 +75,7 @@
           "arm64"
         ]
       },
-      "build": "SIGNED_ANDROID_AND_DECLARED_CANDIDATES_BUILT",
+      "build": "CURRENT_NAME_SIGNED_ANDROID_AND_CANDIDATES_BUILT",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
@@ -83,6 +100,12 @@
           "x64",
           "arm64"
         ]
+      },
+      "current_name_packages": {
+        "date": "2026-10-19",
+        "manifest": "release/package-rebuild-2026-10-19.json",
+        "display_name_verified": "PASS",
+        "macos_whole_bundle_signature": "NOT_COMPLETE_ALTERNATIVE_CANDIDATE_ONLY"
       }
     },
     {
@@ -91,12 +114,17 @@
         "android"
       ],
       "packaging": "APK + AAB with environment-supplied release signing",
-      "build": "SIGNED_ANDROID_AND_DECLARED_CANDIDATES_BUILT",
+      "build": "CURRENT_NAME_SIGNED_ANDROID_AND_CANDIDATES_BUILT",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
         "status": "PASS",
         "unit_tests": 100
+      },
+      "current_name_packages": {
+        "date": "2026-10-19",
+        "manifest": "release/package-rebuild-2026-10-19.json",
+        "display_name_verified": "PASS"
       }
     },
     {
@@ -108,7 +136,7 @@
         "arm64"
       ],
       "packaging": "Archive + App Store Connect export",
-      "build": "SIGNED_STORE_EXPORT_VERIFIED",
+      "build": "CURRENT_NAME_SIGNED_STORE_EXPORT_VERIFIED",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
@@ -125,6 +153,11 @@
           "real_device_voiceover": "NOT_RUN"
         },
         "ui_tests": 11
+      },
+      "current_name_packages": {
+        "date": "2026-10-19",
+        "manifest": "release/package-rebuild-2026-10-19.json",
+        "display_name_verified": "PASS"
       }
     },
     {
@@ -137,13 +170,18 @@
         "x86_64"
       ],
       "packaging": "Universal app; distribution signing and notarization required",
-      "build": "SIGNED_STORE_EXPORT_VERIFIED",
+      "build": "CURRENT_NAME_SIGNED_STORE_EXPORT_VERIFIED",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
         "status": "PASS",
         "unit_tests": 19,
         "core_assertions": 80
+      },
+      "current_name_packages": {
+        "date": "2026-10-19",
+        "manifest": "release/package-rebuild-2026-10-19.json",
+        "display_name_verified": "PASS"
       }
     },
     {
@@ -154,7 +192,7 @@
         "linux"
       ],
       "packaging": "NSIS/portable, DMG/zip, AppImage/deb/rpm",
-      "build": "CANDIDATE_BUILT",
+      "build": "CURRENT_NAME_CANDIDATE_BUILT",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
@@ -192,6 +230,12 @@
           "packaged_hci_binding_load": "PASS",
           "adapter_initialization": "NOT_RUN"
         }
+      },
+      "current_name_packages": {
+        "date": "2026-10-19",
+        "manifest": "release/package-rebuild-2026-10-19.json",
+        "display_name_verified": "PASS",
+        "macos_whole_bundle_signature": "NOT_COMPLETE_ALTERNATIVE_CANDIDATE_ONLY"
       }
     },
     {
@@ -202,7 +246,7 @@
         "linux"
       ],
       "packaging": "MSI/NSIS, DMG, deb/AppImage/rpm",
-      "build": "CANDIDATE_BUILT",
+      "build": "CURRENT_NAME_CANDIDATE_BUILT",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
@@ -224,6 +268,12 @@
           "x64",
           "arm64"
         ]
+      },
+      "current_name_packages": {
+        "date": "2026-10-19",
+        "manifest": "release/package-rebuild-2026-10-19.json",
+        "display_name_verified": "PASS",
+        "macos_whole_bundle_signature": "NOT_COMPLETE_ALTERNATIVE_CANDIDATE_ONLY"
       }
     },
     {
@@ -236,7 +286,7 @@
         "arm64"
       ],
       "packaging": "Self-contained .NET application",
-      "build": "CANDIDATE_BUILT",
+      "build": "CURRENT_NAME_CANDIDATE_BUILT",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
@@ -246,7 +296,12 @@
       "candidate_architectures_built": [
         "x64",
         "arm64"
-      ]
+      ],
+      "current_name_packages": {
+        "date": "2026-10-19",
+        "manifest": "release/package-rebuild-2026-10-19.json",
+        "display_name_verified": "PASS"
+      }
     },
     {
       "id": "qt",
@@ -258,7 +313,7 @@
         "arm64"
       ],
       "packaging": "PyInstaller self-contained application",
-      "build": "CANDIDATE_BUILT",
+      "build": "CURRENT_NAME_CANDIDATE_BUILT",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
@@ -280,6 +335,11 @@
         "native_images_verified": 123,
         "machine": "0xaa64",
         "archive_sha256": "ee42b1976cdd4cda614e2f51089f5b71009d162953790f18ca1af77770d7ac1e"
+      },
+      "current_name_packages": {
+        "date": "2026-10-19",
+        "manifest": "release/package-rebuild-2026-10-19.json",
+        "display_name_verified": "PASS"
       }
     },
     {
@@ -292,7 +352,7 @@
         "arm64"
       ],
       "packaging": "Native Windows executable",
-      "build": "CANDIDATE_BUILT",
+      "build": "CURRENT_NAME_CANDIDATE_BUILT",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
@@ -303,7 +363,12 @@
       "candidate_architectures_built": [
         "x64",
         "arm64"
-      ]
+      ],
+      "current_name_packages": {
+        "date": "2026-10-19",
+        "manifest": "release/package-rebuild-2026-10-19.json",
+        "display_name_verified": "PASS"
+      }
     }
   ],
   "open_gates": [
@@ -313,209 +378,207 @@
     "distribution signatures/profiles/notarization",
     "store metadata/privacy URL/SDK declarations",
     "clean installation and upgrade",
-    "full accessibility review beyond structural audit and real-device VoiceOver"
+    "full accessibility review beyond structural audit and real-device VoiceOver",
+    "UniApp requested Android x86_64 package not produced by current cloud SDK"
   ],
   "application_id": "com.i2kai.open.smartble",
-  "local_evidence_note": "Historical pre-rename evidence: Current signed Kotlin/Flutter Android packages have matching application/core source trees, product ID, signatures and hashes. Native SwiftUI/AppKit signed exports were rebuilt with BLE Toolkit+. Windows ARM64 VM software validation uses actual native runtimes; hardware and Windows distribution signing remain independent gates.",
+  "local_evidence_note": "2026-10-19 current-name receipts include 39 verified delivery files: signed native Apple IPA/PKG and Kotlin/Flutter/UniApp Android packages, plus Windows/Linux and alternative Mac candidates. Each file retains its actual build source and hash. Windows VM runtime evidence remains historical; this batch has no new hardware or installation/upgrade verification.",
   "publisher_type": "individual",
   "public_support_email": "121912336@qq.com",
   "store_materials_status": "DEFERRED_BY_USER",
   "last_candidate_run": {
-    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38041746455",
-    "head_commit": "0926e991ed47dbe4dbfc1ae3f02b5b252a6955ae",
+    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39184929374",
+    "head_commit": "88d253dd2480b8d036695dc604cede0736591d31",
     "status": "PASS",
     "jobs_passed": 24,
     "jobs_total": 24,
     "jobs": [
       {
-        "name": "mobile (android)",
-        "id": 114183267476,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (macos-latest, tauri)",
-        "id": 114183267540,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (ubuntu-22.04-arm, electron)",
-        "id": 114183267559,
-        "status": "PASS"
-      },
-      {
-        "name": "flutter-windows (windows-11-arm)",
-        "id": 114183267562,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (windows-11-arm, tauri)",
-        "id": 114183267570,
-        "status": "PASS"
-      },
-      {
-        "name": "apple (flutter-ios)",
-        "id": 114183267577,
-        "status": "PASS"
-      },
-      {
-        "name": "flutter-windows (windows-latest)",
-        "id": 114183267584,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (windows-latest, electron)",
-        "id": 114183267600,
+        "name": "windows-implementations (windows-11-arm, wails)",
+        "id": 117845293805,
         "status": "PASS"
       },
       {
         "name": "desktop (ubuntu-22.04, tauri)",
-        "id": 114183267601,
-        "status": "PASS"
-      },
-      {
-        "name": "mobile (flutter-android)",
-        "id": 114183267615,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-latest, wails)",
-        "id": 114183267621,
+        "id": 117845293888,
         "status": "PASS"
       },
       {
         "name": "apple (flutter-macos)",
-        "id": 114183267640,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-11-arm, avalonia)",
-        "id": 114183267646,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (windows-11-arm, electron)",
-        "id": 114183267650,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-latest, avalonia)",
-        "id": 114183267656,
-        "status": "PASS"
-      },
-      {
-        "name": "apple (ios)",
-        "id": 114183267686,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (macos-latest, electron)",
-        "id": 114183267691,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (ubuntu-22.04, electron)",
-        "id": 114183267699,
+        "id": 117845293914,
         "status": "PASS"
       },
       {
         "name": "apple (macos)",
-        "id": 114183267706,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-latest, qt)",
-        "id": 114183267729,
+        "id": 117845293919,
         "status": "PASS"
       },
       {
         "name": "desktop (ubuntu-22.04-arm, tauri)",
-        "id": 114183267739,
+        "id": 117845293940,
         "status": "PASS"
       },
       {
-        "name": "desktop (windows-latest, tauri)",
-        "id": 114183267756,
+        "name": "windows-implementations (windows-latest, wails)",
+        "id": 117845293950,
+        "status": "PASS"
+      },
+      {
+        "name": "apple (ios)",
+        "id": 117845293961,
         "status": "PASS"
       },
       {
         "name": "windows-implementations (windows-11-arm, qt)",
-        "id": 114183267913,
+        "id": 117845293973,
         "status": "PASS"
       },
       {
-        "name": "windows-implementations (windows-11-arm, wails)",
-        "id": 114183267924,
+        "name": "desktop (macos-latest, tauri)",
+        "id": 117845293976,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-11-arm, electron)",
+        "id": 117845293981,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04-arm, electron)",
+        "id": 117845294003,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-11-arm, avalonia)",
+        "id": 117845294041,
+        "status": "PASS"
+      },
+      {
+        "name": "mobile (android)",
+        "id": 117845294172,
+        "status": "PASS"
+      },
+      {
+        "name": "apple (flutter-ios)",
+        "id": 117845294177,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-11-arm, tauri)",
+        "id": 117845294187,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-latest, tauri)",
+        "id": 117845294204,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04, electron)",
+        "id": 117845294236,
+        "status": "PASS"
+      },
+      {
+        "name": "flutter-windows (windows-11-arm)",
+        "id": 117845294337,
+        "status": "PASS"
+      },
+      {
+        "name": "mobile (flutter-android)",
+        "id": 117845294351,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (macos-latest, electron)",
+        "id": 117845294388,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-latest, qt)",
+        "id": 117845294518,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-latest, avalonia)",
+        "id": 117845294590,
+        "status": "PASS"
+      },
+      {
+        "name": "flutter-windows (windows-latest)",
+        "id": 117845294976,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-latest, electron)",
+        "id": 117845295331,
         "status": "PASS"
       }
     ],
-    "checkout_note": "Pull-request runners may check out a synthetic merge commit. Actual source trees are recorded in build reports.",
-    "note": "All declared checks passed at the recorded source commit; hardware, distribution and store submission remain separate gates.",
-    "artifacts_uploaded": 24
+    "note": "Successful checks at the recorded commit; current delivery files and later native iOS resource fixes have separate source receipts in release/package-rebuild-2026-10-19.json. Hardware, installation/upgrade, signing and store submission are independent gates."
   },
   "last_software_run": {
-    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38041746475",
-    "head_commit": "0926e991ed47dbe4dbfc1ae3f02b5b252a6955ae",
+    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39186864267",
+    "head_commit": "6cb8b8e45fab4ca2534cd620785309610ee07bdb",
     "status": "PASS",
     "jobs_passed": 8,
     "jobs_total": 8,
     "jobs": [
       {
-        "name": "Release metadata & gates",
-        "id": 114183199484,
-        "status": "PASS"
-      },
-      {
         "name": "Flutter (analyze + test)",
-        "id": 114183199529,
-        "status": "PASS"
-      },
-      {
-        "name": "Android (build + test, JDK 17)",
-        "id": 114183199530,
+        "id": 117851015188,
         "status": "PASS"
       },
       {
         "name": "Tauri (Linux build → deb/appimage)",
-        "id": 114183199552,
+        "id": 117851015334,
         "status": "PASS"
       },
       {
         "name": "Apple (Core test + iOS xcodebuild test + native macOS build)",
-        "id": 114183199554,
-        "status": "PASS"
-      },
-      {
-        "name": "ESP32 firmware (PlatformIO)",
-        "id": 114183199613,
-        "status": "PASS"
-      },
-      {
-        "name": "UniApp (full verify-uniapp.sh + h5 build)",
-        "id": 114183199687,
+        "id": 117851015453,
         "status": "PASS"
       },
       {
         "name": "Electron (install + lint)",
-        "id": 114183199757,
+        "id": 117851015496,
+        "status": "PASS"
+      },
+      {
+        "name": "UniApp (full verify-uniapp.sh + h5 build)",
+        "id": 117851015507,
+        "status": "PASS"
+      },
+      {
+        "name": "Release metadata & gates",
+        "id": 117851015525,
+        "status": "PASS"
+      },
+      {
+        "name": "ESP32 firmware (PlatformIO)",
+        "id": 117851015536,
+        "status": "PASS"
+      },
+      {
+        "name": "Android (build + test, JDK 17)",
+        "id": 117851015591,
         "status": "PASS"
       }
     ],
-    "checkout_note": "Pull-request runners may check out a synthetic merge commit. Actual source trees are recorded in build reports.",
-    "note": "All declared checks passed at the recorded source commit; hardware, distribution and store submission remain separate gates."
+    "note": "Packaging-fix source snapshot; subsequent changes only add the independently validated UniApp icon preparation command and build receipts/documentation."
   },
   "signed_android_evidence": {
     "android": {
-      "source_commit": "9c8833628f87d4ee7c0c34f9792f97dc4ad3b7be",
+      "implementation": "Kotlin",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
       "source_trees": {
-        "apps/android": "d4f63f50c42b6cf573e4398a3a89158fcc8a931a",
-        "core": "9e85b2bb80b6a443cca3d54abfb9f5ccb6f05b32"
+        "apps/android": "6a40927e2ef1a57cb9dc630dce42bcde4e5ee315",
+        "core": "aa60d71874fa9771fbb4698f53191a7de1a64617"
       },
-      "status": "SIGNED_BUILD",
       "artifacts": [
         {
-          "path": "apps/android/app/build/outputs/apk/release/app-release.apk",
-          "bytes": 12024620,
-          "sha256": "3ff2da3c64281ceaf97ca173ba9bd18939b0f572fb8c1876261061c19abbb6e9",
+          "path": ".tmp/release-delivery/2026-10-19/android/蓝析BLE工具箱-1.0.5-Android-Kotlin-release.apk",
+          "bytes": 12025016,
+          "sha256": "33c82032ff9c70d7500e1c7c9895ce0cd2af031aa2f528096d6d9b0cfa925c34",
           "native_abis": [],
           "elf_16kb": "NOT_APPLICABLE",
           "libraries_64bit": [],
@@ -523,34 +586,40 @@
           "build_number": "101",
           "target_sdk": 36,
           "zip_16kb": "PASS",
-          "signature_verified": true
+          "signature_verified": true,
+          "build_output_path": "apps/android/app/build/outputs/apk/release/app-release.apk",
+          "application_label": "蓝析BLE工具箱",
+          "apk_package_line": "package: name='com.i2kai.open.smartble' versionCode='101' versionName='1.0.5' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+          "actual_native_code_line": "NO_NATIVE_LIBRARIES_BYTECODE_ARCHITECTURE_INDEPENDENT",
+          "label_verified": true
         },
         {
-          "path": "apps/android/app/build/outputs/bundle/release/app-release.aab",
-          "bytes": 11730181,
-          "sha256": "71388434f6bc8a4cb11255aa316a2b0d07332e1cfc1855e9e9d5b550c549134a",
+          "path": ".tmp/release-delivery/2026-10-19/android/蓝析BLE工具箱-1.0.5-Android-Kotlin-release.aab",
+          "bytes": 11730156,
+          "sha256": "97925678821e5f3c9227f3c39935215c48ef5a54502feb06a4fba7a1dcf86eee",
           "native_abis": [],
           "elf_16kb": "NOT_APPLICABLE",
           "libraries_64bit": [],
-          "signature_verified": true
+          "signature_verified": true,
+          "build_output_path": "apps/android/app/build/outputs/bundle/release/app-release.aab"
         }
       ],
-      "report": ".tmp/release/android-darwin-arm64/signed/report.json",
-      "application_display_name": "BLE Toolkit+",
+      "status": "SIGNED_BUILD",
+      "application_display_name": "蓝析BLE工具箱",
       "display_name_verified_in_apk": "PASS"
     },
     "flutter-android": {
-      "source_commit": "9c8833628f87d4ee7c0c34f9792f97dc4ad3b7be",
+      "implementation": "Flutter",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
       "source_trees": {
-        "apps/flutter": "9214f9dea39b260a9707f297ef02b01725772807",
-        "core": "9e85b2bb80b6a443cca3d54abfb9f5ccb6f05b32"
+        "apps/flutter": "433a9afe594aee6290fe11efa2f1bab33c7c6037",
+        "core": "aa60d71874fa9771fbb4698f53191a7de1a64617"
       },
-      "status": "SIGNED_BUILD",
       "artifacts": [
         {
-          "path": "apps/flutter/build/app/outputs/flutter-apk/app-release.apk",
-          "bytes": 73557318,
-          "sha256": "af78301a76667fb8cad30b080327aa5f950d81890273c037aae01a11cffc138f",
+          "path": ".tmp/release-delivery/2026-10-19/android/蓝析BLE工具箱-1.0.5-Android-Flutter-release.apk",
+          "bytes": 73557322,
+          "sha256": "5dbece3f12ac4c8dcf540a8fc0760d1df90d1126f34dd1e921bae6c64b4cd1d9",
           "native_abis": [
             "arm64-v8a",
             "armeabi-v7a",
@@ -611,12 +680,17 @@
           "build_number": "101",
           "target_sdk": 36,
           "zip_16kb": "PASS",
-          "signature_verified": true
+          "signature_verified": true,
+          "build_output_path": "apps/flutter/build/app/outputs/flutter-apk/app-release.apk",
+          "application_label": "蓝析BLE工具箱",
+          "apk_package_line": "package: name='com.i2kai.open.smartble' versionCode='101' versionName='1.0.5' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+          "actual_native_code_line": "native-code: 'arm64-v8a' 'armeabi-v7a' 'x86_64'",
+          "label_verified": true
         },
         {
-          "path": "apps/flutter/build/app/outputs/bundle/release/app-release.aab",
-          "bytes": 56007835,
-          "sha256": "b3b06e5dd816cd2f420ec29482d73ca0fde13e0451890d55d0ba89a955351f89",
+          "path": ".tmp/release-delivery/2026-10-19/android/蓝析BLE工具箱-1.0.5-Android-Flutter-release.aab",
+          "bytes": 56008161,
+          "sha256": "f514ac33196c6cdc84ac1e3bd6d630a8e9f8dd1e718002cd49e75090d359a172",
           "native_abis": [
             "arm64-v8a",
             "armeabi-v7a",
@@ -673,11 +747,109 @@
               "min_load_alignment": 16384
             }
           ],
-          "signature_verified": true
+          "signature_verified": true,
+          "build_output_path": "apps/flutter/build/app/outputs/bundle/release/app-release.aab"
         }
       ],
-      "report": ".tmp/release/flutter-android-darwin-arm64/signed/report.json",
-      "application_display_name": "BLE Toolkit+",
+      "status": "SIGNED_BUILD",
+      "application_display_name": "蓝析BLE工具箱",
+      "display_name_verified_in_apk": "PASS"
+    },
+    "uniapp-android": {
+      "implementation": "UniApp",
+      "source_commit": "88d253dd2480b8d036695dc604cede0736591d31",
+      "source_trees": {
+        "apps/uniapp": "381b8ff8eda0021f2c12d75d82c865bc9e1ae667",
+        "core": "aa60d71874fa9771fbb4698f53191a7de1a64617"
+      },
+      "artifacts": [
+        {
+          "path": ".tmp/release-delivery/2026-10-19/android/蓝析BLE工具箱-1.0.5-Android-UniApp-release.apk",
+          "build_output_path": "apps/uniapp/unpackage/release/apk/__UNI__F150954__20261019094344.apk",
+          "bytes": 22005830,
+          "sha256": "a1ba20dbf2b19bed6ab465bd239efcb460a9aadbf8b48101505d74ba7ed8f3ed",
+          "application_id": "com.i2kai.open.smartble",
+          "build_number": "101",
+          "target_sdk": 36,
+          "zip_16kb": "PASS",
+          "signature_verified": true,
+          "application_label": "蓝析BLE工具箱",
+          "label_verified": true,
+          "apk_package_line": "package: name='com.i2kai.open.smartble' versionCode='101' versionName='1.0.5' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+          "native_abis": [
+            "arm64-v8a",
+            "armeabi-v7a"
+          ],
+          "elf_16kb": "PASS",
+          "libraries_64bit": [
+            {
+              "path": "lib/arm64-v8a/libweexcore.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libgifimage.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libnative-filters.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libweexjss.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/liblamemp3.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libnative-imagetranscoder.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libuts-runtime.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libpl_droidsonroids_gif.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libstatic-webp.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libimagepipeline.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libweexjsb.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libbreakpad-core.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/lib39285EFA.so",
+              "min_load_alignment": 65536
+            },
+            {
+              "path": "lib/arm64-v8a/libdcblur.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libweexjst.so",
+              "min_load_alignment": 16384
+            }
+          ]
+        }
+      ],
+      "architecture_limitations": [
+        "DCloud returned ARM64/ARMv7 native base; x86_64 absent despite manifest request and is not claimed as verified"
+      ],
+      "status": "SIGNED_BUILD",
+      "application_display_name": "蓝析BLE工具箱",
       "display_name_verified_in_apk": "PASS"
     }
   },
@@ -704,14 +876,14 @@
       "build": "101",
       "unit_tests_passed": 19,
       "privacy_manifest": true,
-      "path": ".tmp/release/apple-native/macos-renamed.xcarchive"
+      "path": ".tmp/release-delivery/2026-10-19/apple/macos.xcarchive"
     },
-    "store_export": "SIGNED_EXPORTS_VERIFIED",
+    "store_export": "SIGNED_EXPORTS_VERIFIED_CURRENT_NAME",
     "store_upload": "NOT_RUN",
     "signed_exports": {
-      "ios": ".tmp/release/apple-native/ios-renamed-export/BLE Toolkit+.ipa",
-      "macos": ".tmp/release/apple-native/macos-renamed-export/BLE Toolkit+.pkg",
-      "report": ".tmp/release/apple-native/signed-store-report.json",
+      "ios": ".tmp/release-delivery/2026-10-19/apple/蓝析BLE工具箱-1.0.5-ios-原生-AppStore.ipa",
+      "macos": ".tmp/release-delivery/2026-10-19/apple/蓝析BLE工具箱-1.0.5-macos-原生-AppStore.pkg",
+      "report": "release/apple-native-store-build.json",
       "macos_capabilities": [
         "app-sandbox",
         "device.bluetooth",
@@ -719,7 +891,13 @@
       ],
       "ios_profile": "App Store; get-task-allow=false; no device list"
     },
-    "display_name": "BLE Toolkit+"
+    "display_name": "蓝析BLE工具箱",
+    "source_commit": "6cb8b8e45fab4ca2534cd620785309610ee07bdb",
+    "source_trees": {
+      "apps/ios": "071780e43f9a28c4bb3426696204f8fe96bf5f11",
+      "apps/desktop/macos": "be70f28eee3d0e00a4806230a614e3a4c9626189",
+      "core": "aa60d71874fa9771fbb4698f53191a7de1a64617"
+    }
   },
   "display_name": "蓝析BLE工具箱",
   "windows_vm_software_report": "release/windows-vm-software-verification.json",
@@ -728,22 +906,31 @@
     "display_name": "蓝析BLE工具箱",
     "artifact_prefix": "Lanxi-BLE-Toolkit",
     "previous_display_name": "BLE Toolkit+",
-    "status": "SOURCE_AND_LOCAL_VALIDATION_PASS_DISTRIBUTION_REBUILD_REQUIRED",
-    "evidence_scope": "Existing per-platform builds, signatures, hashes and runtime results describe the previous name. Rebuild and verify new-name packages before distribution.",
+    "status": "CURRENT_NAME_PACKAGES_BUILT_AND_VERIFIED",
+    "evidence_scope": "See current package manifest for new-name builds and individual source/signing receipts. Older evidence outside that manifest remains historical.",
     "external_metadata": "PENDING_CHANNEL_UPDATE",
     "validation": {
-      "release_checks": "PASS_13_TESTS",
+      "release_checks": "PASS_18_TESTS",
       "desktop_contracts": "PASS_190_TESTS",
       "flutter_analysis": "PASS",
       "flutter_tests": "PASS_156_TESTS",
-      "uniapp": "PASS_27_UNIT_FILES_15_GATES_H5_AND_APP_RESOURCES",
+      "uniapp": "SIGNED_ANDROID_APK_AND_H5_APP_RESOURCES_BUILT_ARMV7_ARM64_ONLY",
       "website": "BUILD_PASS",
-      "native_ios": "SIMULATOR_DEBUG_BUILD_AND_ACTUAL_BUNDLE_LABEL_PASS",
-      "native_macos": "DEBUG_BUILD_AND_ACTUAL_BUNDLE_LABEL_PASS",
-      "native_android": "DEBUG_BUILD_AND_ACTUAL_APK_LABEL_PASS",
-      "tauri_linux": "CONFIG_SCHEMA_AND_DESKTOP_TEMPLATE_PASS_PACKAGE_BUILD_PENDING",
-      "distribution_signing": "NOT_RERUN_FOR_NEW_NAME",
+      "native_ios": "SIGNED_APP_STORE_IPA_NAME_SIGNATURE_ICONS_LAUNCH_PRIVACY_AND_ARM64_PASS",
+      "native_macos": "SIGNED_APP_STORE_PKG_NAME_SIGNATURE_ENTITLEMENTS_AND_ALL_MACHO_UNIVERSAL_PASS",
+      "native_android": "SIGNED_KOTLIN_FLUTTER_UNIAPP_PACKAGES_ACTUAL_APK_LABEL_PASS",
+      "tauri_linux": "ACTUAL_X64_ARM64_DEB_APPIMAGE_RPM_NAMES_AND_ARCHITECTURES_PASS",
+      "distribution_signing": "APPLE_NATIVE_AND_ANDROID_PASS_WINDOWS_LINUX_AND_ALTERNATIVE_MAC_CANDIDATES_ONLY",
       "remote_channels": "NOT_UPDATED"
-    }
+    },
+    "package_manifest": "release/package-rebuild-2026-10-19.json"
+  },
+  "current_package_delivery": {
+    "date": "2026-10-19",
+    "display_name": "蓝析BLE工具箱",
+    "artifact_count": 39,
+    "manifest": "release/package-rebuild-2026-10-19.json",
+    "verification": "ALL_DELIVERED_FILE_HASHES_NAMES_AND_NATIVE_ARCHITECTURES_PASS",
+    "store_submission": "NOT_RUN"
   }
 }
