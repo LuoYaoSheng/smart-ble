@@ -64,7 +64,7 @@ hero:
     </div>
     <div class="sb-feature-grid">
       <article class="sb-feature-card">
-        <h3>A usable debug tool</h3>
+        <h3>Tools for device debugging</h3>
         <p>Scanning, connection, service discovery, data exchange and notifications, organized around a typical debugging session.</p>
       </article>
       <article class="sb-feature-card">
@@ -222,14 +222,14 @@ hero:
         <p>Independent subset kernel: environment gating, the requestDevice picker and explicit missing-capability marks.</p>
       </a>
     </div>
-    <p class="sb-platform-footnote">Each platform also ships a <a href="/prototype/wechat/low-fi/">low-fi wireframe</a> (pages × states × flows) with PLATFORM_SPEC / PAGE_SPEC / FLOW / COMPONENT_RULE docs; the base kernel passed Playwright 26/26. Prototypes run on mock data — they are the product and interaction master, not a release status; desktop and web are prototype-first.</p>
+    <p class="sb-platform-footnote">These prototypes use simulated data and do not connect to real devices or indicate a store release. The WeChat instance is preserved as a historical design reference.</p>
   </section>
 
   <section id="profile" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Smart HID &amp; Profiles</div>
-      <h2>First-party profiles with a contract lock</h2>
-      <p>On top of generic BLE sits an extensible device profile system: remove any profile and it remains a complete generic BLE tool.</p>
+      <h2>Device-specific setup and diagnostics</h2>
+      <p>Supported devices can expose their own provisioning and diagnostics pages. Generic scanning and GATT debugging remain independently available.</p>
     </div>
     <div class="sb-feature-grid">
       <a href="/smart-hid/README" class="sb-feature-card sb-feature-card--link">
@@ -238,8 +238,8 @@ hero:
         <p class="sb-feature-note">Preview</p>
       </a>
       <a href="https://github.com/LuoYaoSheng/Smart-HID-Workspace" target="_blank" rel="noopener" class="sb-feature-card sb-feature-card--link">
-        <h3>Contract-locked to the firmware canon</h3>
-        <p>Provisioning protocol and command schema are SHA-256 contract-locked with Smart-HID-Workspace (firmware / ControlHub / protocol canon).</p>
+        <h3>Device protocols and firmware source</h3>
+        <p>Explore the Smart HID device protocols, reference firmware and companion code to understand provisioning and test compatible devices.</p>
       </a>
       <a href="/profiles/README" class="sb-feature-card sb-feature-card--link">
         <h3>Open profile extension</h3>
@@ -278,11 +278,11 @@ hero:
         <figcaption>Broadcast</figcaption>
       </figure>
     </div>
-    <h3 class="sb-gallery-h3">Mobile · WeChat mini program and App form factors (prototype captures)</h3>
+    <h3 class="sb-gallery-h3">Mobile · App prototype and archived WeChat design</h3>
     <div class="sb-gallery-grid--duo">
       <figure>
-        <img src="/gallery/proto-wechat.png" alt="WeChat mini program form factor: scan page with page/state navigator" loading="lazy">
-        <figcaption>WeChat mini program form · scan page + state navigator (Android / iOS host switch)</figcaption>
+        <img src="/gallery/proto-wechat.png" alt="Archived WeChat design: scan page with page/state navigator" loading="lazy">
+        <figcaption>Archived WeChat design · scan page and state navigator</figcaption>
       </figure>
       <figure>
         <img src="/gallery/proto-app.png" alt="App form factor: Android instance scan page" loading="lazy">
@@ -296,7 +296,7 @@ hero:
         <figcaption>Desktop workspace · mac window chrome (switch to win / linux online)</figcaption>
       </figure>
     </div>
-    <p class="sb-platform-footnote">The three form-factor captures come from the <a href="/prototype/desktop/high-fi/">live interactive prototype</a> — one base kernel + a single override layer per platform; pages, states and host dimensions are all switchable online. Desktop installers: see the download matrix above.</p>
+    <p class="sb-platform-footnote">The three form-factor captures come from the <a href="/prototype/desktop/high-fi/">live interactive prototype</a> — one base kernel + a single override layer per platform; pages, states and host dimensions are all switchable online. Official desktop installers are still in preparation; source and build guides are listed above.</p>
   </section>
 
   <section class="sb-section">

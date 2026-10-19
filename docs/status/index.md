@@ -54,7 +54,7 @@ function surfaceStatus(surface) {
   <section class="smartble-platform-matrix">
     <div class="smartble-section-head">
       <div class="smartble-kicker">Current Mainline</div>
-      <h2>正式工作面与在研实现线</h2>
+      <h2>客户端与硬件发布状态</h2>
       <p>下列状态来自 PREVIEW Release Metadata（{{ version }}），不是发布门禁结论。</p>
     </div>
     <div class="smartble-platform-grid">
@@ -63,7 +63,7 @@ function surfaceStatus(surface) {
           <span :class="badgeClass(surfaceStatus(surfaces.android))">{{ surfaceStatus(surfaces.android) }}</span>
         </div>
         <h3>{{ surfaces.android.name }}</h3>
-        <p>当前客户端主线。正式 APK 与 SHA <strong>{{ surfaces.android.release_status }}</strong>。</p>
+        <p>UniApp Android 客户端。正式 APK 与 SHA <strong>{{ surfaces.android.release_status }}</strong>。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
@@ -77,7 +77,7 @@ function surfaceStatus(surface) {
           <span :class="badgeClass(surfaceStatus(surfaces.ios))">{{ surfaceStatus(surfaces.ios) }}</span>
         </div>
         <h3>{{ surfaces.ios.name }}</h3>
-        <p>SwiftUI + CoreBluetooth，iOS 与 macOS 共享 SmartHidCore 内核；真机签名 E5 尚未完成。</p>
+        <p>原生 iOS 使用 SwiftUI + CoreBluetooth，Mac 使用 AppKit；共享 SmartHidCore。新名称的分发签名、商店提交与真实设备验证仍需分别完成。</p>
       </article>
       <!-- MAC-011：surface 键与 release-state.json 对齐（flutter_tauri_native 合并键；
            旧 android_native/flutter/desktop 键已不存在，直取 .name 曾致 SSR 崩溃） -->
@@ -86,7 +86,7 @@ function surfaceStatus(surface) {
           <span :class="badgeClass(surfaceStatus(surfaces.flutter_tauri_native))">{{ surfaceStatus(surfaces.flutter_tauri_native) }}</span>
         </div>
         <h3>{{ surfaces.flutter_tauri_native.name }}</h3>
-        <p>Flutter / Tauri / 原生端（Kotlin、iOS/macOS 原生、桌面多路线）为 REFERENCE 对照实现线；均可从源码构建，正式产物未发布，不进入公开能力卡。</p>
+        <p>Flutter、Tauri、Electron、Kotlin、SwiftUI、AppKit、Avalonia、Qt 和 Wails 均纳入当前产品的完整验证与发布范围。候选构建已通过，正式分发与真实硬件验收仍需分别完成。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
