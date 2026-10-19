@@ -72,6 +72,7 @@
 
 .VPHomeHero .name,
 .VPHomeHero .text {
+  text-wrap: balance;
   letter-spacing: -0.02em;
 }
 
@@ -559,11 +560,17 @@
 }
 
 .sb-hero-badge {
+  text-wrap: balance;
   margin: var(--sp-4) 0 0;
   font-size: var(--fs-cap);
   font-weight: var(--fw-med);
   letter-spacing: .04em;
   color: var(--c-mut);
+}
+
+.sb-hero-note {
+  display: block;
+  margin-top: 4px;
 }
 
 .sb-hero-badge a {

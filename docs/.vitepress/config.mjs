@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: "蓝析BLE工具箱",
-  description: "蓝析BLE工具箱（开发预览）：Android、iOS / macOS、桌面与 ESP32 协同的 BLE 调试与验证工具。扫描、连接、读写、广播收进同一条工作流。",
+  description: "蓝析BLE工具箱：开源蓝牙调试工具，提供 BLE 设备扫描、连接、GATT 查看、数据读写与通知订阅。移动端、桌面端与 ESP32 示例，开发预览中。",
   lang: 'zh-CN',
   base: '/',
   cleanUrls: true,
@@ -39,7 +39,7 @@ export default defineConfig({
       label: 'English',
       lang: 'en-US',
       title: '蓝析BLE工具箱',
-      description: 'One toolkit to debug and verify every BLE device. Android, iOS, desktop and ESP32 in one workflow. (Preview)',
+      description: 'Open-source BLE debugging tools for device discovery, GATT inspection and data exchange. Mobile, desktop and ESP32 examples. Development preview.',
       themeConfig: {
         nav: [
           { text: 'Features', link: '/en/#features' },
@@ -59,21 +59,21 @@ export default defineConfig({
 
     // Author & Keywords
     ['meta', { name: 'author', content: 'luoyaosheng' }],
-    ['meta', { name: 'keywords', content: '蓝析BLE工具箱,Smart BLE,BLE,低功耗蓝牙,蓝牙调试,UniApp BLE,ESP32,LightBLE' }],
+    ['meta', { name: 'keywords', content: '蓝析BLE工具箱,蓝牙调试工具,BLE调试,蓝牙扫描,GATT,低功耗蓝牙,ESP32' }],
 
     // OpenGraph
     ['meta', { property: 'og:type',        content: 'website' }],
     ['meta', { property: 'og:site_name',   content: '蓝析BLE工具箱' }],
-    ['meta', { property: 'og:title',       content: '蓝析BLE工具箱 — 一套工具，调通每一台 BLE 设备（开发预览）' }],
-    ['meta', { property: 'og:description', content: '多平台 BLE 调试与验证工具：扫描、连接、读写、订阅、广播与 ESP32 验证，收进同一条工作流。' }],
+    ['meta', { property: 'og:title',       content: '蓝析BLE工具箱 — 开源蓝牙调试工具' }],
+    ['meta', { property: 'og:description', content: '扫描设备、查看服务、收发数据与订阅通知。在线体验交互原型，了解各平台构建与发布进度。' }],
     ['meta', { property: 'og:image',       content: 'https://lightble.i2kai.com/brand/share.png' }],
     ['meta', { property: 'og:url',         content: 'https://lightble.i2kai.com/' }],
     ['meta', { property: 'og:locale',      content: 'zh_CN' }],
 
     // Twitter Card
     ['meta', { name: 'twitter:card',        content: 'summary_large_image' }],
-    ['meta', { name: 'twitter:title',       content: '蓝析BLE工具箱 — BLE 调试与验证工具（开发预览）' }],
-    ['meta', { name: 'twitter:description', content: '多平台 BLE 调试工具：Android、iOS / macOS、桌面与 ESP32 协同。' }],
+    ['meta', { name: 'twitter:title',       content: '蓝析BLE工具箱 — 开源蓝牙调试工具' }],
+    ['meta', { name: 'twitter:description', content: '扫描、连接、读写与通知订阅，支持移动端、桌面端开发和 ESP32 联调示例。' }],
     ['meta', { name: 'twitter:image',       content: 'https://lightble.i2kai.com/brand/share.png' }],
 
     // 主题色

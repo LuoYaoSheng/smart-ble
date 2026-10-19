@@ -4,7 +4,7 @@ import { useData } from 'vitepress'
 import SiteFooter from './SiteFooter.vue'
 import release from '../../public/release/latest.json'
 
-const { frontmatter } = useData()
+const { frontmatter, lang } = useData()
 const version = release.app_version
 const status = release.overall_status
 </script>
@@ -15,7 +15,8 @@ const status = release.overall_status
     <template #home-hero-actions-after>
       <p v-if="frontmatter.layout === 'home'" class="sb-hero-badge">
         v{{ version }} · {{ status }} ·
-        <a href="/status/">安装包与固件尚未正式发布</a>
+        <a href="/status/">{{ lang.startsWith('en') ? 'Official releases in preparation' : '正式版本准备中' }}</a>
+        <span class="sb-hero-note">{{ lang.startsWith('en') ? 'Prototype uses simulated data' : '交互原型使用模拟数据' }}</span>
       </p>
     </template>
 
