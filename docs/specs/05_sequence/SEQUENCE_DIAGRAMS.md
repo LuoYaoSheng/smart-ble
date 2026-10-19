@@ -158,9 +158,9 @@ sequenceDiagram
     CO->>SH: candidate JSON {v,wifi_ssid,wifi_password,hub_host,hub_port,token}
     SH->>SH: framed-v1 分帧 [seq][total][len][payload]（单块≤128B，帧数≤64）
     loop 每帧（间隔 30ms）
-        SH->>WX: 加密写 INPUT(1003)
-        WX->>D: Just Works 加密写
-        Note over WX,D: Android 首次写触发系统配对弹窗→失败 2s 自动重试一次
+        SH->>WX: 明文写 INPUT(1003)
+        WX->>D: INPUT 分帧明文 write
+        Note over WX,D: V1 简化不发起 SMP/系统配对；旧加密固件错误立即失败并提示重烧
     end
     SH->>SH: provisionAndWait（60s 超时）
     loop STATUS 推送

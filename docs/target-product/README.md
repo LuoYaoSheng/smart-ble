@@ -1,4 +1,4 @@
-# Smart BLE 目标产品规范入口
+# 蓝析BLE工具箱 目标产品规范入口
 
 > 状态：APPROVED / TP-G0-R1 已获用户批准（2026-09-01，见 [`REVIEW_SUMMARY.md`](REVIEW_SUMMARY.md) 批准区）；当前进入 TP-G1（目标测试体系）
 > 文档版本：1.3

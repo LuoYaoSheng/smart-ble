@@ -1,4 +1,8 @@
 /// BLE 扫描结果
+library;
+
+import '../ble/device_display_name.dart';
+
 class BleScanResult {
   /// 设备 ID
   final String deviceId;
@@ -9,11 +13,29 @@ class BleScanResult {
   /// 信号强度
   final int rssi;
 
-  /// 广播数据
+  /// 广播数据（厂商数据负载，兼容旧字段）
   final List<int>? advertisData;
 
   /// 服务 UUID
   final List<String> serviceUuids;
+
+  /// 广播本地名（AdvertisementData.advName，可与 GAP 名不同）
+  final String advName;
+
+  /// 厂商 ID（Manufacturer Data 的前两字节，小端）
+  final int? manufacturerId;
+
+  /// 厂商数据负载
+  final List<int>? manufacturerData;
+
+  /// Service Data（UUID → 负载）
+  final Map<String, List<int>> serviceData;
+
+  /// 发射功率（dBm，平台未提供时为 null）
+  final int? txPowerLevel;
+
+  /// 是否可连接广播
+  final bool connectable;
 
   /// 发现时间
   final DateTime timestamp;
@@ -24,16 +46,26 @@ class BleScanResult {
     required this.rssi,
     this.advertisData,
     this.serviceUuids = const [],
+    this.advName = '',
+    this.manufacturerId,
+    this.manufacturerData,
+    this.serviceData = const {},
+    this.txPowerLevel,
+    this.connectable = true,
     required this.timestamp,
   });
 
-  /// 显示名称
-  String get displayName => name.isNotEmpty ? name : '未知设备';
+  /// 显示名称（F005 批准链：name → advName → 未命名 BLE · ID后四位）
+  String get displayName => resolveDeviceDisplayName(
+        deviceId: deviceId,
+        name: name,
+        advName: advName,
+      ).displayName;
 
-  /// 是否匹配前缀过滤
+  /// 是否匹配前缀过滤（按显示名匹配——SHID 等仅广播名设备也要命中）
   bool matchesNamePrefix(String? prefix) {
     if (prefix == null || prefix.isEmpty) return true;
-    return name.toLowerCase().startsWith(prefix.toLowerCase());
+    return displayName.toLowerCase().startsWith(prefix.toLowerCase());
   }
 
   /// 是否匹配信号强度过滤

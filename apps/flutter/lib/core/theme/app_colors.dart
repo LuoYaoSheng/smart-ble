@@ -4,30 +4,30 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Light mode
-  static const Color primaryLight = Color(0xFF007AFF);
-  static const Color primaryDarkLight = Color(0xFF0051D5);
-  static const Color primaryLightLight = Color(0xFFE8F2FF);
-  static const Color backgroundLight = Color(0xFFF2F2F7);
+  static const Color primaryLight = Color(0xFF1B6DFF);
+  static const Color primaryDarkLight = Color(0xFF0E4FC4);
+  static const Color primaryLightLight = Color(0xFFE8F1FF);
+  static const Color backgroundLight = Color(0xFFF8FBFF);
   static const Color surfaceLight = Color(0xFFFFFFFF);
-  static const Color borderLight = Color(0xFFE5E5EA);
-  static const Color textPrimaryLight = Color(0xFF000000);
-  static const Color textSecondaryLight = Color(0xFF8E8E93);
-  static const Color textTertiaryLight = Color(0xFFC7C7CC);
-  static const Color successLight = Color(0xFF34C759);
-  static const Color warningLight = Color(0xFFFF9500);
-  static const Color errorLight = Color(0xFFFF3B30);
+  static const Color borderLight = Color(0xFFE3EAF3);
+  static const Color textPrimaryLight = Color(0xFF18222E);
+  static const Color textSecondaryLight = Color(0xFF60758D);
+  static const Color textTertiaryLight = Color(0xFF9AA8B6);
+  static const Color successLight = Color(0xFF17C7A8);
+  static const Color warningLight = Color(0xFFFF9F43);
+  static const Color errorLight = Color(0xFFF2555F);
 
   // Dark mode
-  static const Color primaryDark = Color(0xFF0A84FF);
-  static const Color primaryDarkDark = Color(0xFF007AFF);
-  static const Color primaryLightDark = Color.fromRGBO(10, 132, 255, 0.15);
-  static const Color backgroundDark = Color(0xFF000000);
-  static const Color surfaceDark = Color(0xFF1C1C1E);
-  static const Color borderDark = Color(0xFF38383A);
-  static const Color textPrimaryDark = Color(0xFFFFFFFF);
-  static const Color textSecondaryDark = Color(0xFFEBEBF5);
-  static const Color textTertiaryDark = Color.fromRGBO(235, 235, 245, 0.3);
-  static const Color successDark = Color(0xFF30D158);
-  static const Color warningDark = Color(0xFFFF9F0A);
-  static const Color errorDark = Color(0xFFFF453A);
+  static const Color primaryDark = Color(0xFF1B6DFF);
+  static const Color primaryDarkDark = Color(0xFF0E4FC4);
+  static const Color primaryLightDark = Color(0xFFE8F1FF);
+  static const Color backgroundDark = Color(0xFFF8FBFF);
+  static const Color surfaceDark = Color(0xFFFFFFFF);
+  static const Color borderDark = Color(0xFFE3EAF3);
+  static const Color textPrimaryDark = Color(0xFF18222E);
+  static const Color textSecondaryDark = Color(0xFF60758D);
+  static const Color textTertiaryDark = Color(0xFF9AA8B6);
+  static const Color successDark = Color(0xFF17C7A8);
+  static const Color warningDark = Color(0xFFFF9F43);
+  static const Color errorDark = Color(0xFFF2555F);
 }

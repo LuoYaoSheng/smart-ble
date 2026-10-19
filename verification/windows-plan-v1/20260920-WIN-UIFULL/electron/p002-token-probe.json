@@ -1,0 +1,30 @@
+{
+  "afterWizardOpen": {
+    "ssid": "",
+    "hub": "",
+    "pairing": null,
+    "provisioning": false,
+    "submitDisabled": true,
+    "ssidDomVal": ""
+  },
+  "afterSsidFill": {
+    "ssid": "WalkTest24G",
+    "hub": "",
+    "pairing": null,
+    "provisioning": false,
+    "submitDisabled": true,
+    "ssidDomVal": "WalkTest24G"
+  },
+  "parseBtnFound": true,
+  "afterParse": {
+    "ssid": "WalkTest24G",
+    "hub": "",
+    "pairing": null,
+    "provisioning": false,
+    "submitDisabled": true,
+    "ssidDomVal": "WalkTest24G"
+  },
+  "modalStillOpen": true,
+  "qrBadgeText": "必需",
+  "qrTitleText": "获取 ControlHub 配对码"
+}

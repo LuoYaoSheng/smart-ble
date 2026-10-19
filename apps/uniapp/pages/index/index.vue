@@ -1,60 +1,55 @@
 <template>
 	<view class="ble-shell index-shell">
-		<app-navbar kicker="SmartBLE Mini" title="BLE Toolkit+" :status-active="bleState === 'on'" :status-text="bleStatusText" />
+		<AppNavbar
+			kicker="蓝析BLE工具箱"
+			title="扫描"
+			:status-text="bleStatusText"
+			:status-tone="bleStatusTone"
+		/>
 
 		<view class="ble-content page-content">
 			<scan-summary
 				id="scan-summary"
-				:filtered-count="filteredDevices.length"
-				:device-count="devices.length"
-				:connected-count="connectedCount"
 				:scanning="isScanning"
+				:scanned="hasScanned"
+				:shown-count="filteredDevices.length"
 				:error="scanError"
 				@toggle="toggleScan"
 				@retry="startScan"
 			/>
 
-			<view v-if="knownDevices.length" class="known-devices-panel ble-card">
-				<view class="results-header">
-					<view class="ble-section-meta"><text class="ble-section-title">已配置 Smart HID</text><text class="ble-section-caption">本机保存的非敏感历史记录，不代表设备当前在线。</text></view>
-					<view class="known-header-actions">
-						<text class="known-count">{{ knownDevices.length }} 台</text>
-						<button class="ble-btn ble-btn--ghost ble-btn--sm" @click="openHidHistory">全部历史</button>
-					</view>
+			<view class="sec-t">
+				<view class="t">
+					<AppIcon name="chip" :size="30" tone="primary" />
+					<text class="sec-title">附近设备</text>
+					<AppChip v-if="filteredDevices.length" :text="filteredDevices.length" tone="neutral" />
 				</view>
-				<view v-for="device in knownDevices" :key="device.deviceId" class="known-device-row">
-					<view class="known-device-copy"><text class="known-device-name">{{ device.name || 'Smart HID' }}</text><text class="known-device-meta ble-mono">{{ device.deviceId }}</text></view>
-					<view class="known-device-actions"><button class="ble-btn ble-btn--secondary ble-btn--sm" @click="openKnownHidDevice(device)">查看</button><button class="ble-btn ble-btn--ghost ble-btn--sm" @click="removeKnownHidDevice(device)">移除</button></view>
-				</view>
+				<text class="filter-toggle" @click="showFilters = !showFilters">{{ showFilters ? '收起筛选' : '筛选' }}</text>
 			</view>
+			<filter-panel v-if="showFilters" v-model="filterSettings" class="inline-filter" />
 
-			<view class="results-panel ble-card">
-				<view class="results-header">
-					<text class="ble-section-title">附近设备</text>
-					<text class="filter-toggle" @click="showFilters = !showFilters">{{ showFilters ? '收起筛选' : '筛选' }}</text>
-				</view>
-				<filter-panel v-if="showFilters" v-model="filterSettings" class="inline-filter" />
-
-				<view class="tab-content">
-					<scroll-view scroll-y class="device-scroll">
-						<empty-state
-							v-if="filteredDevices.length === 0"
-							image="/static/placeholders/empty_scan.png"
-							:title="devices.length > 0 ? '当前没有匹配设备' : '还没有扫描结果'"
-							:description="devices.length > 0 ? '调整筛选试试。' : '点上方按钮开始扫描。'"
+			<view class="tab-content">
+				<scroll-view scroll-y class="device-scroll">
+					<AppEmpty
+						v-if="filteredDevices.length === 0"
+						:ill="devices.length > 0 ? 'link' : 'radar'"
+						:title="devices.length > 0 ? '当前没有匹配设备' : '还没有扫描结果'"
+						:description="devices.length > 0 ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备'"
+						:action-label="hasScanned || devices.length > 0 ? '' : '开始扫描'"
+						action-icon="scan"
+						@action="startScan"
+					/>
+					<template v-else>
+						<DeviceCard
+							v-for="device in filteredDevices"
+							:key="device.deviceId"
+							:device="device"
+							@tap="showAdvertisingData"
+							@connect="connectDevice"
+							@configure="openProfileDevice"
 						/>
-						<template v-else>
-							<device-card
-								v-for="device in filteredDevices"
-								:key="device.deviceId"
-								:device="device"
-								@click="showAdvertisingData"
-								@generic="connectDevice"
-								@profile="openProfileDevice"
-							/>
-						</template>
-					</scroll-view>
-				</view>
+					</template>
+				</scroll-view>
 			</view>
 
 			<advertisement-dialog :visible="showAdvDataModal" :device="selectedAdvertisementDevice" @close="closeAdvDataModal" @copy="copyAdvData" />
@@ -64,41 +59,47 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { onShareAppMessage } from '@dcloudio/uni-app';
-import DeviceCard from '../../components/device-card/device-card.vue';
+// UI-PARITY-G0：P001 改挂正典组件层 components/ui/（COMPONENT_CONTRACT）
+import DeviceCard from '../../components/ui/DeviceCard.vue';
+import AppNavbar from '../../components/ui/AppNavbar.vue';
+import AppIcon from '../../components/ui/AppIcon.vue';
+import AppChip from '../../components/ui/AppChip.vue';
+import AppEmpty from '../../components/ui/AppEmpty.vue';
 import FilterPanel from '../../components/filter-panel/filter-panel.vue';
-import AppNavbar from '../../components/common/app-navbar.vue';
-import EmptyState from '../../components/common/empty-state.vue';
 import ScanSummary from '../../components/scan/scan-summary.vue';
 import AdvertisementDialog from '../../components/scan/advertisement-dialog.vue';
 import { useHidStore } from '../../store/hid';
 import { useBleScan } from '../../composables/use-ble-scan.js';
-import { buildHidDetailUrl, buildGenericDeviceDetailUrl, buildHidHistoryUrl, buildProfileActionUrl } from '../../services/provisioning/profile-navigation.js';
+import { buildGenericDeviceDetailUrl, buildProfileActionUrl } from '../../services/provisioning/profile-navigation.js';
+// #ifdef H5
+// H5 假数据通道：暴露页面本地态给 window.__MOCK__（?mock=1 时才有消费者）
+import { registerPageTargets } from '../../services/mock/mock-registry.js';
+// #endif
 
 const hidStore = useHidStore();
-const knownDevices = computed(() => hidStore.knownDevices);
-hidStore.pruneKnownDevices?.();
 
 const showAdvDataModal = ref(false);
 const selectedAdvertisementDevice = ref(null);
 const showFilters = ref(false);
 
-const { filterSettings, devices, filteredDevices, connectedDevices: connectedDevicesList, isScanning, scanError, bleState, start: startScan, toggle: toggleScan, prepareConnect } = useBleScan();
+const { filterSettings, devices, filteredDevices, hasScanned, isScanning, scanError, bleState, start: startScan, toggle: toggleScan, prepareConnect } = useBleScan();
+
+// #ifdef H5
+registerPageTargets('p001', { hasScanned, showFilters, filterSettings, showAdvDataModal, selectedAdvertisementDevice });
+// #endif
+// 蓝牙状态词（正典 p001 btWord + 桌面壳瞬态）：on 就绪 / off 未开启 / unsupported 平台不支持 / initializing 初始化中…
 const bleStatusText = computed(() => {
 	if (bleState.value === 'on') return '蓝牙就绪';
-	if (bleState.value === 'unsupported') return '当前平台不支持 BLE';
+	if (bleState.value === 'unsupported') return '平台不支持';
+	if (bleState.value === 'initializing') return '初始化中…';
 	return '蓝牙未开启';
 });
-
-// 已连接计数纳入 Smart HID 配网会话，避免“配网中却显示已连接 0”的口径漂移（P001-I04）
-const connectedCount = computed(() => connectedDevicesList.value.length + (hidStore.sessionOnline ? 1 : 0));
-
-// #ifdef MP-WEIXIN
-onShareAppMessage(() => ({
-	title: '分享一个好用的 BLE 工具: BLE Toolkit+',
-	path: '/pages/index/index'
-}));
-// #endif
+const bleStatusTone = computed(() => {
+	if (bleState.value === 'on') return 'on';
+	if (bleState.value === 'unsupported') return '';
+	if (bleState.value === 'initializing') return '';
+	return 'off';
+});
 
 const connectDevice = async (device) => {
 	await prepareConnect();
@@ -113,25 +114,6 @@ const openProfileDevice = async (device) => {
 		hidStore.setCurrentDevice(device);
 	}
 	uni.navigateTo({ url: buildProfileActionUrl(device.profileId, device) });
-};
-
-const openKnownHidDevice = (device) => {
-	hidStore.setCurrentDevice(device);
-	uni.navigateTo({ url: buildHidDetailUrl(device.deviceId) });
-};
-
-const openHidHistory = () => {
-	uni.navigateTo({ url: buildHidHistoryUrl() });
-};
-
-const removeKnownHidDevice = (device) => {
-	uni.showModal({
-		title: '移除设备记录',
-		content: `移除“${device.name || 'Smart HID'}”的本机历史记录？这不会影响设备当前配置。`,
-		success: (result) => {
-			if (result.confirm) hidStore.removeKnownDevice(device.deviceId);
-		}
-	});
 };
 
 const showAdvertisingData = (device) => {
@@ -157,36 +139,32 @@ const copyAdvData = (content) => {
 	height: calc(100vh - 2rpx);
 }
 
-.results-panel {
-	flex: 1;
+.sec-t {
 	display: flex;
-	flex-direction: column;
-	padding: 26rpx;
-	min-height: 0;
-}
-
-.results-header {
-	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	justify-content: space-between;
 	gap: 18rpx;
-	margin-bottom: 20rpx;
 }
 
-.filter-toggle { flex-shrink: 0; font-size: 23rpx; font-weight: 700; color: var(--ble-brand); }
-.inline-filter { margin-bottom: 18rpx; }
-.known-devices-panel { padding: 24rpx; }
-.known-header-actions { display: flex; flex-shrink: 0; align-items: center; gap: 12rpx; }
-.known-count { flex-shrink: 0; color: var(--ble-brand); font-size: 22rpx; font-weight: 700; }
-.known-device-row { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; padding: 18rpx 0; border-top: 1rpx solid var(--ble-line-soft); }
-.known-device-copy { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 6rpx; }
-.known-device-name { color: var(--ble-text); font-size: 26rpx; font-weight: 700; }
-.known-device-meta { overflow: hidden; color: var(--ble-text-muted); font-size: 20rpx; text-overflow: ellipsis; white-space: nowrap; }
-.known-device-actions { display: flex; flex-shrink: 0; gap: 10rpx; }
+.sec-t .t {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.sec-title {
+	font-size: var(--fs-h1);
+	font-weight: var(--fw-bold);
+	color: var(--c-text);
+}
+
+.filter-toggle { flex-shrink: 0; font-size: var(--fs-cap); font-weight: var(--fw-med); color: var(--c-primary); }
+.inline-filter { margin-top: 18rpx; }
 
 .tab-content {
 	flex: 1;
 	min-height: 0;
+	margin-top: 18rpx;
 }
 
 .device-scroll {

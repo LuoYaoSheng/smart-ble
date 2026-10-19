@@ -1,0 +1,4 @@
+=== RUN   TestWinBridgeAirCapture
+--- PASS: TestWinBridgeAirCapture (303.39s)
+PASS
+ok  	smartble	304.002s

@@ -1,0 +1,659 @@
+# Windows Host Implementation Plan
+
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+
+**Goal:** 在 Windows 主机上完成 BLE Toolkit+ 的 Windows 专项实现、真实 BLE 验证、安装包产出与可追踪交付。
+
+**Architecture:** Windows 主机只负责 Electron Windows、Tauri Windows、Avalonia Windows 及 Windows BLE/驱动/安装包专项。产品模型、协议、发布元数据和 CI 由 Mac 计划维护；Windows 消费同一正典并回传实现与证据，不建立第二套产品规则。
+
+**Tech Stack:** Windows 10/11、Node.js、Electron 27、noble/WinRT、Rust/Tauri 1、btleplug、.NET 8、Avalonia 11、WebView2、PowerShell、ESP32-S3/PlatformIO。
+
+---
+
+## 0. 文档控制
+
+| 字段 | 值 |
+|---|---|
+| 文档状态 | `CURRENT` |
+| 文档版本 | `1.0` |
+| 当前基线 | `refactor/uniapp-v1@718b3c0` |
+| 执行主机 | Windows |
+| 主负责人 | Windows 实现线 |
+| 对应 Mac 计划 | [2026-09-14-mac-host-implementation-plan.md](./2026-09-14-mac-host-implementation-plan.md) |
+| 历史来源 | [2026-09-11-dual-machine-scope-and-plan.md](./2026-09-11-dual-machine-scope-and-plan.md) |
+| 最后更新 | 2026-09-14 |
+
+本文件是 Windows 端后续进度确认的唯一计划入口。旧的双机计划保留为历史，不再向其中追加新进度。
+
+## 1. 范围边界
+
+Windows 主机负责：
+
+- `apps/desktop/electron/` 的 Windows 运行时、WinRT/noble 行为和 Windows 打包。
+- `apps/desktop/tauri/` 的 Windows WebView2、Rust/btleplug 行为和 MSI 打包。
+- `apps/desktop/avalonia/` 的完整 Windows 原生实现。
+- `tests/desktop/` 中桌面共享行为测试；涉及发布元数据口径时等待 Mac 的 `MAC-001/MAC-002` 先定稿。
+- Windows 真机 BLE、Smart HID、OTA、重连、多设备和安装包验证。
+- Windows 专项证据写入 `verification/windows-plan-v1/`。
+
+Windows 主机不负责：
+
+- UniApp、Flutter、Kotlin Android、iOS、原生 macOS、官网、ESP32 源码的主实现。
+- `docs/specs/`、`release/`、`docs/public/release/`、`.github/workflows/` 的最终口径；这些由 Mac 计划维护。
+- 为了让 Windows 测试通过而自行恢复或删除微信产品范围。
+- 代替 Mac 判定跨平台最终 PASS；Windows 只提交 Windows 证据。
+
+共享冲突域规则：
+
+- `apps/desktop/electron/**`、`apps/desktop/tauri/**`、`tests/desktop/**` 默认由 Windows 持有写锁。
+- Mac 若需修改 Electron/Tauri 的 macOS 专用文件，必须先确认 Windows 没有进行中的同目录任务，并以独立提交完成。
+- 每个任务开始前执行 `git pull --ff-only`，结束后先跑本任务门禁，再推 GitHub 与 Gitee。
+
+## 2. 状态与进度更新规则
+
+状态只允许使用：
+
+| 状态 | 含义 |
+|---|---|
+| `TODO` | 尚未开始 |
+| `IN_PROGRESS` | 已开始但验收未完成 |
+| `PASS` | 所有验收和证据均完成 |
+| `PASS_WITH_OBS` | 主路径通过，但有已登记且不阻断的观察项 |
+| `FAILED` | 已执行且存在产品或测试失败 |
+| `BLOCKED` | 缺硬件、凭据、上游决策或工具链，无法继续 |
+
+每次更新任务状态时必须同时填写：
+
+1. 实际执行 commit。
+2. 执行命令和退出码。
+3. 产物或真实设备结果。
+4. 证据目录。
+5. 未解决观察项。
+
+证据目录格式：`verification/windows-plan-v1/YYYYMMDD-WIN-xxx/`。
+
+## 3. 总进度看板
+
+| ID | 工作包 | 当前状态 | 历史基础 | 依赖 | 当前结论 |
+|---|---|---|---|---|---|
+| WIN-001 | 当前基线与 Windows 工具链 | `PASS_WITH_OBS` | 旧基线工具链曾可用 | 无 | `760dc16` 双远端一致建档;JDK 无 17/21(Windows 线不消费) |
+| WIN-002 | 桌面共享测试恢复全绿 | `PASS` | 94/95 | `MAC-001`、`MAC-002` | 95/95;M1 断言改消费正典产物,对微信裁决中立 |
+| WIN-003 | Electron Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交打包、扫描、GATT 通过 | WIN-001、WIN-002 | 20260918 三框架重测：build:win --dir exit0 + CDP 真机全链；见 20260918-WIN-ALL |
+| WIN-004 | Tauri Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 20260918：fmt 修复 + check/test/build 过 + T1-T16 真机链；T-WIN-DEF-001 在册 |
+| WIN-005 | Avalonia 功能补齐 | `PASS_WITH_OBS` | 单测 19/19 补齐 | WIN-001、MAC-008 | 20260920：SmartBLE.Desktop.Tests 新建，先红后绿抓出 UUID 小写映射真 bug；BLE 功能缺陷已清（见 20260918-WIN-DEF-FIX）；20260920-WIN-UIFULL 走查补 T-WIN-DEF-004+离开清会话双壳修复；同日 VWIN-UIFULL 续轮清 DEF-004/005/006（DataContext/卡片命令/寻祖绑定），V-WIN 全流程走查 16/16；同日 VWIN-UIALIGN 正典 UI 全量重写（TabBar+七视图+色彩探针 81/81，DEF-007~010 清剿）；同日 VWIN-UIALIGN2 布局数值收口（acts 撑满/模态等宽/stepper 修复等 6 缺陷，SL1~11 布局探针 92/92）；20260921 P5 终交付收口：dotnet test 55/55 复绿，验收全满足（0 编译错/新增测试全过/真 GATT 非占位）；OBS=P4 登记「自包含 exe 无 Win32 版本资源」 |
+| WIN-006 | Windows 真实 GATT 与重连回归 | `PASS_WITH_OBS` | T-WIN-DEF-001 已修 | WIN-003、WIN-004 | 20260918 WIN-DEF-FIX：重连死句柄修复，retry 探针 + T1-T16 全绿；E/T/V 真机 GATT 链全过；20260921 P5 终交付收口：真机双探针复绿（bleak 层 + Q app 12/12）；OBS=fixture_peripheral_s3 对应固件复验（烧录记 SHA）挂 P3 硬件窗口 |
+| WIN-007 | Smart HID Windows E2E | `PASS_WITH_OBS` | UI/传输代码已存在 | WIN-006、ControlHub 配对码、SHID 固件 | 20260921 P3 硬件窗口（用户拔电重启解锁）：**BLE 配网链全通**——ControlHub 源码 build+三端口起+一次性配对码（LAN 口径）+E-WIN P002（扫描→配置入口→身份→表单→QR 兜底粘贴→candidate 下发→七步）+hub 配对会话消费（17892 交换完成+devices 注册）+**SHID-FW-LOCK-001 断电恢复验证 ✓（INPUT 合法写入成功=锁清除铁证，20260918 起 0x0D 现象消失）**；wifi_failed 真实场景取证（串口日志）；**OBS①=WiFi 环境（20260927 翻案+推进，见 20260927-COUNTRY-FIX）**：原「HJWY 5GHz-only 单 BSSID 信道36」为误诊（那来自配网页 host 侧扫描显示融合 SSID 最优 BSSID）；真三层=①国家码——IDF 默认 01 只扫 1-11 而 HJWY 2.4G BSSID 在**信道 13**→NO_AP_FOUND（**已修**：固件 country CN，DEV 直填实证 3 秒拿 IP 192.168.23.48，workspace f955223）②BLE 连接态 coex 饥饿——**20260927 ANDROID-E2E 已裁决：Android 中央（华为 TAS-AN00/API31）下不存在**——BLE 保持连接时 HJWY 关联仅 1.1s、全程零 reason=210（固件 CPUP relax 200-300ms rc=0 被中央接受）；210 循环为 WinRT 栈特有（PREFER_WIFI/CPUP/PS_MIN_MODEM 三缓解对其无效）③2.4G 侧 23.x 段**出站实测不达 21 段 hub**（设备关联+拿 IP 后 POST 17892 EAGAIN 15s→controlhub_unreachable；同址 24 段手机 ping hub 可通=23 段被子路由隔离，环境事实非产品缺陷）——终态 Ready/P003/P005 已配网分支/pairing_expired/mqtt_invalid 仍待：20260927 手机驱动 E2E 已推进至下发链（含 controlhub_unreachable/wifi_failed 两错误码真机取证），终局配对 POST→MQTT→READY 被并行会话偷刷板子为第三方 K80 固件中断（下发时设备已非我方固件，串口 SD_* 横幅为证）；**20260927-HUB-TOKENS（无 ESP32 窗口）hub+broker 控制面半场全绿**：pairing invalid 404/expired 410（TTL 精确 300s）/used 409/session 状态流转全实证，MQTT 一次性凭据直连+command 主题 ACL+retained READY 上下线视图翻转+命令下行 200 executed 终态+同 request_id 幂等重放零重触达（M1-G2 hub 级）——仅剩真固件执行的设备侧半场（BLE 写入/WiFi 关联/STATUS 回传）；新 OBS-HT-001=取消态消费 hub 返回 400 而固件 default 映射 controlhub_unreachable（诊断方向错误，需 hub 改 409/410 语义或固件补 400 映射）；另用户报「已连接→扫描」崩溃经 dropbox 取证实锤为旧包 clinit NPE（修复包 40 连击+冷启动免疫），含六连修新 release 签名包 SmartBLE-v1.0.0-fix6-release.apk 华为装机回归绿（Tab/扫描/GWIN 三窗 0/43/0/广播弹窗）；安卓 App 侧真机首曝六修（订阅串行化/错误遮蔽/API31 回调签名/Tab NPE 崩溃/DsInput trailing/token 卸载）见 20260927-ANDROID-E2E/README.md；OBS②=EWIN-DEF-PROV-001（扫描卡匹配态晚于首渲，「配置」按钮需二次渲染出现）——**20260924 已修**（跨帧合并+渲染层粘滞，CDP 3/3，见 20260924-WIN-F004/README 真机窗口第二轮）；hub devices 报 firmware 1.1.0 vs 实际 1.2.0（口径差异）；证据 20260921-P3-HARDWARE/win007-evidence.md + 20260927-COUNTRY-FIX/README.md（串口 coex 诊断全记录） |
+| WIN-008 | Windows OTA E2E 回归 | `PASS_WITH_OBS` | 两线曾 `PASS_WITH_OBS` | WIN-006、OTA 固件 | 20260921 P3 硬件窗口：**两线版本迁移真实成功**——LightBLE fixture 双版本（1.0.0→1.0.1-cdc，pio 新构建 SHA 在案）+六字段 manifest（target 枚举必填：missing_target 设备侧拒绝实证）；E-WIN/T-WIN 各自全链 start→ready→DATA 556,544B（~6.5 分钟稳定传输）→commit→success→reboot→**版本回读设备侧独立证据**（bleak 直读 OTA 状态+INFO 双特征 `1.0.1-cdc`，重启后 GATT 树健康）；传输 64% 中断后重开升级成功（天然覆盖）；WIN-006 尾款 fixture_s3 复验同步达成（当前 commit 构建烧录+SHA 记录）；测试后设备归位（全擦+SHID 四分区烧回，广播/MAC 恢复出厂态）；**OBS=取消 abort 路径+缺 manifest/目标错/大小错/Hash 错真机重放未做（契约测试覆盖）**；CDC 变体串口走原生 USB（CH343 旁路，本轮以 BLE 为设备侧证据）；证据 20260921-P3-HARDWARE/ota/win008-evidence.md |
+| WIN-009 | Windows 安装包与安装验证 | `PASS_WITH_OBS` | Electron/Avalonia 有历史构建 | WIN-003～WIN-008、MAC-011 | 20260921 P4：六壳 8 产物全构建+SHA256（E NSIS+portable、T MSI+NSIS、V 自包含 zip、F Release zip、G 单 exe、Q venv zip；均未签名只标 Preview）；E(NSIS) 与 T(NSIS) 完成干净安装冒烟（装→启动→CDP 真首扫发现 8/7 台含 SHID-00000001→卸载→残留→重装）；**同日 T-MSI-ELEV 轮：MSI 提权闭环补齐（UAC 确认后 /qn 装 EXIT=0→HKLM 1.0.5 落位→CDP 真首扫 9 台含 SHID→提权卸载 EXIT=0→Program Files 与注册表零残留），P4「MSI 非提权 1603」OBS 清账**；证据 20260921-P4-PACKAGING/、20260921-T-MSI-ELEV/（余 OBS=8 条中已清 MSI 项） |
+| WIN-010 | Windows 最终交付与矩阵回填 | `PASS_WITH_OBS` | 历史证据分散 | WIN-001～WIN-009 | 20260921 P5 收口：FINAL-REPORT.md 落库（17 项台账+六壳矩阵+平台事实交 Mac+8 产物账）；最后一轮门禁六壳全绿+真机双探针（bleak 层 + Q app 12/12）+六产物新鲜度核验；含糊 TODO 清零（WIN-008 定格 BLOCKED）；OBS=WIN-007/008 BLOCKED 台账、四项用户裁决项未动、F-WIN Windows 侧 GATT 无独立真机走查（终报新登记）、F 深层无像素缝、全产物未签名仅 Preview；证据 20260921-P5-FINAL/ |
+| WIN-011 | 桌面壳导航一致性修复（Electron/Tauri） | `PASS_WITH_OBS` | N3 已修（20260920），N4 待裁决 | WIN-003、WIN-004 | N3 双壳对齐正典五态+CDP 回归；**20260921 用户裁决 N4=案 B（恒显四 Tab+未就绪徽章）并同日落地（WIN-N4B 轮）**：E/G 去 display:none+删 linux 条件（T 已恒显无需动），E/G app.js 镜像 diff 一致、95/95、CDP 冒烟 A1/A2/A3 绿（win32 下四 Tab+进页未就绪徽章+平台 chip）；余 OBS=N4 正典口径交 Mac 入正典 |
+| WIN-012 | F-WIN：Flutter Windows 第 4 壳立项 | `PASS_WITH_OBS` | apps/flutter 无 windows 目标（20260918 盘点确认） | WIN-001 | 20260920：windows runner 生成 + FBP 1.36.8/winrt 0.0.20/interface 9.0.3（overrides 调和 hex 线缆崩溃）+ `/utf-8` 编译修复 + 环境词/窗口对齐 + 关窗退出确认（window_manager）+ 广播切页停 + P002 扫码 Windows 降级（mobile_scanner 无实现→粘贴单路径）；门禁 analyze 0/test 122/build √；真机扫描 SHID-00000001(-45dBm)+REDMI+FREEBUDS 三台；证据 20260920-FWIN-GWIN/flutter/；P5 终报补记（20260921）：Windows 侧 GATT 连接链缺口 → **同日 FWIN-GATT-WALK 轮补证闭合（5737759 基线上）**：真机走查 连接/枚举 1svc(9F1D1001)/3char/读 INFO 130B JSON（与 Q 探针同构）/STATUS 订阅；剪贴板导出 858B 文本主证 + 走查后 bleak 只读复核设备无恙（全程零写入）；**新平台事实：扫描未停时连接→`发现 0 个服务`，停扫后重连正常**（同会话两尝试对照，终报 §4-8；正典口径=连接前停扫）；**同日 FWIN-OBS-FIX 轮（OBS 三项代码侧收口）**：O-3 显示名映射已修（ble_uuids 注册表补 9f1d 家族，与 Q-WIN 同源）；O-4 INPUT 写护栏双层落地（manager+UI，对齐 Q 语义；配网传输不经 writeCharacteristic 不受影响；真机取证待下轮真机窗口）；O-2 退订弹回插桩缝（详情页静态无自动 pop 路径，H1 驱动误伤/H2 FBP 伪断连两假说，四个导航节点日志随剪贴板导出带出）；门禁 analyze 0+test 129/129+build √；证据 20260921-FWIN-OBS-FIX/；**同日 FWIN-BROADCAST 轮（裁决项 #2 翻门控）**：isSupported 白名单加 Windows+initialize/isPlatformSupported 短路（插件 Windows 后端无 isSupported 通道）；平台 chip 修 Windows 误显 Web；双端空口验证 A1 绿（手机收 `06ff0100424c45` 厂商块 43 包，随机 MAC 同 V-WIN 口径）+A3 绿（进程退出空口归零）；**新 OBS=FWIN-BC-001：插件 stop() 后空口不即时停**（UI 回 idle 但同 MAC 持续发包，进程退出才静默，三轮复现；影响 WIN-016 切页停播在 Windows 的空口实效）；证据 20260921-FWIN-BROADCAST/；**同日 P3 硬件窗口真机取证**：O-3 ✅ 销账（三特征正典中文名目检：设备信息 (INFO)/配网数据写入 (INPUT)/设备状态 (STATUS)）；O-4 ✅ 销账（护栏拦截实证=对话框不弹+禁用文案入日志+走查后 bleak 复核设备无恙零写入闭环）；O-2 复现两轮+根因大幅收窄（dispose 时间戳与驱动点击/窗口最小化同秒、dispose 前无「断开（用户操作）」日志、「发现 0 个服务」紧前于第二次弹回=FBP 连接状态崩塌主假说；代码层无自动 pop 路径，疑 FBP 事件链→Navigator 异常路径，需 F 侧日志基建下轮定位；修复方向=断连/重发现空显示错误态而非路由回退）；证据 20260921-P3-HARDWARE/fwalk-obs-evidence.md |
+| WIN-013 | G-WIN：Wails(Go) 第 6 壳立项 | `PASS_WITH_OBS` | 无（新壳） | WIN-001 | 20260920 续建收口：E-WIN 前端**字节级全页镜像**（frontend/src=electron/public，diff 验证一致）+ `wails-bridge.js`（E-WIN preload 的 window.bleAPI 契约→Go 绑定，mock 旁路口径同 E-WIN）+ Go 后端全 GATT 原语（流式扫描/连接/渐进服务发现/读/带响应写=PARITY-007/notify/广播 win32 正典降级/中文名映射/UUID noble 短格式投影）+ 生命周期正典（OnBeforeClose→app:confirm-exit→模态→ConfirmExit 停扫断链退出；SetConnectHandler 断连单次事件）；**全页走查 23/23 flavor=real（真机）**：扫描出 SHID-00000001 弱匹配卡/P002 向导真机连接+身份读+令牌门+QR+粘贴兜底+返回清会话/P006 真机读+notify（动作面=read,notify,write,read,notify 与 E-WIN 一致）/P007/busy 退出确认「当前连接设备：1 台」/mock 全 UI（写弹窗/筛选/广播页/关于/版本）/常驻退出进程干净退出/console 0 错；**GWIN-DEF-001 已修**（WinRT ADV/SCAN_RSP 双事件被同 RSSI 去重吞名→按设备合并广播状态）；OBS：tinygo Uncached 枚举未配对会话仅回 9f1d 一服务（探针复现，动作面恰好对齐，配对窗口回验）；wails v2.16 封死外部 CDP→自建 automation seam（env 门控测试基建）；vet √ build √；证据 20260920-GWIN-FULL/（23 断言 JSON+13 截图+坑位账） |
+| WIN-014 | Q-WIN：Qt(PySide6+bleak) 第 5 壳立项 | `PASS_WITH_OBS` | 无（新壳） | WIN-001 | 20260921 GATT 续建收口（v1 两项待续全清）：P006 设备详情 GATT（连接/树/读/带响应写=PARITY-007/订阅开关；标准 UUID+9f1d 家族中文名）+ P007 已连接实装（列表/详情往返/单断/全断）+ 写弹窗 UTF-8/HEX + **INPUT 写代码级护栏（SHID-FW-LOCK-001，走查实证发送被拦、零设备风险）** + GattWorker 常驻 asyncio loop + env 门控 TCP 自动化 seam（Qt grab 截图）；**真机走查 12/12**：扫描 SHID-00000001 恒居首/连接 MTU256/动作面 [notify+read,write,notify+read] 与 E/G 一致/INFO 读身份 fw1.2.0 unprovisioned/STATUS 订阅开关/busy 退出确认「当前连接设备：1 台」/全断/常驻退出 exit 0；无头探针全链（扫描→连接→枚举→读→订阅→断开）；compileall/AST 门禁 √；OBS：未配对枚举仅 9f1d 一服务（与 G-WIN tinygo 同口径，配对窗口合并回验）、STATUS 未配对零推送（按订阅态断言）；v1 底子（扫描/降级/关于/生命周期/图标）不变；.NET 已由 V-WIN 覆盖不另立项；证据 20260921-QWIN-GATT/（12/12 JSON+13 截图+探针日志+6 新坑位） |
+| WIN-015 | 六壳应用图标统一 | `PASS` | E/V 已同源；F 为模板图标；T 同源异字节 | WIN-003/004/005/012/013/014 | 20260920：正典源定案 `apps/desktop/electron/public/brand/icon.png`(512) + `assets/icon.ico`；`tools/unify_icons.py` 一键分发，E/T/V/F/Q/G 六壳 .ico sha256=42139766…字节级一致；页内平台图标 E/T 目录 diff 空 |
+| WIN-016 | 流程韧性（返回/临时退出/中断）对齐 | `PASS_WITH_OBS` | E/T/V 已有骨架，口径缺漏 | WIN-003/004/005/012/014 | 正典依据=uniapp onHide/onUnload/onBackPress + desktop.js dwin-quit（busy=连接 OR 广播）。20260920 修复：E/T 关窗 busy 补广播 + 退出先停广播再断连 + E/T 切出广播页停广播（onHide 口径）+ T 切入广播页停扫描（对齐 E）+ F-WIN 补关窗退出确认 + F 广播页 dispose 停广播（原生广播不随页面销毁自停）；node --check E/T √。P006 订阅随连接存续=正典（连接常驻）；V-WIN 广播降级下 busy=连接即完整。**20260921 FWIN-BC-001（新 OBS）：F-WIN Windows 上 stop() 只停 UI 不停空口（同 MAC 持续发包，进程退出才静默）→ 「切出广播页停广播」在 Windows 的空口实效受损；规避口径=需确保静默时退出应用（详见 20260921-FWIN-BROADCAST）** |
+
+| WIN-017 | Windows×Android 跨端广播联调（V-WIN 真发射参考实装） | `PASS_WITH_OBS` | 用户 20260921 指令：安卓版当空口观察者联调 | WIN-001、WIN-014 | 六壳广播盘点：E/T/G/Q 拒绝式降级、F 插件 flutter_ble_peripheral 自带 Windows 后端但被 isSupported 门控（升级项=翻门控+验证）；V-WIN 实装 WinRT BluetoothLEAdvertisementPublisher——**平台事实（adv-probe 二分）**：桌面进程仅厂商块 0xFF 可发（LocalName/ServiceUuids 一律 Start() 拒绝、空负载拒），无 Microsoft CID 劫持，LE 用随机地址；Phase A：V-WIN 发→A-AND（华为 Mate 30 5G）空口收 `06ff0100424c45`（CID 0001+BLE 原样，-41dBm，31 包/5s）；Phase B：华为发（FFF0/0001/BLE/名在 SCAN_RSP）→V-WIN 收到「Mate 30 5G」卡片（-44dBm），A/B 停播对照=消失；**VWIN-DEF-011 修复**（Update 无条件覆盖名字→ADV 帧冲掉 SCAN_RSP 名，改只在非空覆盖）；生命周期收口=切出广播页停播+广播中退出确认+publisher 防崩（曾带崩 app，事件日志栈为证）；单测 55/55；证据 20260921-XDEV-BROADCAST/（12 断言+平台事实+7 坑位）；OBS：Windows 空口无名/UUID 会输入 N4 裁决（仍待用户）；**同日 EWIN-BRIDGE 轮（裁决项 #3 模板）：E-WIN 广播从拒绝式降级升级为真发射**——PowerShell 边车（行协议）+ 系统 csc 首编译 C# helper（仅厂商块 0xFF，win32 分支 name/uuid 按平台事实忽略）+ before-quit 清理；E/G 镜像 initBLE 打回 idle 时序缺陷顺修；双端验证 A1 UI 绿（广播中徽章+停止按钮）/A2 手机收 `06ff0100424c45` 44 包/**A3 停播空口真停（与 FWIN-BC-001 相反，边车优势）**/A4 退出静默；95/95+node --check；PS5.1 WinRT 坑位账 7 条（**ps1 中文注释必须 BOM** 等）；证据 20260921-EWIN-BRIDGE/ |
+
+完成率统计只按本表：`PASS` 2 / `PASS_WITH_OBS` 15 / `IN_PROGRESS` 0 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 0（20260921 P3 硬件窗口收口：WIN-007/008 解除 BLOCKED——配网 BLE 链+FW-LOCK 恢复验证+两线 OTA 版本迁移真实成功；余 OBS=WiFi 2.4G 环境（配网终态）+OTA 取消路径等，见各行）。
+
+## 4. 实施任务
+
+### WIN-001：冻结 Windows 基线与工具链
+
+**Files:**
+
+- Update: `docs/plans/2026-09-14-windows-host-implementation-plan.md`
+- Create evidence: `verification/windows-plan-v1/<date>-WIN-001/`
+
+**Steps:**
+
+1. 执行 `git fetch --all --prune`、`git pull --ff-only`、`git status --short --branch`。
+2. 确认 GitHub/Gitee 的 `refactor/uniapp-v1` 指向同一 commit。
+3. 记录 `node --version`、`npm --version`、`rustc --version`、`cargo --version`、`dotnet --info`、`java -version`、`pio --version`。
+4. Node 必须为 `>=22.18` 或 `>=23.6`；JDK 必须为 17/21，不使用 JDK 25；Rust 使用 MSVC toolchain；.NET SDK 至少 8。
+5. 记录 Windows 版本、WebView2 版本、蓝牙适配器、ESP32 COM 口和可用测试手机。
+6. 提交工具链快照，不提交密钥、配对 token 或机器私有路径。
+
+**Acceptance:** HEAD 为双远端共同最新提交，工作区干净，全部必需工具有版本记录。
+
+### WIN-002：恢复桌面共享测试全绿
+
+**Files:**
+
+- Modify: `tests/desktop/version-metadata.desktop.test.mjs`
+- Modify as needed: `tests/desktop/*.test.mjs`
+- Do not modify independently: `release/**`, `docs/public/release/**`
+
+**Steps:**
+
+1. 等 `MAC-001` 确认微信范围、`MAC-002` 生成最新元数据。
+2. 先运行 `node --test tests/desktop/*.test.mjs`，保存当前 94/95 失败基线。
+3. 更新旧的 `wechat` 四键序断言，使其消费生成元数据而不是手写平台列表。
+4. 对 Electron/Tauri 镜像文件继续执行逐字节一致性断言。
+5. 再运行桌面测试，预期全部通过。
+6. 运行两线主要 JS 文件的 `node --check`。
+
+**Acceptance:** `tests/desktop` 0 失败；不得通过放宽断言或跳过测试实现。
+
+### WIN-003：Electron Windows 当前提交构建与启动
+
+**Files:**
+
+- Modify as needed: `apps/desktop/electron/src/main/index.js`
+- Modify as needed: `apps/desktop/electron/src/preload/preload.js`
+- Modify as needed: `apps/desktop/electron/public/**`
+- Modify as needed: `apps/desktop/electron/package.json`
+
+**Steps:**
+
+1. 执行 `cd apps/desktop/electron && npm ci`。
+2. 执行 `node --check` 和 WIN-002 桌面测试。
+3. 执行 `npm run build:win -- --dir`，验证解包目录构建。
+4. 启动 Electron CDP 调试实例，检查启动、四 Tab、P002/P003/P005/P006/P010 和退出确认。
+5. 检查蓝牙授权拒绝、适配器关闭、无设备和扫描失败状态。
+6. 暂不做签名；签名与安装器归 WIN-009。
+
+**Acceptance:** 构建退出码 0，应用无未捕获 JS 异常，全部活动页面可达。
+
+### WIN-004：Tauri Windows 当前提交构建与启动
+
+**Files:**
+
+- Modify as needed: `apps/desktop/tauri/src-tauri/src/lib.rs`
+- Modify as needed: `apps/desktop/tauri/src-tauri/tauri.conf.json`
+- Modify as needed: `apps/desktop/tauri/src/**`
+
+**Steps:**
+
+1. 在 `apps/desktop/tauri/src-tauri` 执行 `cargo fmt --check`、`cargo check`、`cargo test`。
+2. 执行 `cargo tauri build --debug`；不得使用不存在的根目录 `npm run tauri build`。
+3. 通过 `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9444` 启动。
+4. 检查页面可达性、无重复全局声明、退出确认和 mock/真实 BLE 模式。
+5. 检查 WinRT 断线后短扫描重建缓存逻辑仍有效。
+
+**Acceptance:** Rust 构建通过，WebView2 控制台无异常，页面和扫描入口可用。
+
+### WIN-005：补齐 Avalonia Windows 原生实现
+
+**Files:**
+
+- Modify: `apps/desktop/avalonia/SmartBLE.Desktop/ViewModels/BleService.cs`
+- Modify: `apps/desktop/avalonia/SmartBLE.Desktop/ViewModels/MainWindowViewModel.cs`
+- Modify: `apps/desktop/avalonia/SmartBLE.Desktop/MainWindow.axaml`
+- Create: `apps/desktop/avalonia/SmartBLE.Desktop.Tests/SmartBLE.Desktop.Tests.csproj`
+- Create: `apps/desktop/avalonia/SmartBLE.Desktop.Tests/BleServiceTests.cs`
+
+**Steps:**
+
+1. 先为 UUID 规范化、设备去重、读写编码、Notify 路由和断开清理写失败测试。
+2. 运行 `dotnet test`，确认测试能真实失败而非未发现测试。
+3. 将 Read/Write/Notify 命令接入真实 WinRT GATT API，并把回调结果送入 ViewModel/UI。
+4. 补齐扫描、已连接、广播降级、关于、版本，以及 P002/P003/P005/P006 的 Windows 等价页面或明确降级。
+5. 禁止重新引入不存在的 `WindowsBluetooth` 包；继续使用 Windows TFM 的 WinRT 投影。
+6. 执行 `dotnet build`、`dotnet test`、`dotnet run`。
+
+**Acceptance:** 0 编译错误，新增测试全过；Read/Write/Notify 不能只停留在按钮或占位 ViewModel。
+
+### WIN-006：当前提交真实 GATT、重连与多设备回归
+
+**Files:**
+
+- Test: `tests/desktop/**`
+- Evidence: `verification/windows-plan-v1/<date>-WIN-006/`
+
+**Steps:**
+
+1. 给 ESP32-S3 烧录与当前 commit 对应的 `fixture_peripheral_s3`，记录启动 JSON 和固件 SHA。
+2. Electron、Tauri 分别执行扫描、连接、服务发现、Read、TEXT/HEX Write、Notify、退订、主动断开。
+3. 注入被动断线，验证 1s/3s/5s 或当前正典规定的重连策略，确认用户主动断开不重连。
+4. 若第二个外设可用，验证双连接和相同 UUID 的通知不串线。
+5. Avalonia 在 WIN-005 完成后运行同一基础链；未完成不得假记 PASS。
+
+**Acceptance:** Electron/Tauri 必须在当前提交全部通过；每一步都有 UI、主进程/Rust 日志和设备侧证据。
+
+### WIN-007：Smart HID Windows 端到端
+
+**Files:**
+
+- Modify as needed: `apps/desktop/electron/public/hid-service.js`
+- Modify as needed: `apps/desktop/tauri/src/hid-service.js`
+- Test: `tests/desktop/smart-hid-*.test.mjs`
+- Evidence: `verification/windows-plan-v1/<date>-WIN-007/`
+
+**Steps:**
+
+1. 准备未配网 Smart HID 固件、可用 ControlHub 和一次性配对码。
+2. Electron/Tauri 依次验证强匹配、弱匹配、普通 GATT 双入口。
+3. 完成 P002：连接与身份验证、扫码/粘贴配对码、candidate 分帧、STATUS 七步、Ready。
+4. 完成 P003 会话快照和 P005 五项诊断。
+5. 分别验证 `wifi_failed`、`pairing_expired`、`mqtt_invalid`、断线和取消恢复路径。
+6. 证据和日志必须脱敏，不保存 Wi-Fi 密码和 token。
+
+**Acceptance:** 两条 Windows 桌面线均有成功路径和至少三类失败恢复证据；缺 ControlHub 时保持 `BLOCKED`。
+
+### WIN-008：Windows OTA 全链回归
+
+**Files:**
+
+- Modify as needed: `apps/desktop/electron/public/components/OtaDialog.js`
+- Modify as needed: `apps/desktop/tauri/src/components/OtaDialog.js`
+- Test: `tests/desktop/ota-contract.desktop.test.mjs`
+
+**Steps:**
+
+1. 准备基线固件、目标固件、六字段 manifest 和 SHA256。
+2. 验证缺 manifest、目标错误、大小错误、Hash 错误均在传输前被拦截。
+3. 两线执行 start → ready → DATA → commit → success → reboot。
+4. 验证取消会发送 abort，重开会话后仍可成功升级。
+5. 专门复验历史观察项：设备重启后重新扫描/连接并读取版本。
+
+**Acceptance:** 两线版本迁移真实成功；若版本回读仍受 Windows BLE 缓存影响，必须给出独立设备侧证据并标记 `PASS_WITH_OBS`。
+
+### WIN-009：Windows 安装包与干净安装
+
+**Files:**
+
+- Modify as needed: `apps/desktop/electron/package.json`
+- Modify as needed: `apps/desktop/tauri/src-tauri/tauri.conf.json`
+- Modify as needed: `apps/desktop/avalonia/SmartBLE.Desktop/SmartBLE.Desktop.csproj`
+- Coordinate with Mac: `.github/workflows/release-build.yml`
+
+**Steps:**
+
+1. Electron 产出 NSIS 和 portable；Tauri 产出 MSI；Avalonia 产出 `win-x64` self-contained 包。
+2. 在未安装开发依赖的 Windows 用户环境完成安装、启动、卸载和重装。
+3. 验证蓝牙权限、首次扫描、版本号、图标、产品名和卸载残留。
+4. 为每个 Artifact 生成 SHA256，并记录体积和目标架构。
+5. 签名凭据不可入库；无签名时 Artifact 只能标 Preview。
+
+**Acceptance:** 至少 Electron 和 Tauri 两个安装包完成干净安装冒烟；无 SHA256 不得进入发布元数据。
+
+### WIN-010：Windows 最终交付
+
+**Files:**
+
+- Update: `docs/plans/2026-09-14-windows-host-implementation-plan.md`
+- Create: `verification/windows-plan-v1/FINAL-REPORT.md`
+- Mac consumes evidence in: `docs/specs/09_test/`
+
+**Steps:**
+
+1. 汇总 WIN-001～WIN-009 的 commit、命令、结果、Artifact 和证据路径。
+2. 所有未完成项必须是 `BLOCKED` 或 `FAILED`，不允许保留含糊的 `TODO`。
+3. 将 Windows 平台差异、缓存观察项、安装限制交给 Mac 更新正典。
+4. 运行最后一轮桌面测试、三实现构建和真实 BLE 冒烟。
+5. 提交最终报告，并等待 Mac 的跨平台总门禁，不自行宣布全产品发布。
+
+**Acceptance:** Windows 看板全部结论化，最终报告可独立复现，Mac 能直接据此回填跨平台矩阵。
+
+### WIN-011：桌面壳导航一致性修复（源自 2026-09-15 导航审计 N3/N4）
+
+来源：`verification/ui-nav-audit-20260915/REPORT.md`（七端静态+运行时双轮审计）。两壳均属 Windows 写锁区，Mac 侧仅登记不改码。
+
+**Files:**
+
+- Modify: `apps/desktop/electron/public/app.js`（N3 stateMap ~927-939；N4 broadcastTab ~874-877）
+- Modify: `apps/desktop/tauri/public/app.js`（N3 updateStatus ~506-520；N4 视裁决口径）
+- Create evidence: `verification/windows-plan-v1/<date>-WIN-011/`
+
+**N3（bt-chip 状态词对齐正典）：**
+
+1. Electron stateMap：`unauthorized` 的「未授权」改「蓝牙未开启」（正典词，iOS/Android/uniapp 一致；`MainActivity.kt:147` 注释即「Unauthorized 同未开启（对齐桌面壳）」）；fallback「状态未知」改「初始化中…」；补「平台不支持」灰点态。
+2. Tauri updateStatus：补「蓝牙未开启」红点态（现 poweredOff 归入「平台不支持」分支）。
+
+**N4（广播 Tab 初始可见性，两案待用户裁决）：**
+
+- 案 A（按能力显隐，Electron 现状）：`platform==='linux'` 才显示广播 Tab（bleno 仅 Linux 支持）；若采纳，Tauri/macOS 需反向对齐（macOS 侧归 Mac 改）。
+- 案 B（恒显四 Tab +「未就绪」徽章，正典 A3 形态，Tauri/macOS 现状）：广播 Tab 恒显，不支持平台进页显示「未就绪」徽章（Android 已是此口径：`MainActivity.kt` badgeText「未就绪」）；若采纳，仅改 Electron。
+
+**Acceptance:** 两壳 bt-chip 五态词与正典逐字一致；广播 Tab 可见性口径全产品一致；运行时截图（macOS/Windows 各一组）回填审计报告 N3/N4 状态。
+
+### 跨线协调记录（Mac 侧对写锁区的最小侵入，2026-09-15 CI 首跑解锁）
+
+- `apps/desktop/tauri/src-tauri/icons/{32x32,128x128,128x128@2x}.png`：RGB→RGBA 重编码（ImageMagick PNG32，AE=0 逐像素无损，备份与校验见 verification/mac-plan-v1/）。原因：tauri v1 Linux 打包路径的 `generate_context!` 强制 RGBA（`icon 32x32.png is not RGBA` proc-macro panic），macOS 构建走不到该检查故从未暴露。属纯格式转换、零视觉/逻辑改动；Windows 线后续打包不受影响（.ico/.icns 未动）。
+
+### 2026-09-18 · WIN-003/WIN-004/WIN-005（部分）/WIN-006（部分）——三框架 × ESP32 真机全面重测
+
+用户指令「重测 Windows 和 esp32 进行一次全面测试，Windows 应该有很多框架，一个个测试」。
+盘点确认 Windows 侧实际框架为 Electron/Tauri/Avalonia 三个（apps/desktop/windows、linux 为
+README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架执行构建+启动+真机 BLE 全链。
+
+- Status: WIN-003 `PASS_WITH_OBS` / WIN-004 `PASS_WITH_OBS` / WIN-005 `IN_PROGRESS`（含 1 修复）/ WIN-006 `IN_PROGRESS`
+- Commit: 基于 `9c413e6`（开测前 pull --ff-only Already up to date；本轮提交见 git log）
+- Host: Windows 10 22H2；Node v23.8.0（nvm 前置）/ rustc-cargo 1.98.1 MSVC / .NET SDK 9.0.200（net8.0-windows TFM）
+- Commands: `npm ci`（postinstall 挂死→缓存 zip 接管）、`node --check`×19、`node --test tests/desktop/*.test.mjs`（95/95）、
+  `npm run build:win -- --dir`（exit 0）、`cargo fmt --check`（FAIL→fmt 修复→clean）、`cargo check`/`cargo test`/`cargo build`（全过，Rust 单测 0 在册）、
+  `dotnet build`（exit 0，0 错 6 警）；CDP 9222/9444 + Win32 WM_CLOSE + .NET harness 驱动真机链
+- Result: E-WIN 全链过（F1-F15，断链重连身份逐字节一致）；T-WIN T1-T16 过但暴露重连死句柄（T-WIN-DEF-001）；
+  V-WIN 启动崩溃已修（BoxShadow），harness 过扫描/连接/发现/双读/通知，写失败+重连归零两缺陷在册。
+  三框架对同一设备读到相同身份帧 HID-00000001/fw1.2.0 与 wifi_failed 状态帧
+- Hardware: Intel Wireless Bluetooth；ESP32-S3 真实 Smart HID 固件 v1.2.0（WIN-007 现场原样保留）；
+  CH343/COM12 未接线（串口旁证缺，设备侧以 GATT 真实响应帧为证）；COM4=三星手机诊断口勿认错
+- Evidence: verification/windows-plan-v1/20260918-WIN-ALL/（summary.md 为总报告，含三框架横向矩阵与缺陷清单）
+- Observations: npm ci postinstall 本机网络挂死（SHASUMS 校验）需缓存接管；rcedit 文件锁重试自愈；
+  固件对非法 candidate 静默丢弃不回 invalid_payload；两壳 write format 词汇 text|hex vs utf8|hex
+- Next: T-WIN-DEF-001 与 V-WIN-DEF-001/002/003 修复排期（归 WIN-005/WIN-006 续作）；WIN-007 维持 BLOCKED
+
+### 2026-09-18 · WIN-DEF-FIX——四缺陷修复轮（WIN-ALL 续作）
+
+对 WIN-ALL 登记的四个缺陷逐一修复并真机复测，全程未动 ESP32（未重刷、NVS 原样）。
+
+- Status: T-WIN-DEF-001 修复 ✅（retry 探针 readA/B/C 全绿 + 主链 T1-T16 回归全绿）；
+  V-WIN-DEF-002 修复 ✅（重连 chars=3、身份 SAME）；V-WIN-DEF-003 修复 ✅（V12/V16 双断连
+  事件上报，CS0067 消除）；**V-WIN-DEF-001 重新定性为设备侧缺陷 SHID-FW-LOCK-001**
+  （见下），app 侧诊断与写选项自适应已修
+- Code: lib.rs——connect 前强制 `disconnect()` 清 btleplug 死缓存（被动掉链不清
+  `ble_services`、`discover_services` 对已有 uuid 跳过重枚举，源码级根因）+ 连接后自动
+  重建 GATT 句柄 + 断连事件收尾通知流/抑制伪事件；BleService.cs——GattSession/
+  GattDeviceService 显式释放 + 全链 `BluetoothCacheMode.Uncached` + ConnectionStatusChanged
+  接线（含主动断开上报与去重）+ 错误诊断码化（异常类型/HRESULT/status/protocolError）
+- **SHID-FW-LOCK-001（新登记，设备侧）**：16:04-16:08 E-WIN 真实写成功（status-probe
+  writeV1 success:true）累计喂入 ~44B 无 schema 载荷后，16:18 起设备对 INPUT 写请求持久回
+  ATT 0x0D（Invalid Attribute Value Length，非标准信号）。表征：1/3/14B 全拒（排除真长度）、
+  时序无关（排除 SMP 窗口）、Windows 无配对记录且 console PairAsync 失败、无响应通道补
+  `}`/`\n`/合法 JSON 解卡全败、跨重连持续 ≥75 分钟。17:20 起 T-WIN 同败 0x8065000D——三栈
+  行为一致，非任一 Windows 框架缺陷。恢复手段未知（断电重启验证待硬件窗口）；固件仓在
+  Smart-HID-Workspace（非本仓库）
+- **方法论勘误**：WIN-ALL 驱动 step「ok」只表示 invoke 未抛异常，`success:false` 同计
+  ok——「noble/btleplug 写成功」前提系误证，本轮已以显式 success 检查重测（twin-write-probe）
+- Evidence: verification/windows-plan-v1/20260918-WIN-DEF-FIX/（summary.md 总报告 +
+  retry/主链/写探针矩阵/清障实验全套日志）
+- Next: SHID-FW-LOCK-001 移交固件侧排查（断电重启验证 + 输入解析器审查）；WIN-006 的
+  fixture_peripheral_s3 复验仍待硬件窗口；WIN-007 维持 BLOCKED
+
+### 2026-09-20 · WIN-011 N3 + WIN-005 单测补齐
+
+- N3 正典五态：Electron stateMap 三处（unauthorized→蓝牙未开启、fallback 状态未知→初始化中…、
+  补 unsupported→平台不支持灰点）；Tauri updateStatus 补 off 红点态 + 后端 Radio.GetRadiosAsync
+  区分「蓝牙关闭 vs 平台不支持」（windows 0.61 target 门控依赖，与 btleplug 同投影去重）
+- 验证：node --check×2、桌面套 95/95、cargo fmt/check/test、CDP 双壳芯片词回归 蓝牙就绪+绿点
+  （蓝牙关闭分支不 toggle 系统无线电，声明为构建门覆盖）；N4 维持待用户裁决
+- WIN-005 单测：新建 SmartBLE.Desktop.Tests（xunit 19 测试），先红后绿暴露并修复真 bug——
+  Uuid.ToString() 小写 vs switch 大写分支，含字母短 UUID 名称映射全部落 Unknown；
+  ResolveWriteOption 抽取顺带修双支持特征的无响应写错按带响应 bug
+- Evidence: verification/windows-plan-v1/20260920-WIN-011/
+- Next: N4 两案（按能力显隐 vs 恒显+未就绪徽章）待用户裁决后实施
+
+### 2026-09-20 · VWIN-UIALIGN2——布局数值对齐收口（用户反馈「扫描设备的设备列表都没对齐」）
+
+- 触发：上轮 81/81 以文案/色彩为主缺布局校验，用户指出设备列表等页面视觉未对齐。
+- 方法：正典 CSS（prototype.css v1.4.7 全量数值）+ E-WIN 真实渲染层逐条比对；驱动新增
+  SL1~SL11 布局数值探针（UIA 逻辑 px + 截图像素，按正典数值 ±2~4L 断言）。
+- 修复 6 处真实缺陷：A1 C1 acts 按钮未 flex:1 撑满（61/34L→563L 等宽，连接/已连接同钮换词）；
+  A2 P006 devhead 按钮未全宽；A3 写/退模态按钮不等宽（85/119→125.3/125.3，模态固定 300 宽
+  终结居中 Border 无穷宽测量星列退化）；A4 P002 stepper 连线塌 0（StackPanel→Grid）；
+  A5 P009 shell 620→768 居中随滚动+身份卡 38/r11 渐变白图标；A6 P010 全宽+四卡图标+正典空态/note/foot。
+  另修 P007/P008 顶距、err-line 药丸、back-btn、sig/dbm 居中、TabBar 角标定位+IsHitTestVisible、
+  P002 目标卡正典化等 12 处小项。
+- 驱动新坑：窗口级联漂移致 TabBar 沉底吞点击/截图（SetWindowPos 固定窗位）；DWM 不可见边框
+  截入取证（改 EXTENDED_FRAME_BOUNDS，前轮截图左侧 11px 深条系取证瑕疵非 UI 缺陷）。
+- 走查 **92/92 GREEN**（含 ava 44.0×44.0、卡距 ~12+阴影、navbar 18.7、TabBar 底垫 16.0、
+  模态 125.3/125.3 距 9.3 高 38、stepln 渲染）；build 0 错；test 55/55；扫描/关于/写弹窗
+  三页 analyze_image 视觉复核通过；FW-LOCK 红线零触碰。
+- Evidence: verification/windows-plan-v1/20260920-VWIN-UIALIGN2/
+
+### 2026-09-20 · VWIN-UIALIGN——V-WIN 正典 UI 对齐全量重写（用户指令「UI要对齐」）
+
+- 范围：V-WIN UI 层按正典设计系统（prototype/desktop/high-fi v1.4.7，经 E-WIN 双层
+  CSS 镜像）全量重写——AppStyles tokens 化、TabBar 四枚壳（A3 恒显形态）、
+  P001/P007/P008/P009/P010/P006/P002 七视图、C9 写弹窗三模式、退出确认模态、
+  N3 五态词、E-WIN 服务名注册表（中文+8 位前缀）、Release Metadata 纯投影
+  （ReleaseMetadata.cs + Assets 镜像）。广播预算 31B 真值计算（calcAdvertiseBytes
+  同口径）；P002 阶段一真实 GATT（连接+INFO 读），下发/扫码按正典「或明确降级」
+  以横幅收口（vwin_camera_unsupported / vwin_provisioning_not_ported）。
+- 走查：FlaUI 全页面真实点击 **81/81 全绿**（13 节，含色彩探针：主按钮 1053CC
+  正落渐变线、TabBar FFFFFF、bytebar/右栏 #101521、底 #F8FBFF）；真机
+  SHID-00000001；16 截图。
+- 抓出并修复 V-WIN-DEF-007（mask ZIndex 反盖弹窗吞点击）/008（SHID 卡连接按钮
+  被错误隐藏）/009（每帧广播全量重建列表→真机更新风暴死锁，对齐 E-WIN 仅新设备
+  重排）/010（断开误带导航，拆分语义）+ 档案匹配常量未归一化。
+- 门禁：dotnet build 0 错；dotnet test **55/55**（19 存活 + 36 新增正典锚点：
+  预算/UUID 校验/信号档/五态词/强弱匹配）。
+- Evidence: verification/windows-plan-v1/20260920-VWIN-UIALIGN/
+- 未覆盖：P002 下发、P003/P005、广播发射、摄像头扫码（明确降级，归 WIN-007/
+  后续窗口）；N4 终裁仍待用户（V-WIN 取 A3 恒显，E/T 未动）。
+
+### 2026-09-20 · WIN-UIFULL 整体 UI 级走查（用户质疑触发）
+
+- 起因：用户质疑「Windows端啥都没有、整体测试了吗」。盘点澄清：E/T 双壳 9 视图全产品面，
+  V-WIN 实验级薄壳，apps/desktop/windows|linux 为设计内 README 占位；历轮为 BLE 链 API 级 +
+  零散 UI 点 + 静态导航核对，「全视图真实点击走查」此前确实空缺，本轮补齐。
+- 走查：CDP 真实点击 16 步/壳（TabBar/筛选/扫描/P002 向导含令牌门与二维码/粘贴兜底/
+  P006 读+监听/P007/P008/P009/P010/退出确认），**双壳 16/16 全绿**，真机 SHID-00000001。
+- 抓出并修复 T-WIN-DEF-004（P1）：hid-service.js 读 result.services 而后端返回 data——
+  **T-WIN 配网向导连接此前 100% 必败**（历轮从未驱动向导故从未暴露），双壳镜像改双键兼容。
+- 抓出并修复 DESKTOP-LEAVE-001（P2，双壳）：向导返回不清 BLE 会话，E-WIN 报 already connected、
+  T-WIN 因设备停广播报 Device not found；对齐 uniapp dispose 语义（离开即断开）双壳补 disconnect。
+- V-WIN：UIA 结构取证（26 命名元素+按钮清单+截图）；输入注入四通道（鼠标/物理坐标/键盘/
+  PostMessage）在本环境全灭+元素坐标系异常，定性自动化环境限制，人工点检清单移交用户。
+- 门禁：node --check×4 ✓、tests/desktop 95/95 ✓、Tauri/Avalonia 产物重建 ✓
+- Evidence: verification/windows-plan-v1/20260920-WIN-UIFULL/
+
+### 2026-09-20 · VWIN-UIFULL 续轮：V-WIN 走查打通，三缺陷清剿 16/16 全绿
+
+- 起因：用户追问「还没做完吧，缺很多吧，不同框架」——上轮 E/T 双壳 16/16 而 V-WIN 只留
+  结构取证（且误判注入环境受限），是覆盖矩阵上唯一空格。
+- **撤回上轮误判**：FlaUI element.Click()（真实鼠标）对 Avalonia 有效；「过滤面板点击
+  成功」实为 IsVisible 绑定失败恒开假象，随后误入三条死通道得出环境限制结论。
+- 三缺陷（行为级红证→修复→绿证，全在本轮）：
+  - V-WIN-DEF-004（P0）App 未装配运行期 DataContext——UI 曾是静态壳（命令全死/绑定文本
+    全空/过滤面板恒开）；
+  - V-WIN-DEF-005（P1）设备卡片未接 ConnectToDeviceCommand——详情页（读/写/通知/日志）整体不可达；
+  - V-WIN-DEF-006（P1）特征三按钮 `$parent[UserControl]` 寻祖在 Window 树中无命中——
+    读/写/通知静默失效（编译期不报错）。
+- 走查：FlaUI 真实点击 16 步（状态/扫描/过滤/卡片进详情/连接/服务/INFO 读出真实 JSON/
+  STATUS 通知启用/写对话框开+取消（零写入，FW-LOCK 约束）/断开/重扫/重连（DEF-002 回归）/
+  返回），**16/16 全绿 + 1 观察项**（空闲 20s 无 STATUS 推送，口径对齐 E/T 仅验启用）。
+- harness 沉淀（FlaUI×Avalonia）：IsOffscreen 恒 true 不可用；Carousel 隐藏页陈旧矩形需
+  可见性过滤+多信号仲裁；「关闭」类状态用亮度探针判定；UIA COM 瞬态 E_FAIL 重试；
+  行内按钮点真实 Button 控件而非 Text 标签。
+- 门禁：dotnet build 0 err、dotnet test 19/19 ✓、走查后无残留进程
+- Evidence: verification/windows-plan-v1/20260920-WIN-UIFULL/avalonia/vwin-walk/
+
+### 2026-09-21 · P3-HARDWARE——硬件窗口四连（用户拔电重启解锁，WIN-007/008 双解 BLOCKED）
+
+- Status: **看板 BLOCKED 清零**（PASS 2 / PASS_WITH_OBS 15 / BLOCKED 0）；WIN-012 三 OBS 真机取证（O-3/O-4 销账，O-2 收窄）；WIN-006 尾款 FW-LOCK 断电恢复+fixture 复验达成
+- 四连：①断电后只读复核（设备无恙：-45dBm/1svc+3char/INFO unprovisioned）②F 三 OBS 走查（`fwin_gatt_walk` 驱动；O-3 目检/O-4 零写入闭环/O-2 时间线定位）③WIN-007（ControlHub 源码 build+LAN 配对码+WiFi 凭据提权导出→E-WIN P002 全链→**INPUT 合法写入成功=SHID-FW-LOCK-001 断电恢复验证**→hub 配对消费；WiFi 5G-only 环境定格）④WIN-008（fixture 双版本 pio 构建+烧录→E/T 两线 OTA 556,544B 版本迁移成功→bleak 版本回读设备侧证据→**设备归位**全擦+SHID 四分区烧回）
+- Hardware: ESP32-S3 SHID-00000001（CH343/COM12 全程烧录通道）；华为 TAS-AN00 adb（配网观察旁证未用）；HJWY 路由器（5GHz-only 测定）
+- Evidence: verification/windows-plan-v1/20260921-P3-HARDWARE/（fwalk-obs-evidence.md + win007-evidence.md + ota/win008-evidence.md + 全程截图/log/探针）
+- Observations: 配网终态待 2.4G AP（手机热点可解锁——PS WinRT/netsh 自动热点两路不通在案）；OTA 取消路径未显式走查；~~EWIN-DEF-PROV-001（匹配态晚渲染）~~ **20260924 已修**（根因=SHID 名称与 UUID 分居 ADV/Extended 两帧、逐帧投影无合并——E 主进程 mergeAdvertisement 跨帧合并+E/T/G 渲染层粘滞，CDP 3/3）；~~F O-2 精确根因待 F 侧日志基建~~ **20260924 修复方向落地**（P006 意外断连显式错误态横幅+重连，analyze 0 issues/test 129/129；精确复现待下轮真机窗口观察）
+- Next: Windows 线全部 BLOCKED 清零；剩余均为环境/增强型 OBS
+
+### 2026-09-21 · EWIN-BRIDGE——E-WIN WinRT 广播模板（用户裁决项 #3「先 E-WIN 一壳做模板」）
+
+- Status: 模板确立+双端验证全绿（A1 UI/A2 空口 44 包/A3 停播真停/A4 退出静默）；复制到 T/G/Q 待排期
+- Code: 新增 `electron/src/main/win-broadcast-bridge.ps1`（PS 边车，UTF-8 BOM）+ `index.js` win32 分支（边车生命周期/8s 超时/before-quit 清理）；E/G `app.js` 镜像修 initBLE 打回 idle 时序缺陷
+- 架构: renderer IPC 契约零改动 → main win32 分支 → 常驻 PS 边车（stdin/stdout 行协议 JSON）→ 系统 csc.exe 首编译 C# helper（PID 后缀 dll）→ BluetoothLEAdvertisementPublisher 仅厂商块
+- Evidence: verification/windows-plan-v1/20260921-EWIN-BRIDGE/（README 含 PS5.1 WinRT 坑位账 7 条——**无 BOM 中文 ps1 会被 GBK 乱码静默破坏**/AsBuffer 真名/ManufacturerData __ComObject 须下沉 C#/csc 引合并 winmd+GAC System.Runtime 等；e2e 脚本+截图+三段手机 logcat）
+- Observations: StatusChanged 事件未挂（跨 runspace 输出不可达，以 Start() 异常+空口验证覆盖）；csc 首编译 ~3s 仅首次
+
+### 2026-09-21 · T-MSI-ELEV——T-WIN MSI 提权安装闭环（用户裁决项 #4）
+
+- Status: P4「T MSI 非提权 1603 待管理员窗口」OBS 清账（WIN-009 维持 `PASS_WITH_OBS`，余 OBS 减一）
+- 裁决：用户 2026-09-21 批准「一个个推进」计划后执行（UAC 由用户现场确认）
+- Commands: `Start-Process msiexec '/i … /qn /l*v …' -Verb RunAs -Wait`（装 EXIT=0；首次 1622=日志目录不存在，建目录后过）→ 同款 `/x`（卸 EXIT=0）
+- Result: 装→HKLM DisplayName=BLE Toolkit+/1.0.5+`C:\Program Files\BLE Toolkit+` 落位→启动（`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9225`）→CDP 真首扫 `{"devCount":9,"hint":"发现 9 台","shidSeen":true}`（tmsi-firstscan.png）→提权卸载→`Program Files\BLE Toolkit+` 已清+注册表 0 条
+- Evidence: verification/windows-plan-v1/20260921-T-MSI-ELEV/（装/卸 msiexec 日志+CDP 脚本+截图）
+- Observations: UAC 弹窗需用户在场点击（自主运行需预留人工确认）；MSI 与 NSIS 双安装器并存时 DisplayName 同名（P4 在册互踩坑位延续）
+
+### 2026-09-21 · FWIN-BROADCAST——F 广播翻门控+双端空口验证（用户裁决项 #2）
+
+- Status: 裁决项 #2 完成验证；新 OBS=FWIN-BC-001（挂 WIN-012/016 账）
+- Code: `ble_peripheral_manager.dart`（isSupported 白名单+Windows 短路+文案）；`broadcast_page.dart`（平台 chip 修 Windows 误显 Web+降级文案）
+- 插件事实：flutter_ble_peripheral 2.0.1 Windows 后端 cpp 仅发厂商块（不设 LocalName/ServiceUuids）+无 isSupported 通道分支（恒 false）——与 WIN-017 平台事实吻合
+- 双端验证（`fwin_broadcast_probe.py` exit 0）：A1 手机（华为 TAS-AN00 A-AND logcat 旁证）收 F 发射 `06ff0100424c45`（CID 0x0001+"BLE"=表单默认值，43 包/-46dBm/随机 MAC 同 V-WIN 口径）；A3 F 进程退出后空口 0 包（包源确凿）；A2 停播对照三轮复现异常→**FWIN-BC-001：stop() 后 UI 回 idle 但空口持续，进程退出才静默**（插件层缺陷，规避=退出应用；影响切页停播空口实效）
+- 门禁: analyze 0 / test 129/129 / build windows --release exit 0
+- Evidence: verification/windows-plan-v1/20260921-FWIN-BROADCAST/（README+脚本+三轮截图+三段手机 logcat）
+- Observations: 脚本四轮迭代坑位 8 条在 README（前台窗口焦点/窗口身份自证/tab 选中态验证重试/EMUI dump null-root 固定坐标/adb date 空格拆断/logcat -d 全量过滤/A-AND 真实入口 com.smartble.ui.MainActivity/退出后句柄失效）
+
+### 2026-09-21 · WIN-N4B——N4 广播 Tab 显隐裁决落地（案 B）
+
+- Status: N4 裁决（用户选定案 B：恒显四 Tab+未就绪徽章）同日落地；WIN-011 维持 `PASS_WITH_OBS`（余 OBS=正典口径交 Mac）
+- Code: E-WIN `index.html` 去 broadcastTab display:none + `app.js` 删 linux 条件块；G-WIN 镜像同步（frontend/src 同款两文件）；T-WIN 已恒显无需动
+- Result: E/G app.js diff 一致（index.html 仅 G 设计内 shim/bridge 注入差异）；`node --check` ×2 √；tests/desktop **95/95**；CDP 冒烟（ewin-n4b-smoke.mjs，electron 直启 9232）：A1 win32 下 broadcastTab display:flex/visible ✓ A2 四 Tab=scan,connected,broadcast,about ✓ A3 进页 `未就绪` 徽章+`平台：Desktop · Windows` chip ✓（截图 ewin-n4b-broadcast.png）
+- Evidence: verification/windows-plan-v1/20260921-WIN-N4B/
+- Observations: macOS 侧 Electron 同文件对齐归 Mac 计划；正典 A3 口径回填交 Mac
+
+### 2026-09-21 · FWIN-OBS-FIX——F-WIN 三观察项代码侧收口（O-3/O-4/O-2）
+
+- Status: O-3 已修；O-4 双层护栏落地（真机取证待下轮真机窗口）；O-2 插桩缝（真机定位待下轮真机窗口）
+- Code: `ble_uuids.dart`（9f1d 家族注册表+isShidInputCharacteristic）；`ble_manager.dart`（writeCharacteristic 开头拦 INPUT）；`device_detail_page.dart`（UI 层拦截不弹写对话框+三个导航节点插桩）；`device_list_page.dart`（对话框 pop 插桩）；新增 `test/core/ble/ble_uuids_shid_test.dart`
+- 关键事实：provisioning_transport 直写 FBP characteristic 不经 writeCharacteristic → 配网正业不受护栏影响；OTA 写 beb5 亦不在拦截面
+- O-2 静态排查：详情页无自动 pop 路径（全仓 pop 枚举），假说 H1 驱动误伤/H2 FBP 伪断连，插桩日志随「导出」剪贴板文本带出供下轮定位
+- 门禁: analyze 0 / test **129/129**（+6 新）/ build windows --release exit 0
+- Evidence: verification/windows-plan-v1/20260921-FWIN-OBS-FIX/
+- Next: 下轮真机窗口一并做 O-4 真机取证+O-2 时间线定位+O-3 目检
+
+### 2026-09-21 · F-WIN Windows 侧 GATT 真机走查补证（用户指令「继续」——终报 §7 缺口闭合）
+
+- Status: WIN-012 维持 `PASS_WITH_OBS`（OBS 清单更新）；FINAL-REPORT §3 F 列「连接+枚举/读/Notify」◐/✔ᵐ→✔、§4 新增平台事实 8、§7 缺口条目销账；基线 5737759
+- 走查链（真机 SHID-00000001 fw1.2.0 未配对，**全程零写入**）：扫描→SHID 卡「连接」→P006 详情→发现 1 服务 9F1D1001/3 特征→读 INFO 130B 身份 JSON→STATUS 订阅（未配对 0 推送=已知口径）→剪贴板导出 858B 文本主证→退订→WM_CLOSE 非 busy 直退（进程核销）；走查后 bleak 只读复核设备无恙（-32dBm/MTU256/INFO 同构）
+- 核心发现（新平台事实）：**FBP winrt 在扫描未停止时连接，服务枚举返回 0**——同会话两尝试对照（[14:16:56] 发现 0 个服务 / 停扫后 [14:24:41] 发现 1 个服务），排除设备态漂移；正典口径=连接前停扫，交 Mac 入正典
+- 驱动：`fwin_gatt_walk.py` 子命令式（launch/shot/wclick/clip/close；probe_f_pages 坑位账沿用：DPIAware+GetDpiForWindow/DWM 边框/PID 树认窗/TOPMOST）+ LogPanel「导出」→剪贴板 CF_UNICODETEXT 文本证据缝
+- 坑位：ctypes 剪贴板 64 位句柄截断（restype 默认 c_int 必失败，须显式 c_void_p+argtypes）；读值 chip 插入致下方行下移 ~60px（每次结构变化后重扫图标位）；exe 桩 mtime≠Dart 新鲜度（Dart 改动只重编 data/app.so）；视觉 API 坐标不可靠（像素簇扫描为准，视觉只做文案转录）；tasklist GBK 崩→OpenProcess err 87 判死
+- Next: OBS O-2（退订后页面弹回列表，未插桩）/O-4（F 补 INPUT 护栏后写真机取证）建议并入下一真机窗口；O-3 显示名映射小项
+- Evidence: verification/windows-plan-v1/20260921-FWIN-GATT-WALK/
+
+### 2026-09-21 · WIN-010 P5 最终交付与矩阵回填（用户指令「继续」开工）
+
+- Status: WIN-010 `PASS_WITH_OBS`；同步结论化 WIN-005/006/011（→`PASS_WITH_OBS`）、WIN-008（→`BLOCKED`）；统计行定格 PASS 2 / PASS_WITH_OBS 13 / IN_PROGRESS 0 / FAILED 0 / BLOCKED 2 / TODO 0
+- Deliverable: `verification/windows-plan-v1/FINAL-REPORT.md`（17 项台账 + 六壳功能矩阵 + 平台事实 7 条交 Mac + 8 产物账 + 复现速查）
+- 最后一轮门禁（报告基线 a1215a8 上全绿）：E node --check 18 文件；T cargo fmt --check + test 3 目标 ok（crate 0 单测属设计口径）；V dotnet test 55/55；F analyze 0 issues + test 123/123；Q compileall + 无头契约冒烟 17/17；G go vet + build
+- 真实 BLE 冒烟（真机 SHID-00000001 fw1.2.0）：bleak 层探针（11 台扫描/-47dBm/MTU256/INFO 130B JSON/STATUS 订阅退订）+ Q-WIN app 级走查 12/12（扫描恒居首→GATT 树→INFO→订阅语义→INPUT 护栏拦截实证→P007→busy 退出→全断→降级口径→关于→exit 0）
+- 产物新鲜度：六包 mtime 均晚于各自源树最新源文件（不重构建，哈希已在册）；FWIN/QWIN 为 UIALIGN-PAGE 重建包
+- Observations: WIN-007/008 BLOCKED 台账（缺 ControlHub / 待 P3 硬件窗口）；四项用户裁决项未动（N4 两案、F isSupported 翻门控、E/T/G/Q 广播升级、T MSI 管理员窗口）；F-WIN Windows 侧 GATT 无独立真机走查（终报新登记）；F 深层无像素缝；全产物未签名仅 Preview
+- Next: Windows 线交付完毕，等 Mac 跨平台总门禁消费 FINAL-REPORT §3/§4；P3 硬件窗口与裁决项待用户
+- Evidence: verification/windows-plan-v1/20260921-P5-FINAL/
+
+### 2026-09-21 · UIALIGN-PAGE（用户指令「继续」——承接 TABBAR 轮登记的页面级遗留）
+
+- Status: **Q/F 页面级正典对齐 GREEN**（无 WIN 任务行变更；Q-PA-001~005 全清 + F 像素专项补证）
+- 缺陷账：Q 页边距 24/20/24/16≠正典 0/16/24+navbar 8/18/12；标题 22px/卡 r12/圈外色五枚（BG/BORDER/TEXT/SUB/FILL）；设备行=QListWidget 纯文本≠.dev 卡；P001 筛选四档全缺；bt-chip 胶囊未实现。另查出 **ff679c6 的 FWIN 产物缺口**：exe(09:54) 早于 themeMode 锁亮修复(11:32)，上轮产物不含修复（过绿因系统恰亮色）
+- 修复：Q theme tokens 全量正典 + widgets.py 新（NavBar/BtChip/Chip/SigBars 四档/Ava 渐变角标/DeviceCard 两变体/FilterPanel 四行/SumCard/EmptyState 雷达/Switch/NoteInfo/LiveDot）+ main.py 五页重写（P001 bt-chip+筛选+设备卡；P007 汇总卡+conn 卡；P008 note；P009 768 窄列+身份卡；P006 subnav+devhead），automation 契约属性名全保+增量 filter 命令；F 仅重建（themeMode 入产物）+123/123
+- 探针：Q 无头冒烟 17/17 + 源码层 21/21（真扫描 8~11 台含 SHID-00000001）+ zip 层 21/21（150% DPI）；F 源码层 28/28 + zip 层 28/28（150% DPI SendInput 切 tab）；FWIN/QWIN 重打包+SHA256 增补（d37d736c…/42b9c4ce…）
+- 坑位：F 产物陈旧盲区（mtime 核鲜度）；ClearType 次像素纹污染色断言→行穿越法；dpr=GetDpiForWindow/96（物理/物理恒 1）；F 窗口 1200×900 逻辑@150%=1780×1340 物理；LINE/LINE_SOFT 距离仅 (10,8,6)→底线 tol 6；探针量法三误（蓝簇并文字/边框行 1px/空态在列表顶部）
+- 遗留：F 页面内深层（P006 双栏等）无自动化缝未做像素探针；N4 广播 Tab 两案仍待用户裁决；P3 硬件窗口/P5 回填待开
+- Evidence: verification/windows-plan-v1/20260921-UIALIGN-PAGE/
+
+### 2026-09-21 · UIALIGN-TABBAR（用户反馈「好几个 UI 没对齐，连基本的 tabbar 都没对齐」）
+
+- Status: **TabBar 层收口 GREEN**（F/Q 双壳双层级探针；无 WIN 任务行变更——P4 判定只覆盖打包链路，UI 正典对齐此前仅 V-WIN 两轮，本轮补 F/Q TabBar）
+- 缺陷账：F=Material BottomNavigationBar 56px 壳 + themeMode.system 跟随系统暗色（违 TOKEN.md §9.4 正典无全局深色）；Q=QTabBar 纯文字无图标/非等宽/下划线选态 + TEXT_MUT 圈外值 #93A1B8
+- 修复：F 自绘 64px border-box 正典条（flex:1 等宽/图标23/文字10/色彩态）+ 锁亮 ThemeMode.light + 横滑断言迁移 + 新增几何锁测试（analyze 0 issue / 123/123）；Q 新 tabbar.py CanonTabBar（QtSvg 渲染 E-WIN sprite 同源路径/等拉伸/角标 .n 口径/QTabBar 语义兼容自动化缝）+ theme 正典值
+- 探针：F（dpr1.5）bar=64.0L、4 簇等距 438.5/438/438.5、色态✓；Q（TCP seam grab，dpr1.0）bar=64.0L、等距 296.5/296/295.5、tab0/tab3 选中色随动✓；双壳 zip 产物级复验同绿；FWIN/QWIN 重打包 + SHA256SUMS 增补（25140d54…/718a6d90…）
+- 坑位：GetWindowRect DWM 边框假偏大→EXTENDED_FRAME_BOUNDS；多屏 ImageGrab 须 all_screens；venv 启动器把基础解释器当子进程→按进程树找窗；Popen 控制台盖窗→CREATE_NO_WINDOW；系统定时切暗；偶发空窗重试
+- 遗留：Q 页面级五项（Q-PA-001~005）+ F 像素级布局探针专项未跑（见证据 README §5）；N4 广播 Tab 显隐（E/T/G 三枚 vs F/V/Q 四枚恒显）仍待用户裁决
+- Evidence: verification/windows-plan-v1/20260921-UIALIGN-TABBAR/
+
+### 2026-09-24 · F004 五壳广播弹窗 + 真机窗口第二轮 + 剩余项收口（用户「剩下规划下并处理」）
+
+- Status: Windows 线遗留项代码侧全清（F004 补齐 / EWIN-DEF-PROV-001 修 / F O-2 修复方向落地 / 广播模板四壳齐）
+- Commit: F004 五壳 `afa5b3f`；本轮（真机补证+三修+广播复制）提交见 git log
+- Hardware: ESP32-S3 SHID-00000001 在广播（真机窗口开放）
+- Result: ①F004 广播数据弹窗五壳齐（E/T/G AdvertisementSheet+Q AdvDialog+V BleAdvSnapshot）；②真机补证：bleak/WinRT 双基准抓取——**新平台事实=SHID 双帧交替（UUID 在 ADV 帧无名、名称在 Extended 帧无 UUID）+本机无线电不自环（广播中 SHID 116 帧可见/自身 0 帧）**；③V 跨帧合并修复（dotnet 57/57 含 2 新单测）；④Q AdvDialog/E CDP 真机字节全吻合；⑤EWIN-DEF-PROV-001 修复（E 主进程 mergeAdvertisement+E/T/G 渲染层粘滞，CDP 3/3+tests 95/95）；⑥F O-2 意外断连错误态横幅（analyze 0/test 129）；⑦广播模板四壳齐：V 原生已有+G（Go embed 边车，go test 过）+Q（P008 页面重建+边车，UI 全链取证 3 截图）+T（Rust win_bridge 模块+前端门控放开，cargo test 过）
+- Evidence: verification/windows-plan-v1/20260924-WIN-F004/（README 含真机窗口第二轮全记录 + realdevice/ 15 件）
+- Observations: ~~G/Q/T 外部空口收包待下轮手机窗口~~（**20260924 下午 AIR-GQT 轮销账**：联想平板 24117RK2CC/Android 16 三壳三窗全 PASS——G 34/Q 29/T 31 包、停播即消失、`07ff0100+标签` 字节保真，见 20260924-AIR-GQT/）；Q 状态徽章 Chip 仅文字换色未换底色（cosmetic）；F O-2 精确复现仍待真机观察
+- Next: 剩余=配网终态待 2.4G AP（环境）+ OTA 取消路径（增强）+ F 深层像素缝（cosmetic）+ 六壳产物重打包（本轮改动后）
+
+### 2026-09-24 · AIR-GQT 三壳广播外部空口闭环（用户「那就测试下，这边有Windows和安卓手机」）
+
+- Status: **PASS 3/3**（广播模板六壳空口证据链闭合：E/F/V 20260921 + G/Q/T 本轮）
+- Hardware: 接收端=平板 24117RK2CC（Android 16，序列号 50143338，A-AND 20260921 构建+四权限 pm grant；**后经 logcat 证实为 MIUI 系 zorn 设备，非联想——用户自用，后续轮勿碰**）；发射=本机 WinRT（各壳独立随机地址）
+- Method: 每壳三窗（baseline 0 命中→on ≥1→off 0），手机侧 BleManager logcat 旁证原始 adv hex，判据 `ff0100+标签hex`；驱动走各壳正式路径（G=App.StartAdvertising env 门控测试 / Q=导入 win_broadcast / T=win_bridge air 测试），事件 jsonl 落盘编排
+- Result: G 34 包(-35dBm) / Q 29 包(-34dBm) / T 31 包(-39dBm)，字节 `07 ff 0100 4757494e|5157494e|5457494e` 保真无 CID 劫持；门控测试无 env 时 Go SKIP/Rust 空过；go test/cargo test 全绿；手机动画缩放借调后已还原
+- Evidence: verification/windows-plan-v1/20260924-AIR-GQT/（README + air-summary.json + 九窗 logcat + 驱动日志）
+- 坑位：ZUI 锁屏下 adb install 直接 USER_RESTRICTED（须先划开）且 -g 被忽略；Compose 永不闲态 uiautomator 全废→盲 tap(870,370)+logcat 验证一次即中；CDN 截图 URL 反斜杠坏链目视路线不可用（**当晚翻案：Read 用正斜杠路径即通，见 AAND-ADVPOPUP 轮**）
+
+### 2026-09-24 · AAND-ADVPOPUP 手机端广播弹窗重建 + Windows×安卓联调（用户「效果很差，手机端的」→「尽量联调」）
+
+- Status: **PASS 三壳字节级命中**（手机端广播弹窗正典重建 + Q/G/T 三壳真机消费侧闭环）
+- Commit: 本地待推（弹窗重建 + 联调证据，见 git log）
+- Hardware: 接收=华为 TAS-AN00（Android 12，FEC0220629005177，用户指定替换小米平板 24117RK2CC——**实为 MIUI 系 zorn，用户自用勿碰**）；发射=本机三壳（复用 AIR-GQT 驱动，hold 300s）
+- 修复（apps/android 四文件）：`BleManager` 去掉 `manufacturerData=null` 桩（SparseArray 真提取+rawBytes 入模型，旁证日志 d→INFO）；`ScanRecord` 加 rawBytes+内容敏感 equals；新增 `core/ble/AdvertisementParser`（**AD 结构真值逐段解析**——比桌面「平台字段重建」多覆盖 Flags/TX/Appearance，含截断段收口+名称/TX/CID/16 位 ServiceData UUID 解码+buildAdvCopyText）；`DeviceDetailSheet` 重建为 p001-advdlg 正典（kv 五行+深色 ad-sec 四段+缺失标注+复制数据 Toast+连接并进入）；门禁=AdvertisementParserTest 12/12+全套 0 失败+assembleDebug 绿
+- Result: ①三壳字节级全中：QWIN `3D:EC:8E:54:04:66`(-35)/GWIN `2E:C6:31:58:CA:AD`(-36)/TWIN `0A:E9:7E:FA:31:92`(-34)，弹窗 `FF·厂商数据 8B` = `07 ff 01 00 <tag>` + 厂商 ID 0x0001 + Manufacturer Data `0x0001·4B·<tag>`（与 AIR-GQT 空口判据同构，随机地址三壳各异复证）；②SHID-00000001 弹窗：STRONG·smart-hid+UUID 列表+三段全解析（128 位 UUID 小端序逐字节吻合）；③常规设备：Nordic UART「873」双厂商段+名称解码 `→ 873`；④复制按钮 Toast「已复制」（剪贴板读出被 Android 10+ 后台限制挡，格式由单测锁定）；⑤对照样本：Windows 系统 MS Beacon（0x0006，一次扫描多台轮换地址）
+- Evidence: verification/windows-plan-v1/20260924-AAND-ADVPOPUP/（README + 三壳弹窗截图/XML dump + 驱动事件链）
+- 坑位：**EMUI 扫描风暴冷却**（15 分钟 ~17 次扫描→会话注册正常但结果投递静默归零，重启恢复，联调节奏须 ≥5 分钟/扫）；**EMUI 吞三方应用日志**（Log.d/Log.i 均不可见，华为侧旁证只能走 uiautomator dump/dumpsys/截图）；**视觉通道翻案**（Read 正斜杠路径→CDN 干净→analyze_image 可读；且 vision prompt 带选项会幻觉，必须中性转录）；uiautomator dump 在 Compose 静止空态可用（扫描中才 never-idle）；install -r 后权限可能整组掉须立即 pm grant
+
+#### Round 2 · 弹窗呈现层重建（同日用户反馈「感觉不到是弹窗、关闭钮不好，整体调整」）
+
+- Status: **PASS 模态呈现正典化**（v1 呈现层两缺陷修复；数据层不动）
+- 根因：①v1 `BottomSheetScaffold` 无遮罩且被 MainActivity Scaffold padding inset——遮罩只盖内容区 y≥293，AppNavbar 区不暗化点不关（真机网格 tap 实测死区 y∈(160,290)），违正典 `.adv-mask inset:0`；②关闭钮=30dp 小 X 图标≠正典「关闭」文字软钮
+- 修复（仅 DeviceListScreen.kt 呈现层）：**material3 1.1.2 `ModalBottomSheet`**（独立 sheet 窗口）——`scrimColor=0x800F1D30` 全屏遮罩盖住 Navbar/TabBar + 顶部 20dp 圆角/cCard/dragHandle=null（自绘 canon grip 36×4dp cLine）+ skipPartiallyExpanded + 统一 `hide()` 滑出撤窗；关闭四路径=「关闭」软钮/点遮罩/返回键/下拉拖关；高度 78%（canon 78vh）；**操作行 24dp 底衬抬出 EMUI 手势区**（sheet 对话框窗口 navigationBars inset 谎报 0，像素级验证蓝底 y2297→2225<2235）
+- Result（华为 TAS-AN00）：全屏遮罩 vision 判「标题栏压暗 ✓」；TWIN 字节回归 v4/v5 两轮一致（`07 ff 01 00 54 57 49 4e`）；四关闭路径全关（v1 死区坐标 540,250 对照：v1 不关→v2 关）；assembleDebug+12/12 单测绿
+- Evidence: verification/windows-plan-v1/20260924-AAND-ADVPOPUP/evidence/round2-modal/（README Round 2 章：13/15 终态截图+死区对照 dump+四轮 twin-events jsonl）
+- 坑位：NavHost 内容层做全屏遮罩必被 topBar/bottomBar inset 咬边，模态层须独立窗口；sheet 对话框窗口画进手势区但 inset=0，避让只能固定 dp；EMUI 无 screenrecord 二进制；长会话防横屏/锁屏（借 accelerometer_rotation 须还原）；m3 sheet settle 期吞注入 tap（复测即过勿误判）；uiautomator 对 dialog 窗口 bounds 不可全信，系统栏边界用 PIL 像素直判
+
+#### Round 3 · 扫描列表滚动卡顿（2026-09-27 用户「列表滚动的时候会卡顿」）
+
+- Status: **PASS 双层根因两刀修复 + 归因矩阵闭环；交付形态转 release 签名包**
+- 根因①（代码缺陷）：`BleManager.onScanResult` 每条广播回调 `tryEmit(全列表快照)`（办公环境 ALL_MATCHES+AGGRESSIVE 下 ~54-57 条/秒），每条都在主线程跑回调体（adv hex 拼串+ScanRecord/Map 重建+toList）+下游管线（map→combine→filter→整表替换→LazyColumn 全量 diff+可见卡 RSSI 全重组），滚动帧预算被吃光；根因②（形态）：debug 包纯滚动本就 60-77% 掉帧（中位 57ms，framestats=traversal 派发 26-76ms/帧）——用户侧载 debug 包的卡顿主体
+- 修复（两刀）：`DeviceListViewModel` 采集处 `sample(400)`（UI 管线 ≤2.5Hz，tick 发最新快照终态不丢）+ `BleManager` 回调体转发专用 HandlerThread `ble-scan-callbacks`（startScan 无 Handler 变体、回调固定走主 Looper，只能 post 转发；单例常驻不 quit）
+- Result（华为 TAS-AN00 归因矩阵，同场景=扫描 5s 内连滚 4 次）：debug 旧码 **95.6%/44ms** → debug+两刀 75.0%/48ms → release 旧码 **24.9%/19ms** → **release+两刀 1.45%/7ms**（另轮 TID 验尸复核 16.5%/16ms，热态方差内仍优于旧码）；纯滚动三连测 release 0.5-1.0%/6ms vs debug 61-69%/57ms；assembleDebug+单测全绿；弹窗路径 release 冒烟 PASS（遮罩压暗 y180=134,141,151→关闭后 252,253,255）
+- 交付：手机最终形态=**smartble-release-FIXED.apk**（assembleRelease+debug.keystore 签名，与 debug 同签名可原地升级）；日常侧载应转 release 包，debug 包仅作联调仪器
+- Evidence: verification/windows-plan-v1/20260927-AAND-SCROLLJANK/（README+归因矩阵+基线/逐帧分解/终态截图）
+- 坑位：**adb install 输出接管道吃掉失败退出码**（增量安装异常→静默无操作，lastUpdateTime 不变假报成功，install 必须裸跑看末行 Success）；**TID 验尸法**=onScanResult 日志 TID==PID→旧码主线程/TID≠PID→修复版工作线程，比数字更硬；debug 形态 gfxinfo 方差巨大（同场景 49%↔77%），归因必须重复测量+对照矩阵；正典 `.ble-btn--primary` 自带品牌阴影不可当优化点删；USB 长会话掉线可自愈（kill/start-server+等 1-2 分钟）
+
+
+### 2026-09-21 · WIN-009 P4 六壳安装包（用户裁决「P4 六壳安装包（推荐）」开工）
+
+- Status: WIN-009 `PASS_WITH_OBS`
+- Commit: 开工基线 `4785b65`（=交接计划落库+看板统计行 IN_PROGRESS 2→3 修正；本轮证据提交见 git log）
+- Host: Windows 10 22H2 (10.0.19045)；node 20.19.3 / cargo 1.98.1 / dotnet 9.0.200 / flutter 3.38.3 / go 1.24.0 + wails 2.16.0 / python 3.13.2；cargo-tauri CLI 缺失→`npm i -g @tauri-apps/cli@^1` 预编译补装
+- Commands: E `npm run build:win`；T `tauri build`（release 5m32s，WiX/NSIS 工具链自动拉取）；V `dotnet publish -c Release -r win-x64 --self-contained`；F `flutter build windows --release`；G `wails build`；Q venv 自包含 zip（robocopy 避长路径 + Compress-Archive）
+- Result: 六壳 8 产物+SHA256 全登记（无签名一律 Preview）；便携/裸产物启动冒烟 6/6；E NSIS 干净安装闭环：`/currentuser /S` 装→exe 元数据 ProductName/ProductVersion 1.0.5→CDP 9223 真首扫「发现 8 台」→Quiet 串卸载（lnk/注册表全清；目录半残留根因=漏杀 Electron 进程锁文件，非卸载器缺陷）→重装→再启动；T NSIS 闭环：`/S` 装（落 `%LOCALAPPDATA%\BLE Toolkit+`）→WebView2 CDP 9224 真首扫「发现 7 台」SHID-00000001 强匹配→`uninstall.exe /S` 3 秒全清→重装；T MSI `msiexec /qn` 1603（非提权拒装，待管理员窗口）
+- Hardware: 本机 BLE 适配器；环境 ESP32-S3 真 SHID v1.2.0（SHID-00000001 于 E/T 首扫均在列）
+- Evidence: verification/windows-plan-v1/20260921-P4-PACKAGING/
+- Observations: MSI 需提权、E-portable 首启慢+壳/真身双层进程名、E/T 桌面快捷方式同名互踩、tauri NSIS DisplayName 无版本号、V/G exe 无 Win32 版本资源、F 版本口径 pubspec 2.0.0+1 未入 VERSION 单源、G 首测偶发 alive=0、无签名仅 Preview（8 OBS+8 坑位详见该 README）
+- Next: 剩 TODO=WIN-008（OTA，P3 硬件窗口待用户排期）+ WIN-010（最终交付与矩阵回填）；四项用户裁决项未动（N4 两案等）
+
+### 2026-09-14 · WIN-001
+
+- Status: PASS_WITH_OBS
+- Commit: `760dc16`(HEAD,双远端一致;本任务证据提交见下一条回填)
+- Host: Windows 10 22H2 (10.0.19045.3803)
+- Commands: `git fetch --all --prune` (0)、`git pull --ff-only` (0)、`git status --short --branch`、`node/npm/rustc/cargo/dotnet/java/pio --version`
+- Result: 工具链快照落档;Node v23.8.0(nvm PATH 前置)、rustc/cargo 1.98.1 MSVC、.NET 9.0.200、PIO 6.1.18 全部合规
+- Hardware: Intel Wireless Bluetooth;COM12=CH343(ESP32-S3);WebView2 152.0.4191.66;手机 FEC0220629005177 adb 在线
+- Evidence: verification/windows-plan-v1/20260914-WIN-001/toolchain-snapshot.md
+- Observations: JDK 无 17/21(默认 24.0.1,另有 corretto-18;Windows 任务线不消费 JDK);系统 PATH 默认 Node v20.19.3,任务执行统一前置 nvm v23.8.0;用户既有脏文件 33 个保持原样
+- Next: WIN-002
+
+### 2026-09-14 · WIN-002
+
+- Status: PASS
+- Commit: 见本日提交(基于 `0735b4f`)
+- Host: Windows 10 22H2,Node v23.8.0(PATH 前置)
+- Commands: `node --test tests/desktop/*.test.mjs`(改前 94/95 exit 1 → 改后 95/95 exit 0);两线 34 个 JS `node --check` 全过
+- Result: M1 断言由手写 wechat 四键改为消费正典产物 `apps/uniapp/config/release-metadata.generated.json` 的 `public_surfaces`(键序模板保留为页面契约);投影层实现未动(本已元数据驱动);镜像逐字节断言保留
+- Hardware: 无需
+- Evidence: verification/windows-plan-v1/20260914-WIN-002/
+- Observations: MAC-001 仍 BLOCKED(微信去留待用户裁决)——本改法对裁决中立,元数据恢复 wechat 则断言自动回四键;未改 `release/**`
+- Next: WIN-003
+
+## 5. 每次进度回填模板
+
+```markdown
+### YYYY-MM-DD · WIN-xxx
+
+- Status: PASS | PASS_WITH_OBS | FAILED | BLOCKED
+- Commit: <sha>
+- Host: <Windows version / machine>
+- Commands: <exact commands>
+- Result: <pass/fail counts and artifact>
+- Hardware: <adapter / device / firmware sha>
+- Evidence: verification/windows-plan-v1/<run>/
+- Observations: <remaining issue or none>
+- Next: <next task id>
+```
+
+## 6. Windows 完成定义
+
+Windows 端只有同时满足以下条件才算完成：
+
+- Electron、Tauri 当前提交构建、启动和真实 GATT 通过。
+- Avalonia 达到已明确的发布级或实验级边界，不能继续以 README 代替实现。
+- Smart HID 和 OTA 有当前 commit 的端到端证据，或由用户确认维持 BLOCKED。
+- Windows 安装包完成干净安装并有 SHA256。
+- 桌面测试 0 失败。
+- Windows 最终报告已被 Mac 计划吸收，平台矩阵无悬空 Windows 项。

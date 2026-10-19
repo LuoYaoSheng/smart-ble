@@ -1,0 +1,74 @@
+10:27:34.047 APP-ERR: libpng warning: iCCP: known incorrect sRGB profile
+10:27:37.040 TITLE: SmartBLE PHASE: green
+10:27:37.936 WAIT-OK: 蓝牙就绪 @89ms
+10:27:37.936 ASSERT: S1-状态条蓝牙就绪=PASS
+10:27:38.001 SHOT: 01-initial.png
+10:27:38.118 CLICK: scan#1 page=list center=(269,290)
+10:27:46.048 DEVICE-COUNT: 发现 9 台设备
+10:27:46.048 ASSERT: S2-扫描发现SHID=PASS
+10:27:46.096 SHOT: 02-scan-list.png
+10:27:46.307 CLICK: filter-open page=list center=(383,290)
+10:27:47.062 ASSERT: S3-过滤面板展开=PASS
+10:27:47.297 CLICK: filter-close page=list center=(383,290)
+10:27:47.878 SHOT: 03-filter.png
+10:27:47.984 CLICK: card-SHID page=list center=(788,331)
+10:27:50.784 WAIT-OK: 返回 @2624ms
+10:27:50.784 ASSERT: S4-进入详情页=PASS
+10:27:50.905 WAIT-OK: 已连接 @120ms
+10:27:50.907 ASSERT: S5-连接成功徽标=PASS
+10:27:51.043 WAIT-OK: 个服务 @136ms
+10:27:51.043 ASSERT: S6-服务发现=PASS
+10:27:51.093 SHOT: 04-detail.png
+10:27:51.546 CLICK: read-INFO(Button) page=detail center=(1246,464)
+10:27:51.913 WAIT-OK: 读取成功 @177ms
+10:27:51.914 ASSERT: S7-INFO读取成功=PASS
+10:27:52.132 DF[read]: 3 hits
+10:27:52.136 DF[read]: VIS Text|读取成功: 7B 22 70 72 6F 64 75 63 74 22 3A 22 73 6D 61 72 74 2D 68 69 64 22 2C 22 70 72 6F 74 6F 63 6F 6C 22 3A 22 31 2E 30 22 2C 22 64 65 76 69 63 65 5F 69 64 22 3A 22 48 49 44 2D 30 30 30 30 30 30 30 31 22 2C 22 66 69 72 6D 77 61 72 65 22 3A 22 31 2E 32 2E 30 22 2C 22 73 74 61 74 65 22 3A 22 75 6E 70 72 6F 76 69 73 69 6F 6E 65 64 22 2C 22 70 72 6F 76 69 73 69 6F 6E 65 64 22 3A 66 61 6C 73 65 7D
+10:27:52.137 DF[read]: VIS Text|读取成功: 7B 22 70 72 6F 64 75 63 74 22 3A 22 73 6D 61 72 74 2D 68 69 64 22 2C 22 70 72 6F 74 6F 63 6F 6C 22 3A 22 31 2E 30 22 2C 22 64 65 76 69 63 65 5F 69 64 22 3A 22 48 49 44 2D 30 30 30 30 30 30 30 31 22 2C 22 66 69 72 6D 77 61 72 65 22 3A 22 31 2E 32 2E 30 22 2C 22 73 74 61 74 65 22 3A 22 75 6E 70 72 6F 76 69 73 69 6F 6E 65 64 22 2C 22 70 72 6F 76 69 73 69 6F 6E 65 64 22 3A 66 61 6C 73 65 7D
+10:27:52.138 DF[read]: VIS Text|读取特征值 1002...
+10:27:52.204 SHOT: 05-read-info.png
+10:27:52.732 CLICK: notify-STATUS#0(Button) page=detail center=(1330,594)
+10:27:55.724 WAIT-OK: 通知已启用 @160ms
+10:27:55.724 ASSERT: S8-STATUS通知启用=PASS
+10:27:55.880 DF[notify]: 5 hits
+10:27:55.881 DF[notify]: VIS Text|通知
+10:27:55.881 DF[notify]: VIS Text|通知
+10:27:55.882 DF[notify]: VIS Text|通知
+10:27:55.883 DF[notify]: VIS Text|通知已启用
+10:27:55.884 DF[notify]: VIS Text|启用通知 1004...
+10:27:55.929 SHOT: 06-notify-on.png
+10:28:16.097 OBS: S9-空闲20sSTATUS推送无（启用已验，口径对齐E/T）
+10:28:16.145 SHOT: 07-notify-recv.png
+10:28:16.622 CLICK: write-dialog-INPUT#0(Button) page=detail center=(1288,530)
+10:28:16.932 WAIT-OK: 写入特征值 @182ms
+10:28:16.932 ASSERT: S10-写对话框打开(不写入)=PASS
+10:28:16.996 SHOT: 08-write-dialog.png
+10:28:17.310 CLICK: write-cancel#0 page=detail center=(846,783)
+10:28:18.235 LUM: 253
+10:28:18.235 DIALOG-CLOSED: write after #0
+10:28:18.235 ASSERT: S11-写对话框取消=PASS
+10:28:18.309 LUM: 253
+10:28:18.801 CLICK: disconnect#0 page=detail center=(328,344)
+10:28:21.672 ASSERT: S12-断开后回列表=PASS
+10:28:21.797 DF[postdisc]: 3 hits
+10:28:21.798 DF[postdisc]: VIS Text|停止扫描
+10:28:21.799 DF[postdisc]: VIS Text|发现 9 台设备
+10:28:21.800 DF[postdisc]: VIS Text|SHID-00000001
+10:28:21.867 SHOT: 09-disconnected.png
+10:28:22.229 CLICK: rescan#0 page=list center=(269,290)
+10:28:29.568 ASSERT: S13-重扫发现SHID=PASS
+10:28:29.720 CLICK: card-SHID-reconnect page=list center=(788,331)
+10:28:31.840 WAIT-OK: 已连接 @1943ms
+10:28:31.840 ASSERT: S14-重连成功=PASS
+10:28:32.003 WAIT-OK: 个服务 @163ms
+10:28:32.004 ASSERT: S15-重连后服务重枚举(DEF-002回归)=PASS
+10:28:32.068 SHOT: 10-reconnect.png
+10:28:32.411 CLICK: goback#0 page=detail center=(237,294)
+10:28:33.837 ASSERT: S16-返回列表=PASS
+10:28:33.987 DF[postgoback]: 3 hits
+10:28:33.988 DF[postgoback]: VIS Text|开始扫描
+10:28:33.989 DF[postgoback]: VIS Text|发现 9 台设备
+10:28:33.990 DF[postgoback]: VIS Text|SHID-00000001
+10:28:34.049 SHOT: 11-goback.png
+10:28:34.050 GREEN: V-WIN 全流程走查完成
+10:28:34.050 RESULT: OK

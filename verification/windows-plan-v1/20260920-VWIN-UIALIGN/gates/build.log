@@ -1,0 +1,12 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  SmartBLE.Desktop -> E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\bin\Debug\net8.0-windows10.0.19041.0\SmartBLE.Desktop.dll
+  SmartBLE.Desktop.Tests -> E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop.Tests\bin\Debug\net8.0-windows10.0.19041.0\SmartBLE.Desktop.Tests.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:02.06
+
+有可用的工作负载更新。有关详细信息，请运行 `dotnet workload list`。

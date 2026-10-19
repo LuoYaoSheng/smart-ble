@@ -2,7 +2,7 @@
 
 ## 标题
 ```
-Show HN: Smart BLE – Cross-platform BLE debugging tool with 8+ implementations
+Show HN: 蓝析BLE工具箱 – Cross-platform BLE debugging tool with 8+ implementations
 ```
 
 ---
@@ -12,7 +12,7 @@ Show HN: Smart BLE – Cross-platform BLE debugging tool with 8+ implementations
 ```markdown
 Hi HN,
 
-I built Smart BLE [1], a cross-platform Bluetooth Low Energy debugging tool.
+I built 蓝析BLE工具箱 [1], a cross-platform Bluetooth Low Energy debugging tool.
 
 ## Why
 

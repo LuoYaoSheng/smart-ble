@@ -96,16 +96,18 @@ assert.match(indexPage, /bleState\.value === 'unsupported'/);
 assert.match(scanComposable, /typeof uni\.getBluetoothAdapterState !== 'function'/);
 assert.match(scanPermission, /reason:\s*'ble_not_supported'/);
 assert.match(indexPage, /buildGenericDeviceDetailUrl/);
-assert.match(indexPage, /pruneKnownDevices/);
-assert.match(indexPage, /const knownDevices = computed\(\(\) => hidStore\.knownDevices\)/);
-assert.match(indexPage, /buildProfileActionUrl|buildHidHistoryUrl|openHidHistory/);
+// F023（2026-09-02 用户决策）：首页「已配置 Smart HID」面板与已知设备历史整链移除
+assert.doesNotMatch(indexPage, /pruneKnownDevices|knownDevices|openHidHistory|buildHidHistoryUrl/);
+assert.match(indexPage, /buildProfileActionUrl/);
 
 const hidAddPage = fs.readFileSync(path.join(uniappRoot, 'pages/hid/add.vue'), 'utf8');
 const provisionStepper = fs.readFileSync(path.join(uniappRoot, 'components/hid/provision-stepper.vue'), 'utf8');
 assert.match(hidAddPage, /取消等待/);
 assert.match(hidAddPage, /onBackPress/);
 assert.match(hidAddPage, /confirmLeaveIfNeeded/);
-assert.match(provisionStepper, /var\(--ble-gradient-brand,\s*linear-gradient/);
+// UI-CONV 2026-09-10：stepper 当前步改挂正典纯色（原型 C6 .st.cur .n=--c-primary）；v0 品牌渐变退役
+assert.match(provisionStepper, /background:\s*var\(--c-primary\)/);
+assert.match(provisionStepper, /var\(--c-success-deep\)/);
 
 const scanSummary = fs.readFileSync(path.join(uniappRoot, 'components/scan/scan-summary.vue'), 'utf8');
 assert.match(scanSummary, /停止扫描/);
@@ -125,10 +127,10 @@ const mainSource = fs.readFileSync(path.join(uniappRoot, 'main.js'), 'utf8');
 assert.equal(mainSource.includes('vue-i18n'), false, 'unused vue-i18n initialization must not return without translated UI');
 
 const productSource = fs.readFileSync(path.join(uniappRoot, 'config/product.js'), 'utf8');
-assert.match(productSource, /萌喵圈[\s\S]*?wxe0ed0e6727a0a5cd/);
-assert.match(productSource, /宝宝点滴[\s\S]*?wx1bb2d5c6821a7883/);
-assert.match(productSource, /cute-meow-circle\.png/);
-assert.match(productSource, /baby-diary\.png/);
+// 2026-09-10（F028 推广跳转移除）：更多小程序推广区整链下线，产品配置不得回流跳转数据
+assert.equal(productSource.includes('RELATED_MINI_PROGRAMS'), false, 'promo mini-program registry must not return with the F028 removal');
+assert.doesNotMatch(productSource, /wxe0ed0e6727a0a5cd|wx1bb2d5c6821a7883|萌喵圈|宝宝点滴/);
+assert.doesNotMatch(productSource, /other-apps\/.*\.png/);
 
 const versionSource = fs.readFileSync(path.join(uniappRoot, 'pages/about/version.vue'), 'utf8');
 assert.match(versionSource, /getVersionPageModel/, 'Version page must project Release Metadata via getVersionPageModel');
@@ -136,11 +138,11 @@ assert.equal(/\bversionHistory\b/.test(versionSource), false, 'Version History m
 assert.equal(/['"`]v?1\.0\.\d+['"`]/.test(versionSource), false, 'Version page must not hardcode product version literals');
 assert.match(versionSource, /暂无正式发布版本/);
 assert.equal(versionSource.includes('智能蓝牙助手'), false, 'Version History share title must use the current product identity');
-assert.match(versionSource, /BLE Toolkit\+/);
+assert.match(versionSource, /蓝析BLE工具箱/);
 
 const aboutSource = fs.readFileSync(path.join(uniappRoot, 'pages/about/index.vue'), 'utf8');
-assert.match(aboutSource, /navigateToMiniProgram/);
-assert.match(aboutSource, /暂时无法打开/);
+// 2026-09-10（F028 移除）：关于页不得再含推广区/小程序跳转
+assert.doesNotMatch(aboutSource, /更多小程序|navigateToMiniProgram|openApp|promotion-section/);
 
 const prototype = fs.readFileSync(path.join(repoRoot, 'docs/prototypes/unified-device-discovery.html'), 'utf8');
 assert.equal((prototype.match(/data-tab="(?:device|connected|broadcast|about)"/g) || []).length, 4, 'prototype must keep four top-level tabs');

@@ -1,0 +1,1 @@
+-1:cli:命令'uniapp.test mp-weixin'不存在或缺少参数 当前命令执行错误

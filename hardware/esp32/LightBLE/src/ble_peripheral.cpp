@@ -1,5 +1,9 @@
 #include "ble_peripheral.h"
 
+#ifdef DIAG_HEARTBEAT
+#include <Arduino.h>
+#endif
+
 #include <ArduinoJson.h>
 #include <NimBLEDevice.h>
 #include <NimBLEServer.h>
@@ -7,6 +11,7 @@
 
 #include "device_info.h"
 #include "fixture_config.h"
+#include "ble_value_util.h"
 #include "ota_server.h"
 #include "permissions_demo.h"
 #include "serial_events.h"
@@ -40,7 +45,7 @@ class ServerCallbacks : public NimBLEServerCallbacks {
             doc["status"] = "connected";
             String jsonString;
             serializeJson(doc, jsonString);
-            pCharacteristicStatusNotify->setValue(jsonString.c_str());
+            bleSetValue(pCharacteristicStatusNotify, jsonString);
             pCharacteristicStatusNotify->notify();
         }
     }
@@ -57,7 +62,7 @@ class ServerCallbacks : public NimBLEServerCallbacks {
             doc["status"] = "disconnected";
             String jsonString;
             serializeJson(doc, jsonString);
-            pCharacteristicStatusNotify->setValue(jsonString.c_str());
+            bleSetValue(pCharacteristicStatusNotify, jsonString);
             pCharacteristicStatusNotify->notify();
         }
     }
@@ -67,17 +72,17 @@ class ServerCallbacks : public NimBLEServerCallbacks {
 class ControlCharacteristicCallbacks : public NimBLECharacteristicCallbacks {
     void onRead(NimBLECharacteristic* pCharacteristic) override {
         String info = buildDeviceInfoJson();
-        pCharacteristic->setValue(info.c_str());
+        bleSetValue(pCharacteristic, info);
     }
 
     void onWrite(NimBLECharacteristic* pCharacteristic) override {
         std::string value = pCharacteristic->getValue();
         String responseJson;
         if (!testControlHandleWrite(value, pServer, responseJson)) return;
-        pCharacteristic->setValue(responseJson.c_str());
+        bleSetValue(pCharacteristic, responseJson);
         pCharacteristic->notify();
         if (pCharacteristicStatusNotify) {
-            pCharacteristicStatusNotify->setValue(responseJson.c_str());
+            bleSetValue(pCharacteristicStatusNotify, responseJson);
             pCharacteristicStatusNotify->notify();
         }
     }
@@ -89,7 +94,7 @@ class StatusNotifyCharacteristicCallbacks : public NimBLECharacteristicCallbacks
         std::string value = pCharacteristic->getValue();
         String responseJson;
         if (!testControlHandleWrite(value, pServer, responseJson)) return;
-        pCharacteristic->setValue(responseJson.c_str());
+        bleSetValue(pCharacteristic, responseJson);
         pCharacteristic->notify();
     }
 
@@ -119,9 +124,14 @@ static void startAdvertisingWithMetadata() {
     pAdvertising->setMinPreferred(0x06);
     pAdvertising->setMinPreferred(0x12);
 
-    NimBLEDevice::startAdvertising();
-    emitBleEvent("advertising");
-    emitSerialEvent("adv", "started");
+    // DEF-006 observability: report whether the stack actually accepted the
+    // advertising request instead of assuming success.
+    if (NimBLEDevice::startAdvertising()) {
+        emitBleEvent("advertising");
+        emitSerialEvent("adv", "started");
+    } else {
+        emitSerialEvent("adv", "start_failed");
+    }
 }
 
 void blePeripheralBegin() {
@@ -149,7 +159,7 @@ void blePeripheralBegin() {
         NIMBLE_PROPERTY::NOTIFY
     );
     pCharacteristicControl->setCallbacks(new ControlCharacteristicCallbacks());
-    pCharacteristicControl->setValue(buildDeviceInfoJson().c_str());
+    bleSetValue(pCharacteristicControl, buildDeviceInfoJson());
 
     // Contract: StatusNotify = write + notify (no read)
     pCharacteristicStatusNotify = pService->createCharacteristic(
@@ -190,6 +200,27 @@ void blePeripheralBegin() {
 }
 
 void blePeripheralLoop() {
+#ifdef DIAG_HEARTBEAT
+    // DEF-006 diagnostic: 3s heartbeat discriminating loop-hang vs
+    // advertising-restart failure. conn/old mirror the re-advertise flags,
+    // adv is the stack's live advertising state, heap rules out exhaustion.
+    {
+        static unsigned long lastHb = 0;
+        unsigned long now = millis();
+        if (now - lastHb >= 3000) {
+            lastHb = now;
+            char hb[160];
+            snprintf(hb, sizeof(hb),
+                     "{\"type\":\"hb\",\"ts\":%lu,\"conn\":%d,\"old\":%d,\"adv\":%d,\"heap\":%u}",
+                     (unsigned long)now, deviceConnected ? 1 : 0,
+                     oldDeviceConnected ? 1 : 0,
+                     NimBLEDevice::getAdvertising()->isAdvertising() ? 1 : 0,
+                     (unsigned)ESP.getFreeHeap());
+            emitSerialJson(hb);
+        }
+    }
+#endif
+
     if (!deviceConnected && oldDeviceConnected) {
         delay(500);
         startAdvertisingWithMetadata();
@@ -212,7 +243,7 @@ void blePeripheralLoop() {
             doc["fixture_role"] = FIXTURE_ROLE_PERIPHERAL;
             String jsonString;
             serializeJson(doc, jsonString);
-            pCharacteristicStatusNotify->setValue(jsonString.c_str());
+            bleSetValue(pCharacteristicStatusNotify, jsonString);
             pCharacteristicStatusNotify->notify();
             emitSerialEvent("notify", "device_status");
             lastStatusTime = millis();

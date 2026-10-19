@@ -2,7 +2,31 @@
 # E5 Android test compile probe (does not install / does not claim E5 PASS).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-CLI="${HBUILDERX_CLI:-/Applications/HBuilderX.app/Contents/MacOS/cli}"
+# Resolve CLI: HBUILDERX_CLI env first, then common per-OS install paths.
+hb_cli_default() {
+  if [[ -n "${HBUILDERX_CLI:-}" ]]; then
+    printf '%s' "${HBUILDERX_CLI}"
+    return 0
+  fi
+  local candidates=(
+    "/Applications/HBuilderX.app/Contents/MacOS/cli"
+    "/d/HBuilderX/cli.exe"
+    "/c/Program Files/HBuilderX/cli.exe"
+    "/c/HBuilderX/cli.exe"
+  )
+  local c
+  for c in "${candidates[@]}"; do
+    if [[ -f "$c" ]]; then
+      printf '%s' "$c"
+      return 0
+    fi
+  done
+  return 1
+}
+CLI="$(hb_cli_default)" || {
+  echo "HBuilderX CLI missing: set HBUILDERX_CLI or install HBuilderX" >&2
+  exit 2
+}
 PROJECT="${ROOT}/apps/uniapp"
 OUT_DIR="${ROOT}/verification/e5/android"
 mkdir -p "${OUT_DIR}"
@@ -41,7 +65,8 @@ if grep -q '项目 uniapp 编译成功' "${LOG}"; then
   APP_JS="${PROJECT}/unpackage/dist/dev/app-plus/app-service.js"
   if [[ -f "${APP_JS}" ]]; then
     echo "compile_artifact=${APP_JS}"
-    echo "compile_sha256=$(shasum -a 256 "${APP_JS}" | awk '{print $1}')"
+    # shasum ships with macOS/Git Bash perl; sha256sum is the coreutils fallback.
+    echo "compile_sha256=$( (shasum -a 256 "${APP_JS}" 2>/dev/null || sha256sum "${APP_JS}") | awk '{print $1}')"
   fi
   echo "RESULT=COMPILE_OK"
   # launch may still print 已停止运行 after successful compile (no install / no custom base)

@@ -1,120 +1,56 @@
-import { openAdapter as openBleAdapter } from './ble-runtime/index.js';
+// 扫描前置权限服务（REQ-005/007/008/009；CAP-02/03/04/05）。
+// 2026-09-14 MAC-002：增加可注入平台面——此前版本裸引用全局 `uni`，在 Node
+// 单测环境直接 ReferenceError（uni is not defined），无法证明任何行为。
+// 默认路径保持真实 UniApp 运行时：能力探测读编译期注入的全局 `uni`，真正的
+// 适配器打开始终经 ble-runtime 平台缝（openAdapter），不被测试 mock 替代。
 
-function showWeixinPermissionDialog({ title, content, confirmText = '去设置', onConfirm }) {
-  return new Promise((resolve) => {
-    wx.showModal({
-      title,
-      content,
-      confirmText,
-      success: async (result) => {
-        if (result.confirm && typeof onConfirm === 'function') {
-          await onConfirm();
-        }
-        resolve(false);
-      },
-      fail: () => resolve(false)
-    });
-  });
+import { openAdapter } from './ble-runtime/index.js';
+
+let platformOverride;
+const NO_PLATFORM = Symbol('scan-permission:no-platform');
+
+export function setScanPermissionPlatformForTesting(platform = NO_PLATFORM) {
+  platformOverride = platform;
 }
 
-function getWeixinBluetoothAuthorization() {
-  try {
-    return wx.getAppAuthorizeSetting?.().bluetoothAuthorized || 'unknown';
-  } catch {
-    return 'unknown';
-  }
+export function resetScanPermissionPlatformForTesting() {
+  platformOverride = undefined;
 }
 
-function openWeixinBluetoothSettings() {
-  if (typeof wx.openAppAuthorizeSetting === 'function') {
-    return new Promise((resolve) => wx.openAppAuthorizeSetting({ complete: resolve }));
+function resolvePlatformFace() {
+  if (platformOverride !== undefined) {
+    return platformOverride === NO_PLATFORM ? null : platformOverride;
   }
-  if (typeof wx.openSetting === 'function') {
-    return new Promise((resolve) => wx.openSetting({ complete: resolve }));
-  }
-  return Promise.resolve();
+  const runtime = globalThis.uni;
+  return runtime && typeof runtime === 'object' ? runtime : null;
 }
 
-async function ensureWeixinBluetoothReady() {
-  if (getWeixinBluetoothAuthorization() === 'denied') {
-    await showWeixinPermissionDialog({
-      title: '需要蓝牙权限',
-      content: '蓝牙权限已关闭，请在微信的系统授权设置中允许使用蓝牙。',
-      onConfirm: openWeixinBluetoothSettings
-    });
-    return { ok: false, reason: 'bluetooth_permission_denied' };
-  }
+const BLUETOOTH_OFF_PATTERN = /not available|未开启|未打开|蓝牙.*(关|开启)/i;
+const PERMISSION_DENIED_PATTERN = /auth (deny|denied)|authorize:fail|permission denied|权限.*(拒绝|拒绝)/i;
 
-  try {
-    await openBleAdapter();
-    return { ok: true };
-  } catch (error) {
-    const errCode = error?.errCode ?? error?.code;
-    let content = '请先打开系统蓝牙，并允许小程序使用蓝牙。';
-    let confirmText = '知道了';
-    let onConfirm;
-
-    if (errCode === 10001) {
-      content = '系统蓝牙未开启。请先打开蓝牙，再返回小程序开始扫描。';
-    } else if (getWeixinBluetoothAuthorization() === 'denied') {
-      content = '蓝牙权限已关闭，请在微信的系统授权设置中允许使用蓝牙。';
-      confirmText = '去设置';
-      onConfirm = openWeixinBluetoothSettings;
-    }
-
-    await showWeixinPermissionDialog({
-      title: '无法开始扫描',
-      content,
-      confirmText,
-      onConfirm
-    });
-
-    return { ok: false, reason: 'bluetooth_unavailable', error };
-  }
-}
-
-export function requestBleScanPermission() {
-  // #ifdef MP-WEIXIN
-  return new Promise((resolve) => {
-    ensureWeixinBluetoothReady().then((bluetoothReady) => {
-      if (!bluetoothReady.ok) {
-        resolve(bluetoothReady);
-        return;
-      }
-
-      wx.getSetting({
-        success: (settings) => {
-          if (settings.authSetting['scope.userLocation']) {
-            resolve({ ok: true });
-            return;
-          }
-
-          wx.authorize({
-            scope: 'scope.userLocation',
-            success: () => resolve({ ok: true }),
-            fail: async () => {
-              await showWeixinPermissionDialog({
-                title: '需要定位权限',
-                content: '微信在部分系统上要求定位权限才能发现附近 BLE 设备。',
-                onConfirm: () => wx.openSetting()
-              });
-              resolve({ ok: false, reason: 'location_permission_denied' });
-            }
-          });
-        },
-        fail: () => resolve({ ok: true })
-      });
-    }).catch((error) => resolve({ ok: false, reason: 'permission_check_failed', error }));
-  });
-  // #endif
-  // #ifndef MP-WEIXIN
-  if (typeof uni.openBluetoothAdapter !== 'function') {
-    return Promise.resolve({
+export async function requestBleScanPermission() {
+  const uniFace = resolvePlatformFace();
+  if (!uniFace || typeof uniFace.openBluetoothAdapter !== 'function') {
+    return {
       ok: false,
       reason: 'ble_not_supported',
-      error: new Error('当前平台不支持 BLE 扫描，请使用微信小程序或 App。')
-    });
+      error: new Error('当前平台不支持 BLE 扫描，请使用 App。')
+    };
   }
-  return Promise.resolve({ ok: true });
-  // #endif
+
+  try {
+    await openAdapter();
+    return { ok: true };
+  } catch (error) {
+    const errCode = error?.errCode ?? null;
+    const raw = String(error?.rawMessage || error?.errMsg || error?.message || '');
+    // 授权拒绝优先于蓝牙关闭：auth deny 同样伴随 10001 时语义是权限而非开关。
+    if (errCode === 10006 || errCode === 10007 || PERMISSION_DENIED_PATTERN.test(raw)) {
+      return { ok: false, reason: 'bluetooth_permission_denied', error };
+    }
+    if (errCode === 10001 || BLUETOOTH_OFF_PATTERN.test(raw)) {
+      return { ok: false, reason: 'bluetooth_unavailable', error };
+    }
+    return { ok: false, reason: 'bluetooth_unavailable', error };
+  }
 }

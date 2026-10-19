@@ -1,0 +1,87 @@
+{
+  "task_id": "E5-ENV-UNIFIED-001",
+  "generated_at": "2026-09-04T00:53:23.124Z",
+  "git_head": "dbb38a8c2404b37cce4602db1f42b44eedae7e8d",
+  "git_short": "dbb38a8",
+  "host": {
+    "os": "Windows_NT 10.0.19045 (x64)",
+    "platform": "win32",
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13700H",
+    "node": "v20.19.3",
+    "npm": null
+  },
+  "android": {
+    "androidSdk": {
+      "present": true,
+      "path": "C:\\Users\\11066\\AppData\\Local\\Android\\sdk"
+    },
+    "adb": {
+      "present": true,
+      "path": "C:\\Users\\11066\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe",
+      "version": "Android Debug Bridge version 1.0.41\r"
+    },
+    "java": {
+      "present": true,
+      "version": "java version \"24.0.1\" 2025-04-15\r"
+    }
+  },
+  "device": {
+    "physical": [
+      {
+        "serial": "R5CR1284Y7H",
+        "model": "SM_G9910",
+        "product": "o1qzcx",
+        "raw": "R5CR1284Y7H            device product:o1qzcx model:SM_G9910 device:o1q transport_id:1"
+      }
+    ],
+    "emulator": [],
+    "emulator_not_e5": true
+  },
+  "esp32": {
+    "platformio": {
+      "present": true,
+      "path": "C:\\Users\\11066\\.platformio\\penv\\Scripts\\pio.exe",
+      "version": "PlatformIO Core, version 6.1.18"
+    },
+    "deviceList": "COM12\r\n-----\r\nHardware ID: USB VID:PID=1A86:55D3 SER=5B15084803 LOCATION=1-9.1\r\nDescription: USB-Enhanced-SERIAL CH343 (COM12)\r\n\r\nCOM4\r\n----\r\nHardware ID: USB VID:PID=04E8:6860 SER=R5CR1284Y7H LOCATION=1-9.2:x.1\r\nDescription: USB 串行设备 (COM4)",
+    "serial": {
+      "ports": [
+        "COM12",
+        "COM4"
+      ],
+      "serial_available": true,
+      "serial_missing": false,
+      "note": "Windows: ADB-composite phone ports (e.g. Samsung COMx) are also listed; identify the ESP32 bridge by USB VID:PID in `pio device list` before flashing."
+    }
+  },
+  "build": {
+    "hbuilderx": {
+      "present": true,
+      "path": "D:/HBuilderX/cli.exe",
+      "version": "未检测到已打开的HBuilderX，请先执行cli open启动HBuilderX后再重试",
+      "cli": true,
+      "cli_blocked_note": null
+    },
+    "wechat_devtools": {
+      "present": true,
+      "path": "C:/Program Files (x86)/Tencent/微信web开发者工具/cli.bat"
+    },
+    "viteConfigPresent": true,
+    "androidBuildTool": "HBuilderX cli launch app-android"
+  },
+  "readiness": {
+    "host": "READY",
+    "android_toolchain": "READY",
+    "android_apk": "UNKNOWN",
+    "android_physical": "READY",
+    "emulator_not_e5": true,
+    "esp32_toolchain": "READY",
+    "esp32_serial": "READY",
+    "ble_link": "READY",
+    "overall": "READY"
+  },
+  "notes": [
+    "Emulators are recorded but emulator_not_e5=true — they do NOT satisfy E5.",
+    "This checker does not flash ESP32, install APK, or run OTA/Broadcast/Smart-HID E5."
+  ]
+}

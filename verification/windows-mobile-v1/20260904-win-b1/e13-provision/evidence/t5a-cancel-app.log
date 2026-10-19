@@ -1,0 +1,30 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p002_provisioning_test.dart
+Running Gradle task 'assembleDebug'...                          
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/11066/.gradle/wrapper/dists/gradle-8.14-all/c2qonpi39x1mddn7hk5gh9iqj/gradle-8.14/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Running Gradle task 'assembleDebug'...                             26.8s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           5.5s
+00:00 +0: P002 scenario: cancel_wait
+P002[E2E 12:20:31.943]: scenario=cancel_wait 启动
+P002: connected+verified device_id=HID-00000001 fw=1.1.0 mtu=256
+P002[E2E 12:20:35.944]: configure 阶段已到达（第 1 次连接）
+P002: status state=unprovisioned step=unprovisioned error=null
+P002: qr parse ok host=192.168.21.77:17892 len=80
+P002[E2E 12:20:38.402]: 表单已就绪（token 已回填，值不落日志；扫码面板已退场）
+P002: status state=unprovisioned step=unprovisioned error=null
+P002: status state=unprovisioned step=unprovisioned error=null
+P002: status state=unprovisioned step=unprovisioned error=null
+P002: status state=unprovisioned step=unprovisioned error=null
+P002: submit frames=2 bytes=150 mtu=256
+P002[E2E 12:20:47.246]: 已点下发配置
+P002: status state=unprovisioned step=unprovisioned error=null
+P002[E2E 12:20:48.186]: outcome=timeout
+P002[E2E 12:20:48.188]: scenario=cancel_wait 全部断言通过
+00:16 +1: (tearDownAll)
+00:16 +1: All tests passed!

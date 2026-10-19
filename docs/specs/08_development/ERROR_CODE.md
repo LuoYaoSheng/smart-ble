@@ -26,7 +26,7 @@
 
 | # | 层 | 内容 | 规则 |
 |---|---|---|---|
-| 1 | **platform-native** | 平台原生错误（微信 errCode 10000–10013、Android 插件/系统错误码、系统配对失败等） | 只在 Adapter 内出现并经 §3 映射上行；**不得把平台原生码直接显示给用户**（platformCode=not-user-facing）；未映射的平台错误保留安全技术标识（technicalMessage 脱敏摘要 + platformCode），**不得猜测业务错误**（§6 末条） |
+| 1 | **platform-native** | 平台原生错误（微信 errCode 10000–10013、Android 插件/权限错误码等） | 只在 Adapter 内出现并经 §3 映射上行；**不得把平台原生码直接显示给用户**（platformCode=not-user-facing）；未映射的平台错误保留安全技术标识（technicalMessage 脱敏摘要 + platformCode），**不得猜测业务错误**（§6 末条） |
 | 2 | **sdk-transport** | BLE_001～BLE_008（生态 SDK 层码，API_UNIFIED_SPEC §14） | 两层并行的桥梁层：承接第 1 层、向第 3/4 层供给恢复动作 |
 | 3 | **product-domain** | 产品业务错误码（§3.1/§3.2 全集——语义与恢复动作以 PRD §7 / STATE_MODEL §2 / BUSINESS_FLOW §4 为准） | 错误码即契约；恢复动作四分流为产品资产（PZ-2，Adapter 不得改） |
 | 4 | **validation-capability** | 本地校验与能力拒绝（非法 HEX、空 payload、超 31B、UUID 非法、能力不支持/宿主不支持） | 多数为可恢复（改输入/改环境）；**取消类不算错误**（§5 取消语义） |
@@ -61,7 +61,7 @@
 | 微信 errCode 10001 | BLE_001 | 「请先打开系统蓝牙」弹窗/横幅 | open_settings | PAGE_SPEC §1/§8 · BUSINESS_FLOW §1/§5 |
 | 授权拒绝（reason=`bluetooth_permission_denied` 等） | BLE_002 | 横幅 reason 分类 + 去设置 | open_settings | PAGE_SPEC §1 · PLATFORM_ADAPTER_SPEC §3.2 |
 | 微信 errCode 10000–10013（读写监听失败） | BLE_005/006/007（按操作归类） | 日志「错误」行（errMsg 中文归一化） | retry | PAGE_SPEC §6 异常处理 |
-| Android 系统配对取消（加密写首次） | BLE_006 | 2s 自动重试一次（平台补充态）→ 再取消才失败 modal | retry | PLATFORM_ADAPTER_SPEC §4.1 · DEVELOPMENT_SCOPE §6 |
+| 旧加密固件拒绝 INPUT 写入 | BLE_006 | 单次写入后立即失败，提示重烧 V1 简化固件；不发起系统配对 | retry | PLATFORM_ADAPTER_SPEC §4.1 · DEVELOPMENT_SCOPE §6 |
 | Android 插件/权限逐项缺失（SDK≥31 ADVERTISE/CONNECT） | BLE_002 | 缺失汇总 modal + 去设置 | open_settings | PLATFORM_ADAPTER_SPEC §4.1 |
 | 微信外围活动连接冲突 | BLE_008 前置拦截（validation 层） | 报错提示先断开活动连接 | reconnect 前置（先断开） | BUSINESS_FLOW §5 · PAGE_SPEC §8 |
 
@@ -107,7 +107,7 @@
 | OTA_VERSION_MISMATCH | VERIFYING 版本回读不一致 | retry | PRD §7.5 · SM §6 · SEQ §7 |
 | OTA 包错误 ×6 / 运行错误 ×5 | 六重包校验错误与五种运行错误——**逐码名称未入正典**（旧代码 ota-manager 枚举未逐行核对，STATE_MACHINE §6 注同口径） | 按正典流程（校验终止/失败态） | PRD §6 PAGE006-OTA · BUSINESS_FLOW §6；逐码【待 legacy 实证固化——固化须回写本表，不得提前臆造】 |
 
-**平台补充态（L3 圈内登记，不改产品状态集合）**：`bluetooth_permission_denied`（Android，STATE_MODEL §2 示例）、`insecure_context`（Web，STATE_MODEL §2 示例）、Android 系统配对取消重试（PLATFORM_ADAPTER_SPEC §4.1）——按平台 PAGE_SPEC 标注 + 引 10_platform 条目登记后方可加入实现。
+**平台补充态（L3 圈内登记，不改产品状态集合）**：`bluetooth_permission_denied`（Android，STATE_MODEL §2 示例）、`insecure_context`（Web，STATE_MODEL §2 示例）——按平台 PAGE_SPEC 标注 + 引 10_platform 条目登记后方可加入实现。
 
 ## 4. 错误码命名空间规则
 
@@ -159,7 +159,7 @@
 ## 7. 平台映射边界（只记录包内已有证据）
 
 - **微信**：errCode 10001（蓝牙未开→引导）；errCode 10000–10013（读写监听失败 errMsg 中文归一化，PAGE_SPEC §6）——逐码语义【待真机证据/待 legacy 实证固化】。
-- **App·Android**：权限拒绝 reason（bluetooth_permission_denied 等，PLATFORM_ADAPTER_SPEC §4.1）；系统配对取消（2s 重试一次，平台补充态）；插件错误逐码【待真机证据】。
+- **App·Android**：权限拒绝 reason（bluetooth_permission_denied 等，PLATFORM_ADAPTER_SPEC §4.1）；V1 简化不发起系统配对；插件错误逐码【待真机证据】。
 - **微信开发者工具**：外围广播 unsupported = **host limitation，不是 permission denied**（[PERMISSION](PERMISSION.md) §1 例）。
 - **iOS 微信宿主 / iOS App / Desktop / Web**：无包内错误码证据——【待真机证据】，不得自行补写。
 

@@ -1,0 +1,749 @@
+{
+  "schema_version": "1.0",
+  "canonical_project": "smart-ble",
+  "canonical_branch": "main",
+  "channels": [
+    "apple-app-store",
+    "huawei-appgallery",
+    "xiaomi-getapps",
+    "oppo",
+    "vivo",
+    "tencent-myapp",
+    "desktop-distribution"
+  ],
+  "status": "BRANDING_UPDATED_REBUILD_REQUIRED",
+  "rule": "Every implementation requires current-source build, functional and hardware evidence. Candidate packages and static checks are not store-ready releases.",
+  "implementations": [
+    {
+      "id": "uniapp",
+      "systems": [
+        "android",
+        "ios",
+        "h5"
+      ],
+      "packaging": "HBuilderX native build; H5 is a browser-limited surface",
+      "build": "RESOURCES_BUILT_NATIVE_BLOCKED",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_files": 27,
+        "static_gates": 15
+      },
+      "native_packaging_reason": "HBuilderX/custom native base and signing still require verification; H5/App resource compilation is not a native package."
+    },
+    {
+      "id": "flutter",
+      "systems": [
+        "android",
+        "ios",
+        "macos",
+        "windows"
+      ],
+      "architectures": {
+        "android": [
+          "arm64-v8a",
+          "armeabi-v7a",
+          "x86_64"
+        ],
+        "ios": [
+          "arm64"
+        ],
+        "macos": [
+          "arm64",
+          "x86_64"
+        ],
+        "windows": [
+          "x64",
+          "arm64"
+        ]
+      },
+      "build": "SIGNED_ANDROID_AND_DECLARED_CANDIDATES_BUILT",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_widget_tests": 156,
+        "analysis": "PASS"
+      },
+      "candidate_architectures_built": {
+        "android": [
+          "arm64-v8a",
+          "armeabi-v7a",
+          "x86_64"
+        ],
+        "ios": [
+          "arm64"
+        ],
+        "macos": [
+          "arm64",
+          "x86_64"
+        ],
+        "windows": [
+          "x64",
+          "arm64"
+        ]
+      }
+    },
+    {
+      "id": "kotlin",
+      "systems": [
+        "android"
+      ],
+      "packaging": "APK + AAB with environment-supplied release signing",
+      "build": "SIGNED_ANDROID_AND_DECLARED_CANDIDATES_BUILT",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_tests": 100
+      }
+    },
+    {
+      "id": "swiftui",
+      "systems": [
+        "ios"
+      ],
+      "architectures": [
+        "arm64"
+      ],
+      "packaging": "Archive + App Store Connect export",
+      "build": "SIGNED_STORE_EXPORT_VERIFIED",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_tests": 31,
+        "accessibility_scope": {
+          "structural_audit": "PASS",
+          "full_accessibility": "NOT_VERIFIED",
+          "historical_limitations": [
+            "contrast",
+            "dynamicType",
+            "textClipped"
+          ],
+          "real_device_voiceover": "NOT_RUN"
+        },
+        "ui_tests": 11
+      }
+    },
+    {
+      "id": "appkit",
+      "systems": [
+        "macos"
+      ],
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ],
+      "packaging": "Universal app; distribution signing and notarization required",
+      "build": "SIGNED_STORE_EXPORT_VERIFIED",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_tests": 19,
+        "core_assertions": 80
+      }
+    },
+    {
+      "id": "electron",
+      "systems": [
+        "windows",
+        "macos",
+        "linux"
+      ],
+      "packaging": "NSIS/portable, DMG/zip, AppImage/deb/rpm",
+      "build": "CANDIDATE_BUILT",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "shared_desktop_tests": 190
+      },
+      "candidate_architectures_built": {
+        "windows": [
+          "x64",
+          "arm64"
+        ],
+        "macos": [
+          "x86_64",
+          "arm64"
+        ],
+        "linux": [
+          "x64",
+          "arm64"
+        ]
+      },
+      "linux_native_evidence": {
+        "arm64": {
+          "job_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084309/job/114140118978",
+          "status": "PASS",
+          "main_executable": "ELF64 AArch64",
+          "native_elf_modules_verified": 9,
+          "packaged_hci_binding_load": "PASS",
+          "adapter_initialization": "NOT_RUN"
+        },
+        "x64": {
+          "job_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084309/job/114140119147",
+          "status": "PASS",
+          "main_executable": "ELF64 x86_64",
+          "native_elf_modules_verified": 15,
+          "packaged_hci_binding_load": "PASS",
+          "adapter_initialization": "NOT_RUN"
+        }
+      }
+    },
+    {
+      "id": "tauri",
+      "systems": [
+        "windows",
+        "macos",
+        "linux"
+      ],
+      "packaging": "MSI/NSIS, DMG, deb/AppImage/rpm",
+      "build": "CANDIDATE_BUILT",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "shared_desktop_tests": 190,
+        "rust_tests_macos": 8,
+        "rust_tests_windows": 9
+      },
+      "candidate_architectures_built": {
+        "windows": [
+          "x64",
+          "arm64"
+        ],
+        "macos": [
+          "x86_64",
+          "arm64"
+        ],
+        "linux": [
+          "x64",
+          "arm64"
+        ]
+      }
+    },
+    {
+      "id": "avalonia",
+      "systems": [
+        "windows"
+      ],
+      "architectures_to_verify": [
+        "x64",
+        "arm64"
+      ],
+      "packaging": "Self-contained .NET application",
+      "build": "CANDIDATE_BUILT",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_tests_windows": 106
+      },
+      "candidate_architectures_built": [
+        "x64",
+        "arm64"
+      ]
+    },
+    {
+      "id": "qt",
+      "systems": [
+        "windows"
+      ],
+      "architectures_to_verify": [
+        "x64",
+        "arm64"
+      ],
+      "packaging": "PyInstaller self-contained application",
+      "build": "CANDIDATE_BUILT",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "test_methods": 55
+      },
+      "candidate_architectures_built": [
+        "x64",
+        "arm64"
+      ],
+      "arm64_evidence": {
+        "job_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084309/job/114140118989",
+        "source_commit": "7fdb969d6a2baca7cc3668e4ed75ed0f83d6420b",
+        "source_trees": {
+          "apps/desktop/qt": "74a659f30f813cbb8605db47d4ae127fb7e97536",
+          "core": "9e85b2bb80b6a443cca3d54abfb9f5ccb6f05b32"
+        },
+        "status": "PASS",
+        "native_images_verified": 123,
+        "machine": "0xaa64",
+        "archive_sha256": "ee42b1976cdd4cda614e2f51089f5b71009d162953790f18ca1af77770d7ac1e"
+      }
+    },
+    {
+      "id": "wails",
+      "systems": [
+        "windows"
+      ],
+      "architectures_to_verify": [
+        "x64",
+        "arm64"
+      ],
+      "packaging": "Native Windows executable",
+      "build": "CANDIDATE_BUILT",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "pure_session_tests": 3,
+        "availability_tests_windows_vm": 2
+      },
+      "candidate_architectures_built": [
+        "x64",
+        "arm64"
+      ]
+    }
+  ],
+  "open_gates": [
+    "current-version real BLE per implementation",
+    "Smart HID provisioning READY and recovery paths",
+    "OTA cancel/failure/reboot verification",
+    "distribution signatures/profiles/notarization",
+    "store metadata/privacy URL/SDK declarations",
+    "clean installation and upgrade",
+    "full accessibility review beyond structural audit and real-device VoiceOver"
+  ],
+  "application_id": "com.i2kai.open.smartble",
+  "local_evidence_note": "Historical pre-rename evidence: Current signed Kotlin/Flutter Android packages have matching application/core source trees, product ID, signatures and hashes. Native SwiftUI/AppKit signed exports were rebuilt with BLE Toolkit+. Windows ARM64 VM software validation uses actual native runtimes; hardware and Windows distribution signing remain independent gates.",
+  "publisher_type": "individual",
+  "public_support_email": "121912336@qq.com",
+  "store_materials_status": "DEFERRED_BY_USER",
+  "last_candidate_run": {
+    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38041746455",
+    "head_commit": "0926e991ed47dbe4dbfc1ae3f02b5b252a6955ae",
+    "status": "PASS",
+    "jobs_passed": 24,
+    "jobs_total": 24,
+    "jobs": [
+      {
+        "name": "mobile (android)",
+        "id": 114183267476,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (macos-latest, tauri)",
+        "id": 114183267540,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04-arm, electron)",
+        "id": 114183267559,
+        "status": "PASS"
+      },
+      {
+        "name": "flutter-windows (windows-11-arm)",
+        "id": 114183267562,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-11-arm, tauri)",
+        "id": 114183267570,
+        "status": "PASS"
+      },
+      {
+        "name": "apple (flutter-ios)",
+        "id": 114183267577,
+        "status": "PASS"
+      },
+      {
+        "name": "flutter-windows (windows-latest)",
+        "id": 114183267584,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-latest, electron)",
+        "id": 114183267600,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04, tauri)",
+        "id": 114183267601,
+        "status": "PASS"
+      },
+      {
+        "name": "mobile (flutter-android)",
+        "id": 114183267615,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-latest, wails)",
+        "id": 114183267621,
+        "status": "PASS"
+      },
+      {
+        "name": "apple (flutter-macos)",
+        "id": 114183267640,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-11-arm, avalonia)",
+        "id": 114183267646,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-11-arm, electron)",
+        "id": 114183267650,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-latest, avalonia)",
+        "id": 114183267656,
+        "status": "PASS"
+      },
+      {
+        "name": "apple (ios)",
+        "id": 114183267686,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (macos-latest, electron)",
+        "id": 114183267691,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04, electron)",
+        "id": 114183267699,
+        "status": "PASS"
+      },
+      {
+        "name": "apple (macos)",
+        "id": 114183267706,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-latest, qt)",
+        "id": 114183267729,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04-arm, tauri)",
+        "id": 114183267739,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-latest, tauri)",
+        "id": 114183267756,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-11-arm, qt)",
+        "id": 114183267913,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-11-arm, wails)",
+        "id": 114183267924,
+        "status": "PASS"
+      }
+    ],
+    "checkout_note": "Pull-request runners may check out a synthetic merge commit. Actual source trees are recorded in build reports.",
+    "note": "All declared checks passed at the recorded source commit; hardware, distribution and store submission remain separate gates.",
+    "artifacts_uploaded": 24
+  },
+  "last_software_run": {
+    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38041746475",
+    "head_commit": "0926e991ed47dbe4dbfc1ae3f02b5b252a6955ae",
+    "status": "PASS",
+    "jobs_passed": 8,
+    "jobs_total": 8,
+    "jobs": [
+      {
+        "name": "Release metadata & gates",
+        "id": 114183199484,
+        "status": "PASS"
+      },
+      {
+        "name": "Flutter (analyze + test)",
+        "id": 114183199529,
+        "status": "PASS"
+      },
+      {
+        "name": "Android (build + test, JDK 17)",
+        "id": 114183199530,
+        "status": "PASS"
+      },
+      {
+        "name": "Tauri (Linux build → deb/appimage)",
+        "id": 114183199552,
+        "status": "PASS"
+      },
+      {
+        "name": "Apple (Core test + iOS xcodebuild test + native macOS build)",
+        "id": 114183199554,
+        "status": "PASS"
+      },
+      {
+        "name": "ESP32 firmware (PlatformIO)",
+        "id": 114183199613,
+        "status": "PASS"
+      },
+      {
+        "name": "UniApp (full verify-uniapp.sh + h5 build)",
+        "id": 114183199687,
+        "status": "PASS"
+      },
+      {
+        "name": "Electron (install + lint)",
+        "id": 114183199757,
+        "status": "PASS"
+      }
+    ],
+    "checkout_note": "Pull-request runners may check out a synthetic merge commit. Actual source trees are recorded in build reports.",
+    "note": "All declared checks passed at the recorded source commit; hardware, distribution and store submission remain separate gates."
+  },
+  "signed_android_evidence": {
+    "android": {
+      "source_commit": "9c8833628f87d4ee7c0c34f9792f97dc4ad3b7be",
+      "source_trees": {
+        "apps/android": "d4f63f50c42b6cf573e4398a3a89158fcc8a931a",
+        "core": "9e85b2bb80b6a443cca3d54abfb9f5ccb6f05b32"
+      },
+      "status": "SIGNED_BUILD",
+      "artifacts": [
+        {
+          "path": "apps/android/app/build/outputs/apk/release/app-release.apk",
+          "bytes": 12024620,
+          "sha256": "3ff2da3c64281ceaf97ca173ba9bd18939b0f572fb8c1876261061c19abbb6e9",
+          "native_abis": [],
+          "elf_16kb": "NOT_APPLICABLE",
+          "libraries_64bit": [],
+          "application_id": "com.i2kai.open.smartble",
+          "build_number": "101",
+          "target_sdk": 36,
+          "zip_16kb": "PASS",
+          "signature_verified": true
+        },
+        {
+          "path": "apps/android/app/build/outputs/bundle/release/app-release.aab",
+          "bytes": 11730181,
+          "sha256": "71388434f6bc8a4cb11255aa316a2b0d07332e1cfc1855e9e9d5b550c549134a",
+          "native_abis": [],
+          "elf_16kb": "NOT_APPLICABLE",
+          "libraries_64bit": [],
+          "signature_verified": true
+        }
+      ],
+      "report": ".tmp/release/android-darwin-arm64/signed/report.json",
+      "application_display_name": "BLE Toolkit+",
+      "display_name_verified_in_apk": "PASS"
+    },
+    "flutter-android": {
+      "source_commit": "9c8833628f87d4ee7c0c34f9792f97dc4ad3b7be",
+      "source_trees": {
+        "apps/flutter": "9214f9dea39b260a9707f297ef02b01725772807",
+        "core": "9e85b2bb80b6a443cca3d54abfb9f5ccb6f05b32"
+      },
+      "status": "SIGNED_BUILD",
+      "artifacts": [
+        {
+          "path": "apps/flutter/build/app/outputs/flutter-apk/app-release.apk",
+          "bytes": 73557318,
+          "sha256": "af78301a76667fb8cad30b080327aa5f950d81890273c037aae01a11cffc138f",
+          "native_abis": [
+            "arm64-v8a",
+            "armeabi-v7a",
+            "x86_64"
+          ],
+          "elf_16kb": "PASS",
+          "libraries_64bit": [
+            {
+              "path": "lib/arm64-v8a/libapp.so",
+              "min_load_alignment": 65536
+            },
+            {
+              "path": "lib/arm64-v8a/libbarhopper_v3.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libdartjni.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libflutter.so",
+              "min_load_alignment": 65536
+            },
+            {
+              "path": "lib/arm64-v8a/libimage_processing_util_jni.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/arm64-v8a/libsurface_util_jni.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/x86_64/libapp.so",
+              "min_load_alignment": 65536
+            },
+            {
+              "path": "lib/x86_64/libbarhopper_v3.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/x86_64/libdartjni.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/x86_64/libflutter.so",
+              "min_load_alignment": 65536
+            },
+            {
+              "path": "lib/x86_64/libimage_processing_util_jni.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "lib/x86_64/libsurface_util_jni.so",
+              "min_load_alignment": 16384
+            }
+          ],
+          "application_id": "com.i2kai.open.smartble",
+          "build_number": "101",
+          "target_sdk": 36,
+          "zip_16kb": "PASS",
+          "signature_verified": true
+        },
+        {
+          "path": "apps/flutter/build/app/outputs/bundle/release/app-release.aab",
+          "bytes": 56007835,
+          "sha256": "b3b06e5dd816cd2f420ec29482d73ca0fde13e0451890d55d0ba89a955351f89",
+          "native_abis": [
+            "arm64-v8a",
+            "armeabi-v7a",
+            "x86_64"
+          ],
+          "elf_16kb": "PASS",
+          "libraries_64bit": [
+            {
+              "path": "base/lib/arm64-v8a/libapp.so",
+              "min_load_alignment": 65536
+            },
+            {
+              "path": "base/lib/arm64-v8a/libbarhopper_v3.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "base/lib/arm64-v8a/libdartjni.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "base/lib/arm64-v8a/libflutter.so",
+              "min_load_alignment": 65536
+            },
+            {
+              "path": "base/lib/arm64-v8a/libimage_processing_util_jni.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "base/lib/arm64-v8a/libsurface_util_jni.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "base/lib/x86_64/libapp.so",
+              "min_load_alignment": 65536
+            },
+            {
+              "path": "base/lib/x86_64/libbarhopper_v3.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "base/lib/x86_64/libdartjni.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "base/lib/x86_64/libflutter.so",
+              "min_load_alignment": 65536
+            },
+            {
+              "path": "base/lib/x86_64/libimage_processing_util_jni.so",
+              "min_load_alignment": 16384
+            },
+            {
+              "path": "base/lib/x86_64/libsurface_util_jni.so",
+              "min_load_alignment": 16384
+            }
+          ],
+          "signature_verified": true
+        }
+      ],
+      "report": ".tmp/release/flutter-android-darwin-arm64/signed/report.json",
+      "application_display_name": "BLE Toolkit+",
+      "display_name_verified_in_apk": "PASS"
+    }
+  },
+  "native_apple_store_track": {
+    "selected_implementations": {
+      "ios": "swiftui",
+      "macos": "appkit"
+    },
+    "workspace": "SmartBLE-Apple.xcworkspace",
+    "application_id": "com.i2kai.open.smartble",
+    "app_store_connect_model": "one app record with separate iOS and macOS platforms",
+    "team": {
+      "id": "72MZZQB893",
+      "name": "longcan cai",
+      "selected_by_user": true
+    },
+    "macos_xcode_archive": {
+      "status": "SIGNED_ARCHIVE_VERIFIED",
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ],
+      "version": "1.0.5",
+      "build": "101",
+      "unit_tests_passed": 19,
+      "privacy_manifest": true,
+      "path": ".tmp/release/apple-native/macos-renamed.xcarchive"
+    },
+    "store_export": "SIGNED_EXPORTS_VERIFIED",
+    "store_upload": "NOT_RUN",
+    "signed_exports": {
+      "ios": ".tmp/release/apple-native/ios-renamed-export/BLE Toolkit+.ipa",
+      "macos": ".tmp/release/apple-native/macos-renamed-export/BLE Toolkit+.pkg",
+      "report": ".tmp/release/apple-native/signed-store-report.json",
+      "macos_capabilities": [
+        "app-sandbox",
+        "device.bluetooth",
+        "device.camera"
+      ],
+      "ios_profile": "App Store; get-task-allow=false; no device list"
+    },
+    "display_name": "BLE Toolkit+"
+  },
+  "display_name": "蓝析BLE工具箱",
+  "windows_vm_software_report": "release/windows-vm-software-verification.json",
+  "branding_update": {
+    "date": "2026-10-19",
+    "display_name": "蓝析BLE工具箱",
+    "artifact_prefix": "Lanxi-BLE-Toolkit",
+    "previous_display_name": "BLE Toolkit+",
+    "status": "SOURCE_AND_LOCAL_VALIDATION_PASS_DISTRIBUTION_REBUILD_REQUIRED",
+    "evidence_scope": "Existing per-platform builds, signatures, hashes and runtime results describe the previous name. Rebuild and verify new-name packages before distribution.",
+    "external_metadata": "PENDING_CHANNEL_UPDATE",
+    "validation": {
+      "release_checks": "PASS_13_TESTS",
+      "desktop_contracts": "PASS_190_TESTS",
+      "flutter_analysis": "PASS",
+      "flutter_tests": "PASS_156_TESTS",
+      "uniapp": "PASS_27_UNIT_FILES_15_GATES_H5_AND_APP_RESOURCES",
+      "website": "BUILD_PASS",
+      "native_ios": "SIMULATOR_DEBUG_BUILD_AND_ACTUAL_BUNDLE_LABEL_PASS",
+      "native_macos": "DEBUG_BUILD_AND_ACTUAL_BUNDLE_LABEL_PASS",
+      "native_android": "DEBUG_BUILD_AND_ACTUAL_APK_LABEL_PASS",
+      "tauri_linux": "CONFIG_SCHEMA_AND_DESKTOP_TEMPLATE_PASS_PACKAGE_BUILD_PENDING",
+      "distribution_signing": "NOT_RERUN_FOR_NEW_NAME",
+      "remote_channels": "NOT_UPDATED"
+    }
+  }
+}

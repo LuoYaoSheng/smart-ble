@@ -1,0 +1,14 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[BLE] 蓝牙已开启
+[BLE] 外围模式已就绪
+[UISNAP] p001 -> /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/verification/macos-extension/20260904-r4/snaps/snaps-r3/p001.png size=740x364
+[UISNAP] p007 -> /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/verification/macos-extension/20260904-r4/snaps/snaps-r3/p007.png size=740x281
+[UISNAP] p008 -> /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/verification/macos-extension/20260904-r4/snaps/snaps-r3/p008.png size=740x767
+[UISNAP] p009 -> /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/verification/macos-extension/20260904-r4/snaps/snaps-r3/p009.png size=740x1371
+[UISNAP] p010 -> /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/verification/macos-extension/20260904-r4/snaps/snaps-r3/p010.png size=740x953
+[UISNAP] p002 -> /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/verification/macos-extension/20260904-r4/snaps/snaps-r3/p002.png size=740x272
+[UISNAP] p003 -> /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/verification/macos-extension/20260904-r4/snaps/snaps-r3/p003.png size=740x224
+[UISNAP] p005 -> /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/verification/macos-extension/20260904-r4/snaps/snaps-r3/p005.png size=740x399
+[UISNAP] p006 -> /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/verification/macos-extension/20260904-r4/snaps/snaps-r3/p006.png size=740x386
+[UISNAP] done

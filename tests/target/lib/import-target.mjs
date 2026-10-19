@@ -3,11 +3,16 @@
 // Node 无法直接以 ESM 加载 .js 源码。本桥把源码（含 ≤3 层相对依赖内联重写）
 // 转为 data URL 动态 import，并为平台全局（uni/wx）提供可注入 fake。
 // 每次 fresh 导入使用 cache-busting URL；globalThis 注入通过 withInjectedGlobals 可恢复。
+// .ts 依赖（如 core/protocols/hid-provisioning-protocol.ts）在 data URL 化前先做
+// 类型剥离：data URL 一律按纯 JS 解析，Node 原生 .ts 文件级类型剥离不会生效
+// （TEST-BRIDGE-TS-001）。剥离器取 node:module 的 stripTypeScriptTypes（Node
+// ≥22.18/≥23.6 内置）；运行时不支持则给出可行动的 TS_BRIDGE 失败信息。
 
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import * as nodeModule from 'node:module';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 
@@ -21,6 +26,28 @@ let globalInjectionLock = Promise.resolve();
 function toDataUrl(source, bust = '') {
   const base = 'data:text/javascript;base64,' + Buffer.from(source, 'utf8').toString('base64');
   return bust ? `${base}#${bust}` : base;
+}
+
+let stripTypeScriptTypes = null;
+let stripResolved = false;
+function resolveStripper() {
+  if (stripResolved) return stripTypeScriptTypes;
+  stripResolved = true;
+  stripTypeScriptTypes = typeof nodeModule.stripTypeScriptTypes === 'function' ? nodeModule.stripTypeScriptTypes : null;
+  return stripTypeScriptTypes;
+}
+
+/** .ts 源码类型剥离；剥离器不可用时抛出可行动错误（由 importTarget 汇成 IMPORT_ERROR） */
+function stripTypeScriptSource(src, absFile) {
+  const strip = resolveStripper();
+  if (!strip) {
+    throw new Error(
+      `TS_BRIDGE: ${absFile} 需要 TypeScript 类型剥离，但当前 Node ${process.version} 无 node:module.stripTypeScriptTypes。` +
+      '请用 Node >= 22.18 / >= 23.6 运行（verify-target 会自动解析 NVM 节点，或设置 NODE_BIN）。'
+    );
+  }
+  // mode:'strip' 仅删类型（保行列位置）；镜像为 type-only TS，无 enum/namespace。
+  return strip(src, { mode: 'strip', sourceMap: false });
 }
 
 function cacheKey(absFile, bust) {
@@ -69,6 +96,7 @@ function inlineModule(absFile, depth = 0, bust = '') {
   const key = cacheKey(absFile, bust);
   if (urlCache.has(key)) return urlCache.get(key);
   let src = readFileSync(absFile, 'utf8');
+  if (/\.ts$/.test(absFile)) src = stripTypeScriptSource(src, absFile);
   if (depth >= MAX_DEPTH) {
     const url = toDataUrl(src, bust ? `${bust}-leaf` : '');
     urlCache.set(key, url);

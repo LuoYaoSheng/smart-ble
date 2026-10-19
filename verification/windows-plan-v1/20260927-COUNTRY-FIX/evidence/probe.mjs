@@ -1,0 +1,13 @@
+const t = await (await fetch('http://127.0.0.1:9235/json')).json();
+const page = t.find((x) => x.type === 'page');
+const ws = new WebSocket(page.webSocketDebuggerUrl);
+let seq = 0;
+const pending = new Map();
+const send = (m, p = {}) => new Promise((res) => { const id = ++seq; pending.set(id, res); ws.send(JSON.stringify({ id, method: m, params: p })); });
+ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id)) pending.get(m.id)(m.result); };
+await new Promise((r) => (ws.onopen = r));
+await send('Runtime.enable');
+const r = await send('Runtime.evaluate', { returnByValue: true, expression: 'document.body.innerText.replace(/\\s+/g, " ").slice(0, 300)' });
+console.log(r.result.value);
+ws.close();
+process.exit(0);

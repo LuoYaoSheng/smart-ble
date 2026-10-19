@@ -1,0 +1,185 @@
+{
+  "steps": [
+    {
+      "name": "T1 init_ble",
+      "ok": true,
+      "ms": 2
+    },
+    {
+      "name": "T2 start_scan",
+      "ok": true,
+      "ms": 17
+    },
+    {
+      "name": "T3 stop_scan",
+      "ok": true,
+      "ms": 2
+    },
+    {
+      "name": "T4 connect",
+      "ok": true,
+      "ms": 1716
+    },
+    {
+      "name": "T5 discover_services",
+      "ok": true,
+      "ms": 194
+    },
+    {
+      "name": "T6 read INFO",
+      "ok": true,
+      "ms": 173
+    },
+    {
+      "name": "T7 read STATUS",
+      "ok": true,
+      "ms": 175
+    },
+    {
+      "name": "T8 notify on",
+      "ok": true,
+      "ms": 186
+    },
+    {
+      "name": "T9 write TEXT",
+      "ok": true,
+      "ms": 116
+    },
+    {
+      "name": "T10 write HEX",
+      "ok": true,
+      "ms": 133
+    },
+    {
+      "name": "T11 notify off",
+      "ok": true,
+      "ms": 190
+    },
+    {
+      "name": "T12 disconnect",
+      "ok": true,
+      "ms": 9
+    },
+    {
+      "name": "T13 reconnect",
+      "ok": true,
+      "ms": 7215
+    },
+    {
+      "name": "T14 rediscover",
+      "ok": true,
+      "ms": 140
+    },
+    {
+      "name": "T15 re-read INFO",
+      "ok": true,
+      "ms": 101
+    },
+    {
+      "name": "T16 final disconnect",
+      "ok": true,
+      "ms": 5
+    }
+  ],
+  "init": {
+    "success": true,
+    "data": "BLE initialized"
+  },
+  "device": {
+    "id": "10:B4:1D:CD:23:8E",
+    "name": "SHID-00000001",
+    "rssi": -35,
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  "scanSeen": 4,
+  "discoverRaw": {
+    "success": true,
+    "data": [
+      {
+        "uuid": "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04",
+        "name": "未知服务",
+        "characteristics": [
+          {
+            "uuid": "9f1d1002-e73b-4c8f-9d2a-6f0b5e8a1c04",
+            "name": "未知特征值",
+            "properties": [
+              "read",
+              "notify"
+            ],
+            "value": null
+          },
+          {
+            "uuid": "9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04",
+            "name": "未知特征值",
+            "properties": [
+              "write"
+            ],
+            "value": null
+          },
+          {
+            "uuid": "9f1d1004-e73b-4c8f-9d2a-6f0b5e8a1c04",
+            "name": "未知特征值",
+            "properties": [
+              "read",
+              "notify"
+            ],
+            "value": null
+          }
+        ]
+      }
+    ]
+  },
+  "shidService": {
+    "uuid": "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04",
+    "name": "未知服务",
+    "characteristics": [
+      {
+        "uuid": "9f1d1002-e73b-4c8f-9d2a-6f0b5e8a1c04",
+        "name": "未知特征值",
+        "properties": [
+          "read",
+          "notify"
+        ],
+        "value": null
+      },
+      {
+        "uuid": "9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04",
+        "name": "未知特征值",
+        "properties": [
+          "write"
+        ],
+        "value": null
+      },
+      {
+        "uuid": "9f1d1004-e73b-4c8f-9d2a-6f0b5e8a1c04",
+        "name": "未知特征值",
+        "properties": [
+          "read",
+          "notify"
+        ],
+        "value": null
+      }
+    ]
+  },
+  "readInfo": {
+    "success": true,
+    "data": [],
+    "value": "7b 22 70 72 6f 64 75 63 74 22 3a 22 73 6d 61 72 74 2d 68 69 64 22 2c 22 70 72 6f 74 6f 63 6f 6c 22 3a 22 31 2e 30 22 2c 22 64 65 76 69 63 65 5f 69 64 22 3a 22 48 49 44 2d 30 30 30 30 30 30 30 31 22 2c 22 66 69 72 6d 77 61 72 65 22 3a 22 31 2e 32 2e 30 22 2c 22 73 74 61 74 65 22 3a 22 70 72 6f 76 69 73 69 6f 6e 69 6e 67 22 2c 22 70 72 6f 76 69 73 69 6f 6e 65 64 22 3a 66 61 6c 73 65 7d"
+  },
+  "readInfoAscii": "{ \" p r o d u c t \" : \" s m a r t - h i d \" , \" p r o t o c o l \" : \" 1 . 0 \" , \" d e v i c e _ i d \" : \" H I D - 0 0 0 0 0 0 0 1 \" , \" f i r m w a r e \" : \" 1 . 2 . 0 \" , \" s t a t e \" : \" p r o v i s i o n i n g \" , \" p r o v i s i o n e d \" : f a l s e }",
+  "readStatusAscii": "{ \" s t a t e \" : \" p r o v i s i o n i n g \" , \" s t e p \" : \" w i f i _ f a i l e d \" , \" e r r o r \" : \" w i f i _ f a i l e d \" }",
+  "notifyAfterText": [],
+  "notifyAfterHex": [],
+  "disconnectEvents": 0,
+  "reconnectSameIdentity": true,
+  "allNotifyCount": 0,
+  "discoveredNames": [
+    "11:CF:FE:39:C0:81",
+    "SHID-00000001",
+    "2D:EC:3A:18:EB:9F",
+    "39:55:DB:5A:38:27"
+  ],
+  "disconnectEventsTotal": 0
+}

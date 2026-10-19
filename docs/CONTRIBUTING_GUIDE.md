@@ -1,4 +1,4 @@
-# Contributing to Smart BLE 🛠️
+# Contributing to 蓝析BLE工具箱 🛠️
 
 First off, thank you for considering contributing to Smart BLE! 
 This project is an advanced, cross-platform Bluetooth Low Energy (BLE) debugging toolkit that maintains **100% architectural parity** across Flutter, UniApp, Electron, Tauri, and native iOS development.

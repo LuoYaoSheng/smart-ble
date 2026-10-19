@@ -1,0 +1,110 @@
+{
+  "display_name": "BLE Toolkit+",
+  "environment": {
+    "host": "Apple M4",
+    "vm": "Parallels Windows 11 Enterprise",
+    "build": 26200,
+    "native_cpu": "arm64",
+    "bluetooth_adapter": "ABSENT",
+    "hardware_tests": "DEFERRED_BY_USER"
+  },
+  "clients": {
+    "avalonia": {
+      "source_commit": "1259d2d58487ae27d2bd3c4f48864b824df211f8",
+      "title": "BLE Toolkit+",
+      "window_launch": "PASS",
+      "navigation": "UIA_INVOKE_4_PAGES_PASS",
+      "evidence": ".tmp/verification/windows-vm/evidence/avalonia-current",
+      "radio_hardware": "NOT_RUN",
+      "no_adapter": "PASS",
+      "navigation_evidence": ".tmp/verification/windows-vm/evidence/avalonia-current/navigation.json",
+      "software_tests": 106,
+      "vm_test_runtime": ".NET 10 roll-forward for net8 test target",
+      "app_runtime": "Self-contained .NET 8",
+      "vm_sdk": ".NET SDK 10.0.101"
+    },
+    "qt": {
+      "source_commit": "9c8833628f87d4ee7c0c34f9792f97dc4ad3b7be",
+      "title": "BLE Toolkit+",
+      "window_launch": "PASS",
+      "navigation": "UIA_INVOKE_4_PAGES_PASS",
+      "evidence": ".tmp/verification/windows-vm/evidence/qt-final",
+      "radio_hardware": "NOT_RUN",
+      "no_adapter": "PASS",
+      "navigation_evidence": ".tmp/verification/windows-vm/evidence/qt-final/navigation.json",
+      "software_tests": 55,
+      "vm_native_runtime": "Python 3.14 / PySide6 6.12 / WinRT"
+    },
+    "wails": {
+      "source_commit": "77d82dacc18f4cb8cca6e7f3a90564ea8229fe31",
+      "title": "BLE Toolkit+",
+      "window_launch": "PASS",
+      "navigation": "UIA_INVOKE_4_PAGES_PASS",
+      "evidence": ".tmp/verification/windows-vm/evidence/wails-current-settled",
+      "radio_hardware": "NOT_RUN",
+      "no_adapter": "PASS",
+      "navigation_evidence": ".tmp/verification/windows-vm/evidence/wails-current/navigation.json",
+      "software_tests": 2
+    },
+    "electron": {
+      "source_commit": "77d82dacc18f4cb8cca6e7f3a90564ea8229fe31",
+      "title": "BLE Toolkit+",
+      "window_launch": "PASS",
+      "navigation": "UIA_INVOKE_4_PAGES_PASS",
+      "evidence": ".tmp/verification/windows-vm/evidence/electron-final",
+      "radio_hardware": "NOT_RUN",
+      "no_adapter": "PASS",
+      "navigation_evidence": ".tmp/verification/windows-vm/evidence/electron-current/navigation.json",
+      "software_tests": 190,
+      "runtime_binding_load": "PASS_UNDER_PACKAGED_ELECTRON",
+      "architecture_scope": "Main executable and selected active WinRT binding; inactive foreign-CPU prebuilds and UAC installer helper are not runtime architecture evidence.",
+      "selected_native_runtime": {
+        "platform": "win32",
+        "architecture": "arm64",
+        "electron": "44.7.0",
+        "loaded_native_modules": [
+          "C:\\Users\\luoyaosheng\\AppData\\Local\\SmartBLEQA\\electron-current-arm64-package\\resources\\app.asar\\node_modules\\@abandonware\\noble\\build\\Release\\binding.node"
+        ],
+        "binding_load": "PASS",
+        "adapter_initialization": "NOT_RUN"
+      }
+    },
+    "tauri": {
+      "source_commit": "0926e991ed47dbe4dbfc1ae3f02b5b252a6955ae",
+      "title": "BLE Toolkit+",
+      "window_launch": "PASS",
+      "navigation": "UIA_INVOKE_4_PAGES_PASS",
+      "evidence": ".tmp/verification/windows-vm/evidence/tauri-validated",
+      "radio_hardware": "NOT_RUN",
+      "no_adapter": "PASS",
+      "navigation_evidence": ".tmp/verification/windows-vm/evidence/tauri-validated/navigation.json",
+      "installer": "NSIS_SILENT_EXIT_0",
+      "software_tests_windows": 9
+    },
+    "flutter": {
+      "source_commit": "9c8833628f87d4ee7c0c34f9792f97dc4ad3b7be",
+      "title": "BLE Toolkit+",
+      "window_launch": "PASS",
+      "navigation": "NATIVE_ENGINE_INTEGRATION_4_PAGES_PASS",
+      "evidence": ".tmp/verification/windows-vm/evidence/flutter-final",
+      "radio_hardware": "NOT_RUN",
+      "no_adapter": "PASS",
+      "software_tests": 156,
+      "native_smoke_tests": 1,
+      "system_uia": "CONTROL_TREE_NOT_EXPOSED",
+      "native_sdk": "Flutter 3.47.7 / Dart 3.13.5 windows_arm64",
+      "native_smoke_log": ".tmp/verification/windows-vm/evidence/flutter-native-smoke-final.log"
+    }
+  },
+  "physical_ble": "NOT_RUN",
+  "provisioning": "NOT_RUN",
+  "ota_hardware": "NOT_RUN",
+  "x64_gui_on_physical_x64": "NOT_RUN",
+  "distribution_signing_windows": "NOT_RUN",
+  "status": "WINDOWS_ARM64_SOFTWARE_SCOPE_PASS",
+  "candidate_run": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38041746455",
+  "software_run": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38041746475",
+  "hardware_scope": "No Bluetooth adapter; user deferred physical BLE/GATT/provisioning/OTA.",
+  "current_product_display_name": "蓝析BLE工具箱",
+  "branding_scope": "PRE_RENAME_EVIDENCE_REBUILD_REQUIRED"
+}

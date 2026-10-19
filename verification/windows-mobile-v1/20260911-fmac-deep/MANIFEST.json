@@ -1,0 +1,50 @@
+{
+  "run_id": "20260911-fmac-deep",
+  "date": "2026-09-11",
+  "line": "F-MAC",
+  "carrier": "Flutter macOS Release direct binary, 800x632 real window, rebuilt from HEAD",
+  "fixtures": {
+    "shid_software": "tests/macos/ble-fixture shid mode (SHID-5EEDC0DE)",
+    "esp32_hardware": "BLEToolkit-Server real ESP32 (-27dBm)"
+  },
+  "captures": {
+    "valid": [
+      "fmac-p001-scan-result.png",
+      "fmac-p001-shid-card.png",
+      "fmac-p002-step1-connecting.png",
+      "fmac-p002-step2-form.png"
+    ],
+    "raw_archive": [
+      "fmac-p001-scan-result-5dev.png"
+    ]
+  },
+  "defects_fixed": [
+    {
+      "id": "DEF-01",
+      "title": "camera entitlement missing in Release+Debug → P002 QR/paste path dead-locked in packaged builds",
+      "files": ["apps/flutter/macos/Runner/Release.entitlements", "apps/flutter/macos/Runner/DebugProfile.entitlements"]
+    },
+    {
+      "id": "DEF-02",
+      "title": "P005 offline state unreachable (PAGE_SPEC:326 acceptance item)",
+      "files": ["apps/flutter/lib/ui/pages/hid_diagnostics_page.dart"]
+    },
+    {
+      "id": "DEF-03",
+      "title": "shidConfigureBtn ValueKey attached to all profile-matched cards (finder ambiguity)",
+      "files": ["apps/flutter/lib/ui/widgets/device_card.dart"]
+    }
+  ],
+  "gates": {
+    "flutter_analyze": "0 issues",
+    "flutter_test": "122/122 passed"
+  },
+  "blocked_items": {
+    "p002_step3_p003_p005_pixel": "flutter-test instances cannot see local CBPeripheralManager fixture advertisement (environment quirk); manual Release channel verified to step2 and paused for next session",
+    "esp32_zero_services": "real ESP32 connected but 0 GATT services this session (was complete on 09-10); pending power-cycle retest"
+  },
+  "new_infra": [
+    "integration_test/fmac_deep_capture_test.dart (E13-derived ValueKey driver + CAPTURE marker protocol)",
+    "/tmp/fmac_drive.py (Quartz CGEvent driver: click/type/paste/scroll/bounds)"
+  ]
+}

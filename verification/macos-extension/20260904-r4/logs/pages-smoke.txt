@@ -1,0 +1,38 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[UISMOKE] mode=smoke-pages app=SmartBLE-mac r3=prototype-aligned
+[BLE] 蓝牙已开启
+[BLE] 外围模式已就绪
+[UISMOKE] UIS-01 result=PASS detail="title=BLE Toolkit+ tabs=[1, 1, 1, 1] p001=true"
+[UISMOKE] UIS-02 result=PASS detail="已连接=1 广播=1 关于=1 扫描=1"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-83 dBm）
+[BLE] 发现设备：未命名 BLE · 3AD4（-78 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · B66B（-71 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-93 dBm）
+[BLE] 发现设备：未命名 BLE · B4FB（-83 dBm）
+[BLE] 发现设备：未命名 BLE · EC09（-79 dBm）
+[BLE] 扫描完成 · 发现 7 台设备
+[UISMOKE] UIS-03 result=PASS detail="scanning=true stopped=true found=7"
+[UISMOKE] UIS-04 result=PASS detail="preset=true slider=true switch=true th70=true reset=true collapsed=true"
+[UISMOKE] UIS-05 result=PASS detail="sheet=true fields=true missMarked=true closed=true"
+[BLE] 连接 未命名 BLE · B66B · 暂存路由上下文
+[BLE] 连接成功 · 设备
+[UISMOKE] UIS-06 result=PASS detail="p006=true dnote=true log=true back=true conn=connected"
+[BLE] 服务发现中…
+[BLE] 服务发现完成（5 服务）
+[BLE] 服务 设备信息：2 特征
+[BLE] 服务 自定义服务：1 特征
+[UISMOKE] UIS-07 result=PASS detail="guard=true parse=true noToken=true hubOptional=true"
+[BLE] 服务 自定义服务：1 特征
+[BLE] 服务 电池服务：1 特征
+[BLE] 服务 自定义服务：2 特征
+[UISMOKE] UIS-08 result=PASS detail="platform=true note=true budgetBar=true default=21B over=46B blocked=true shown=true restored=21B reEnabled=true"
+[BLE] 桌面原生层 CoreBluetooth（macOS）· 蓝牙从机已就绪 · 支持 peripheral 广播（能力判定待 D2 spike，不预判）
+[UISMOKE] UIS-09 result=PASS detail="logged=true badge=true peripheralReady=true"
+[UISMOKE] UIS-10 result=PASS detail="brand=true menus=[1, 1, 1, 1] titles=true osRow=true matrix=true p010=true"
+[UISMOKE] UIS-11 result=PASS detail="limits=true emptyRelease=true foot=true previews=true"
+[UISMOKE] UIS-12 result=PASS detail="p005=true p003Guard=true"
+[UISMOKE] UIS-13 result=PASS detail="modal=true dismissed=true alive=true"
+[UISMOKE] SUMMARY failures=0 skips=0

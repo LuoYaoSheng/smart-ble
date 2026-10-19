@@ -1,0 +1,22 @@
+$ cd apps/ios && xcodebuild test -project SmartBLE.xcodeproj -scheme SmartBLEiOS \
+    -destination 'platform=iOS Simulator,id=807B4008-57AB-4056-851F-98F8D7274086' \
+    -derivedDataPath /Users/luoyaosheng/Library/Developer/Xcode/DerivedData/SmartBLE-fntgpymnayxuohcocafobrwjxnhp \
+    -only-testing:SmartBLEUITests
+Test Suite 'SmartBLEUITests.xctest' started at 2026-09-10 17:31:33.063.
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAccessibilityXXXLTextSizeSmoke]' passed (7.124 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAuditIssueInventoryDiagnostic]' passed (86.620 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP001KeyStatesPassAccessibilityAudit]' passed (19.982 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP002FlowStatesPassAccessibilityAudit]' passed (19.276 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP003P005StatesPassAccessibilityAudit]' passed (25.410 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP009P010PassAccessibilityAudit]' passed (12.932 seconds).
+Test Case '-[SmartBLEUITests.AdvDataUITests testP001DeviceDetailShowsAdvertisementDataAndCopies]' passed (12.014 seconds).
+Test Case '-[SmartBLEUITests.FlowStateUITests testP002IdentitySuccessAndWifiFailureStates]' passed (13.397 seconds).
+Test Case '-[SmartBLEUITests.FlowStateUITests testP003SnapshotMissingFieldsAndMissingRecordStates]' passed (13.335 seconds).
+Test Case '-[SmartBLEUITests.FlowStateUITests testP005HealthyOfflineAndFailureStates]' passed (13.064 seconds).
+Test Case '-[SmartBLEUITests.TabBarUITests testFourTabsSwitchWithoutConnectionStateHijackingSelection]' passed (10.103 seconds).
+Test Case '-[SmartBLEUITests.TabBarUITests testSecondaryPageCoversTabBar]' passed (6.870 seconds).
+Test Suite 'SmartBLEUITests.xctest' passed at 2026-09-10 17:35:33.203.
+** TEST SUCCEEDED **
+
+# 12/12 PASS（AccessibilityAudit 6 + AdvData 1 + FlowState 3 + TabBar 2）
+# 说明：BLEManager 退避常数改动后全量回归，含 P001 扫描/详情/复制链路（AdvData）与四 Tab 导航

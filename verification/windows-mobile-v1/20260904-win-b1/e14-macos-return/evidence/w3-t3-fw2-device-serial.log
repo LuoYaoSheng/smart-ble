@@ -1,0 +1,222 @@
+I (381344) status_manager: status published online=1 usb_hid_ready=0
+I (391344) status_manager: status published online=1 usb_hid_ready=0
+I (401344) status_manager: status published online=1 usb_hid_ready=0
+I (411345) status_manager: status published online=1 usb_hid_ready=0
+I (421345) status_manager: status published online=1 usb_hid_ready=0
+I (431345) status_manager: status published online=1 usb_hid_ready=0
+I (441345) status_manager: status published online=1 usb_hid_ready=0
+I (446037) ble_provision: BLE connected handle=1
+I (446764) ble_provision: MTU update: 256
+I (447255) ble_provision: subscribe: attr=3 notify=1
+I (447450) ble_provision: subscribe: attr=8 notify=1
+I (451345) status_manager: status published online=1 usb_hid_ready=0
+I (459346) ble_provision: candidate: ssid=MASKED_SSID hub=192.168.21.77:17892 token=**redacted**
+I (459346) main: [prov] state=provisioning step=received err=none
+I (459349) NimBLE: GATT procedure initiated: notify; 
+I (459353) NimBLE: att_handle=8
+
+I (459357) NimBLE: GATT procedure initiated: notify; 
+I (459361) NimBLE: att_handle=3
+
+I (459373) runtime_config: staged pending: schema=1 gen=0 ssid=MASKED_SSID hub=192.168.21.77:17892 mqtt=-:0 user=- complete=0
+I (459375) main: [prov] state=connecting_wifi step=connecting_wifi err=none
+I (459382) NimBLE: GATT procedure initiated: notify; 
+I (459386) NimBLE: att_handle=8
+
+I (459390) NimBLE: GATT procedure initiated: notify; 
+I (459394) NimBLE: att_handle=3
+
+I (459398) wifi:state: run -> init (0x0)
+I (459403) wifi:pm stop, total sleep time: 135781915 us / 375144336 us
+
+I (459407) wifi:<ba-del>idx:1, tid:0
+I (459410) wifi:<ba-del>idx:0, tid:6
+I (459414) wifi:new:<1,0>, old:<1,0>, ap:<255,255>, sta:<1,0>, prof:1, snd_ch_cfg:0x0
+W (459422) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+I (459423) led_manager: led state -> WIFI_CONNECTING
+W (459432) wifi_manager: disconnected → release_all + retry
+W (459431) wifi_manager: connecting to ssid=MASKED_SSID ...
+I (459440) hid_engine: release_all done
+E (459449) wifi:sta is connecting, return error
+I (459474) wifi:new:<1,0>, old:<1,0>, ap:<255,255>, sta:<1,0>, prof:1, snd_ch_cfg:0x0
+I (459475) wifi:state: init -> auth (0xb0)
+I (459689) wifi:state: auth -> assoc (0x0)
+I (459737) wifi:state: assoc -> run (0x10)
+I (459769) wifi:<ba-add>idx:0 (ifx:0, 4c:ef:56:0d:45:fd), tid:6, ssn:1, winSize:64
+I (459827) wifi:connected with MASKED_SSID, aid = 6, channel 1, BW20, bssid = 4c:ef:56:0d:45:fd
+I (459828) wifi:security: WPA2-PSK, phy: bgn, rssi: -55
+I (459832) wifi:pm start, type: 0
+
+I (459832) wifi:set rx beacon pti, rx_bcn_pti: 14, bcn_timeout: 25000, mt_pti: 14, mt_time: 10000
+I (459882) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+I (460007) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:0, winSize:64
+I (461345) status_manager: status published online=1 usb_hid_ready=0
+I (463723) esp_netif_handlers: sta ip: 192.168.21.8, mask: 255.255.252.0, gw: 192.168.20.1
+I (463723) wifi_manager: got ip: 192.168.21.8
+I (463724) main: [prov] state=connecting_wifi step=wifi_connected err=none
+I (463731) NimBLE: GATT procedure initiated: notify; 
+I (463736) NimBLE: att_handle=8
+
+I (463737) led_manager: led state -> MQTT_CONNECTING
+I (463739) NimBLE: GATT procedure initiated: notify; 
+I (463748) NimBLE: att_handle=3
+
+I (463751) main: [prov] state=pairing step=pairing err=none
+I (463757) NimBLE: GATT procedure initiated: notify; 
+I (463761) NimBLE: att_handle=8
+
+I (463765) NimBLE: GATT procedure initiated: notify; 
+I (463769) NimBLE: att_handle=3
+
+I (465761) main: [prov] state=provisioning step=pairing_invalid err=pairing_invalid
+I (465762) NimBLE: GATT procedure initiated: notify; 
+I (465762) NimBLE: att_handle=8
+
+I (465766) NimBLE: GATT procedure initiated: notify; 
+I (465770) NimBLE: att_handle=3
+
+I (465878) ble_provision: subscribe: attr=3 notify=0
+I (466073) ble_provision: subscribe: attr=8 notify=0
+I (467194) ble_provision: BLE disconnected (reason=531)
+I (467196) NimBLE: GAP procedure initiated: advertise; 
+I (467196) NimBLE: disc_mode=2
+I (467196) NimBLE:  adv_channel_map=0 own_addr_type=0 adv_filter_policy=0 adv_itvl_min=0 adv_itvl_max=0
+I (467205) NimBLE: 
+
+I (467208) ble_provision: provisioning advertising as SHID-00000001
+I (471345) status_manager: status published online=1 usb_hid_ready=0
+I (481345) status_manager: status published online=1 usb_hid_ready=0
+I (491345) status_manager: status published online=1 usb_hid_ready=0
+I (501345) status_manager: status published online=1 usb_hid_ready=0
+I (511345) status_manager: status published online=1 usb_hid_ready=0
+I (521345) status_manager: status published online=1 usb_hid_ready=0
+I (531345) status_manager: status published online=1 usb_hid_ready=0
+I (541345) status_manager: status published online=1 usb_hid_ready=0
+I (551345) status_manager: status published online=1 usb_hid_ready=0
+I (561345) status_manager: status published online=1 usb_hid_ready=0
+I (571345) status_manager: status published online=1 usb_hid_ready=0
+I (581345) status_manager: status published online=1 usb_hid_ready=0
+I (591345) status_manager: status published online=1 usb_hid_ready=0
+I (601345) status_manager: status published online=1 usb_hid_ready=0
+I (611345) status_manager: status published online=1 usb_hid_ready=0
+I (611992) ble_provision: BLE connected handle=1
+I (612850) ble_provision: MTU update: 256
+I (613345) ble_provision: subscribe: attr=3 notify=1
+I (613540) ble_provision: subscribe: attr=8 notify=1
+I (621345) status_manager: status published online=1 usb_hid_ready=0
+I (625533) ble_provision: candidate: ssid=MASKED_SSID hub=192.168.21.77:17892 token=**redacted**
+I (625534) main: [prov] state=provisioning step=received err=none
+I (625537) NimBLE: GATT procedure initiated: notify; 
+I (625541) NimBLE: att_handle=8
+
+I (625544) NimBLE: GATT procedure initiated: notify; 
+I (625549) NimBLE: att_handle=3
+
+I (625560) runtime_config: staged pending: schema=1 gen=0 ssid=MASKED_SSID hub=192.168.21.77:17892 mqtt=-:0 user=- complete=0
+I (625563) main: [prov] state=connecting_wifi step=connecting_wifi err=none
+I (625569) NimBLE: GATT procedure initiated: notify; 
+I (625574) NimBLE: att_handle=8
+
+I (625578) NimBLE: GATT procedure initiated: notify; 
+I (625582) NimBLE: att_handle=3
+
+I (625585) wifi:state: run -> init (0x0)
+I (625591) wifi:pm stop, total sleep time: 66090135 us / 165758550 us
+
+I (625595) wifi:<ba-del>idx:1, tid:0
+I (625598) wifi:<ba-del>idx:0, tid:6
+I (625601) wifi:new:<1,0>, old:<1,0>, ap:<255,255>, sta:<1,0>, prof:1, snd_ch_cfg:0x0
+W (625609) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+I (625610) led_manager: led state -> WIFI_CONNECTING
+W (625620) wifi_manager: disconnected → release_all + retry
+W (625619) wifi_manager: connecting to ssid=MASKED_SSID ...
+I (625628) hid_engine: release_all done
+E (625636) wifi:sta is connecting, return error
+I (625671) wifi:new:<1,0>, old:<1,0>, ap:<255,255>, sta:<1,0>, prof:1, snd_ch_cfg:0x0
+I (625672) wifi:state: init -> auth (0xb0)
+I (625720) wifi:state: auth -> assoc (0x0)
+I (625748) wifi:state: assoc -> run (0x10)
+I (625817) wifi:<ba-add>idx:0 (ifx:0, 4c:ef:56:0d:45:fd), tid:6, ssn:0, winSize:64
+I (625900) wifi:connected with MASKED_SSID, aid = 3, channel 1, BW20, bssid = 4c:ef:56:0d:45:fd
+I (625901) wifi:security: WPA2-PSK, phy: bgn, rssi: -55
+I (625905) wifi:pm start, type: 0
+
+I (625906) wifi:set rx beacon pti, rx_bcn_pti: 14, bcn_timeout: 25000, mt_pti: 14, mt_time: 10000
+I (625977) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+I (626934) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:7, ssn:0, winSize:64
+I (627236) wifi:<ba-del>idx:0, tid:6
+I (627301) wifi:<ba-add>idx:0 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:0, winSize:64
+I (628055) esp_netif_handlers: sta ip: 192.168.21.8, mask: 255.255.252.0, gw: 192.168.20.1
+I (628055) wifi_manager: got ip: 192.168.21.8
+I (628056) main: [prov] state=connecting_wifi step=wifi_connected err=none
+I (628063) NimBLE: GATT procedure initiated: notify; 
+I (628068) NimBLE: att_handle=8
+
+I (628071) NimBLE: GATT procedure initiated: notify; 
+I (628073) led_manager: led state -> MQTT_CONNECTING
+I (628075) NimBLE: att_handle=3
+
+I (628083) main: [prov] state=pairing step=pairing err=none
+I (628089) NimBLE: GATT procedure initiated: notify; 
+I (628093) NimBLE: att_handle=8
+
+I (628097) NimBLE: GATT procedure initiated: notify; 
+I (628101) NimBLE: att_handle=3
+
+I (629389) hub_pairing: pairing success: mqtt_host=192.168.21.77 port=17891 user=dev_HID-00000001
+I (629389) main: [prov] state=pairing step=pairing_success err=none
+I (629393) NimBLE: GATT procedure initiated: notify; 
+I (629397) NimBLE: att_handle=8
+
+I (629401) NimBLE: GATT procedure initiated: notify; 
+I (629405) NimBLE: att_handle=3
+
+I (629419) runtime_config: pending creds persisted (mqtt_host=192.168.21.77 port=17891 user=dev_HID-00000001) complete=1
+I (629441) runtime_config: promoted pending → active (generation=1)
+I (629441) main: [prov] state=mqtt_connecting step=mqtt_connecting err=none
+I (629443) NimBLE: GATT procedure initiated: notify; 
+I (629448) NimBLE: att_handle=8
+
+I (629451) NimBLE: GATT procedure initiated: notify; 
+I (629456) NimBLE: att_handle=3
+
+I (629459) mqtt_manager: runtime mqtt config set: host=192.168.21.77 port=17891 user=dev_HID-00000001
+I (631345) status_manager: status published online=1 usb_hid_ready=0
+E (639473) esp-tls: [sock=54] select() timeout
+E (639474) transport_base: Failed to open a new connection: 32774
+E (639474) mqtt_client: Error transport connect
+E (639476) mqtt_manager: MQTT_EVENT_ERROR
+W (639480) mqtt_manager: disconnected from broker → release_all
+I (639486) hid_engine: release_all done
+I (641345) status_manager: status published online=1 usb_hid_ready=0
+I (644469) main: [prov] state=recovery step=mqtt_invalid err=mqtt_invalid
+I (644469) NimBLE: GATT procedure initiated: notify; 
+I (644470) NimBLE: att_handle=8
+
+I (644473) NimBLE: GATT procedure initiated: notify; 
+I (644477) NimBLE: att_handle=3
+
+I (646642) ble_provision: subscribe: attr=3 notify=0
+I (646643) ble_provision: subscribe: attr=8 notify=0
+I (646643) ble_provision: BLE disconnected (reason=531)
+I (646647) NimBLE: GAP procedure initiated: advertise; 
+I (646651) NimBLE: disc_mode=2
+I (646654) NimBLE:  adv_channel_map=0 own_addr_type=0 adv_filter_policy=0 adv_itvl_min=0 adv_itvl_max=0
+I (646663) NimBLE: 
+
+I (646666) ble_provision: provisioning advertising as SHID-00000001
+I (651345) status_manager: status published online=1 usb_hid_ready=0
+E (652492) esp-tls: [sock=54] select() timeout
+E (652493) transport_base: Failed to open a new connection: 32774
+E (652493) mqtt_client: Error transport connect
+E (652495) mqtt_manager: MQTT_EVENT_ERROR
+W (652499) mqtt_manager: disconnected from broker → release_all
+I (652505) hid_engine: release_all done
+I (661345) status_manager: status published online=1 usb_hid_ready=0
+E (665511) esp-tls: [sock=54] select() timeout
+E (665512) transport_base: Failed to open a new connection: 32774
+E (665512) mqtt_client: Error transport connect
+E (665514) mqtt_manager: MQTT_EVENT_ERROR
+W (665518) mqtt_manager: disconnected from broker → release_all
+I (665524) hid_engine: release_all done
+I (671345) status_manager: status published online=1 usb_hid_ready=0

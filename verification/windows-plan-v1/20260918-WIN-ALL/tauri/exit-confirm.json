@@ -1,0 +1,10 @@
+{
+  "wmClose": "True\r\nwmclose-posted",
+  "probe": {
+    "payload": {
+      "connected": 0
+    },
+    "modal": true
+  },
+  "processLog": "Asset `favicon.ico` not found; fallback to favicon.ico.html\nAsset `favicon.ico` not found; fallback to favicon.ico/index.html\nAsset `favicon.ico` not found; fallback to index.html\n[APP] Close requested -> exit confirm (connected=0)\n"
+}

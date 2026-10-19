@@ -1,0 +1,44 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p006_gatt_test.dart
+Running Gradle task 'assembleDebug'...                          
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/11066/.gradle/wrapper/dists/gradle-8.14-all/c2qonpi39x1mddn7hk5gh9iqj/gradle-8.14/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Running Gradle task 'assembleDebug'...                             37.5s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           5.8s
+00:00 +0: F006-F012 GATT domain (fixture BLEToolkit-Server)
+P006[E2E 08:29:45.460]: 启动
+P006[E2E 08:29:47.392]: 夹具卡片发现=true
+[INFO] 发现 5 个服务
+P006[E2E 08:29:49.435]: F006 GATT 连接 ✓
+P006[E2E 08:29:49.440]: F007 服务命名：OTA=1（应 1）/ 未知=2（主服务+权限矩阵）
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: Too many elements
+
+When the exception was thrown, this was the stack:
+#0      Iterable.single (dart:core/iterable.dart:696:24)
+#1      WidgetController.element (package:flutter_test/src/controller.dart:868:30)
+#2      WidgetController.ensureVisible (package:flutter_test/src/controller.dart:2305:32)
+#3      main.<anonymous closure> (file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p006_gatt_test.dart:133:20)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  F006-F012 GATT domain (fixture BLEToolkit-Server)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:04 +0 -1: F006-F012 GATT domain (fixture BLEToolkit-Server) [E]
+  Test failed. See exception logs above.
+  The test description was: F006-F012 GATT domain (fixture BLEToolkit-Server)
+  
+00:04 +0 -1: (tearDownAll)
+00:05 +0 -1: Some tests failed.

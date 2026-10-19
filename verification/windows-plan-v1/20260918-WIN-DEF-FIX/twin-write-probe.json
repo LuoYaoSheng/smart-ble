@@ -1,0 +1,11 @@
+{
+  "device": "SHID-00000001",
+  "writeText": {
+    "success": false,
+    "error": "Write failed: Error { code: HRESULT(0x8065000D), message: \"此属性值长度对于此操作无效。\" }"
+  },
+  "writeHex": {
+    "success": false,
+    "error": "Write failed: Error { code: HRESULT(0x8065000D), message: \"此属性值长度对于此操作无效。\" }"
+  }
+}

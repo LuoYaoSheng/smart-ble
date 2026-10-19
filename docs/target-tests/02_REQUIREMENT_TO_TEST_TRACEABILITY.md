@@ -11,13 +11,13 @@ supersedes: []
 
 ## 1. 单源说明
 
-完整映射以 `contracts/target/test-traceability.json` 为单源（103 条测试 × 9 套件）；
+完整映射以 `contracts/target/test-traceability.json` 为单源（91 条测试 × 8 套件；2026-09-14 MAC-001 微信套件 TEST-W、TEST-H-008、TEST-R-009 随微信目标退役移除）；
 本文件为生成投影（TP-G1 由 JSON 生成，手改以 JSON 为准）。
 
 覆盖口径（coverage 实算）：
 
-- REQ 66 条：自动化可达 65 条（直接或经 FEAT 链）；1 条为纯 E5 真机语义
-- FEAT 81 条（Must 80）：自动化直接覆盖 73 条 Must；其余为 E5/E6 专属（真机/发布）
+- REQ 65 条：自动化可达 64 条（直接或经 FEAT 链）；1 条为纯 E5 真机语义（REQ-006 随微信退役移除）
+- FEAT 80 条（Must 80）：自动化直接覆盖 Must；其余为 E5/E6 专属（真机/发布）；FEAT-006 随微信退役移除
 - 每条 Must REQ 至少一条 E0/E1/E2 自动化或 E5 矩阵行；每条公开 CLAIM 至少一条 TEST-R
 
 ## 2. 套件总表
@@ -30,7 +30,6 @@ supersedes: []
 | TEST-P | E4 | 12 | page-behavior.manifest 完整定义 + 11 Playwright specs（逐 State/Operation；Driver 未实现时 BLOCKED） |
 | TEST-E | E5 | 8 | tests/target/firmware/ 静态前置 + hardware 模板 |
 | TEST-A | E5 | 14 | hardware/android-run-template.md |
-| TEST-W | E5 | 10 | hardware/wechat-run-template.md |
 | TEST-H | E5 | 8 | hardware/smart-hid-run-template.md |
 | TEST-R | E6 | 11 | tests/target/release/ 9 用例 + clean-install.test.md |
 
@@ -60,7 +59,7 @@ supersedes: []
 |---|---|---|---|---|---|
 | TEST-U-001 | 平台识别纯函数 | E1 | 是 | REQ-001 FEAT-001 PAGE-001 FLOW-001 | 自动化已落地 |
 | TEST-U-002 | 版本投影 | E1 | 是 | REQ-004 FEAT-004 PAGE-009 PAGE-010 WEB-001 FLOW-012 | 自动化已落地 |
-| TEST-U-003 | 权限状态机 | E1 | 是 | REQ-005 REQ-006 REQ-007 FEAT-005 FEAT-006 FEAT-007 | 自动化已落地 |
+| TEST-U-003 | 权限状态机 | E1 | 是 | REQ-005 REQ-007 FEAT-005 FEAT-007 | 自动化已落地 |
 | TEST-U-004 | 适配器状态映射 | E1 | 是 | REQ-008 FEAT-008 PAGE-001 PAGE-008 FLOW-001 | 自动化已落地 |
 | TEST-U-005 | 扫描 generation/去重 | E1 | 是 | REQ-011 REQ-012 REQ-033 FEAT-011 FEAT-012 FEAT-036 | 自动化已落地 |
 | TEST-U-006 | 显示名解析链 | E1 | 是 | REQ-013 FEAT-013 PAGE-001 FLOW-002 | 自动化已落地 |
@@ -139,20 +138,9 @@ supersedes: []
 | TEST-A-013 | Android 性能与资源 | E5 | 是 | REQ-033 FEAT-036 | 矩阵/模板 |
 | TEST-A-014 | Android 安装烟测 | E5 | 是 | FEAT-075 | 矩阵/模板 |
 
-### TEST-W（E5 微信真机，10 条）
 
 | Test ID | 标题 | 证据等级 | 发布阻断 | 映射（REQ/FEAT/PAGE·FLOW/CLAIM） | 工件状态 |
 |---|---|---|---|---|---|
-| TEST-W-001 | 微信权限（含定位） | E5 | 是 | REQ-001 REQ-005 REQ-006 REQ-007 FEAT-001 FEAT-005 | 矩阵/模板 |
-| TEST-W-002 | 微信导航 | E5 | 是 | REQ-002 FEAT-002 PAGE-001 PAGE-002 PAGE-003 PAGE-004 | 矩阵/模板 |
-| TEST-W-003 | 微信生命周期 | E5 | 是 | REQ-003 FEAT-003 PAGE-001 PAGE-002 PAGE-006 PAGE-008 | 矩阵/模板 |
-| TEST-W-004 | 微信定位策略 | E5 | 是 | REQ-006 FEAT-006 PAGE-001 FLOW-001 | 矩阵/模板 |
-| TEST-W-005 | 微信蓝牙开关 | E5 | 是 | REQ-008 FEAT-008 PAGE-001 PAGE-008 FLOW-001 | 矩阵/模板 |
-| TEST-W-006 | 微信不支持降级 | E5 | 是 | REQ-009 FEAT-009 PAGE-001 PAGE-008 FLOW-001 WEB-001 | 矩阵/模板 |
-| TEST-W-007 | 微信扫描/GATT | E5 | 是 | REQ-010 REQ-012 REQ-013 REQ-015 REQ-018 REQ-019 | 矩阵/模板 |
-| TEST-W-008 | 微信会话/日志导出 | E5 | 是 | REQ-022 REQ-030 REQ-031 REQ-035 FEAT-023 FEAT-033 | 矩阵/模板 |
-| TEST-W-009 | 微信多设备/广播 | E5 | 是 | REQ-032 REQ-038 REQ-040 FEAT-035 FEAT-041 FEAT-042 | 矩阵/模板 |
-| TEST-W-010 | 微信 Smart HID/分享 | E5 | 是 | REQ-048 REQ-052 REQ-055 REQ-057 FEAT-053 FEAT-060 | 矩阵/模板 |
 
 ### TEST-H（E5 Smart HID E2E，8 条）
 
@@ -165,7 +153,6 @@ supersedes: []
 | TEST-H-005 | Smart HID 诊断/所有权 | E5 | 是 | REQ-053 FEAT-062 FEAT-063 PAGE-005 FLOW-011 PAGE-002 | 矩阵/模板 |
 | TEST-H-006 | Smart HID 重配移交 | E5 | 是 | REQ-053 FEAT-064 PAGE-005 FLOW-011 PAGE-002 PAGE-003 | 矩阵/模板 |
 | TEST-H-007 | Smart HID 边界矩阵 | E5 | 是 | REQ-047 REQ-049 | 矩阵/模板 |
-| TEST-H-008 | Smart HID 微信侧 | E5 | 是 | FLOW-010 | 矩阵/模板 |
 
 ### TEST-R（E6 Landing/Release，11 条）
 
@@ -179,6 +166,5 @@ supersedes: []
 | TEST-R-006 | SEO/性能/a11y 基线 | E6 | 是 | REQ-058 REQ-061 FEAT-069 FEAT-072 FEAT-076 WEB-001 | 矩阵/模板 |
 | TEST-R-007 | 能力卡证据 | E6 | 是 | FEAT-070 FEAT-071 WEB-001 PAGE-009 CLAIM-003 CLAIM-020 | 自动化已落地 |
 | TEST-R-008 | 固件下载/复现 | E6 | 是 | REQ-059 FEAT-075 FEAT-073 WEB-001 FLOW-013 FLOW-014 | 自动化已落地 |
-| TEST-R-009 | 小程序码可用 | E6 | 是 | FEAT-075 WEB-001 FLOW-013 FLOW-014 CLAIM-027 | 矩阵/模板 |
 | TEST-R-010 | Web 无障碍走查 | E6 | 是 | REQ-061 FEAT-076 WEB-001 CLAIM-030 | 矩阵/模板 |
 | TEST-R-011 | 30 分钟 Clean Machine 端到端闭环（CLAIM-031） | E6 | 是 | CLAIM-031 | 矩阵/模板 |

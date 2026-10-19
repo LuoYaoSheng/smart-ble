@@ -5,4 +5,10 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:colorBackground">@color/background</item>
     </style>
+
+    <!-- 冷启动品牌启动图（统一无角标母版）：A12 前走 windowBackground lockup，
+         A12+ 由系统读取 values-v31 的 windowSplashScreen* 项显示磁贴 -->
+    <style name="Theme.SmartBLE.Splash" parent="Theme.SmartBLE">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
 </resources>

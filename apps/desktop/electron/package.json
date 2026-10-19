@@ -1,7 +1,8 @@
 {
   "name": "smart-ble-desktop",
-  "version": "1.0.0",
-  "description": "Smart BLE - Desktop Application",
+  "version": "1.0.5",
+  "description": "蓝析BLE工具箱 desktop application",
+  "homepage": "https://github.com/LuoYaoSheng/smart-ble",
   "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
@@ -16,25 +17,37 @@
     "bluetooth",
     "electron"
   ],
-  "author": "SmartBLE",
+  "author": {
+    "name": "蓝析BLE工具箱",
+    "email": "121912336@qq.com"
+  },
   "license": "MIT",
   "dependencies": {
-    "@abandonware/noble": "^1.9.2-15"
+    "@abandonware/noble": "npm:@stoprocent/noble@2.8.0"
   },
   "devDependencies": {
-    "electron": "^27.3.11",
-    "electron-builder": "^24.6.4"
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3",
+    "encoding": "0.1.13",
+    "node-gyp": "12.4.0"
   },
   "build": {
-    "appId": "com.smartble.desktop",
-    "productName": "BLE Toolkit+",
+    "appId": "com.smartble.electron",
+    "productName": "蓝析BLE工具箱",
     "directories": {
       "output": "dist"
     },
     "files": [
       "src/**/*",
       "public/**/*",
-      "package.json"
+      "package.json",
+      "!**/node_modules/**/build/**/*.d",
+      "!**/node_modules/**/build/**/*.o",
+      "!**/node_modules/**/build/**/*.a",
+      "!**/node_modules/**/build/**/*.mk",
+      "!**/node_modules/**/build/**/Makefile",
+      "!**/node_modules/**/build/**/*.gypi",
+      "!**/node_modules/**/build/**/obj.target/**"
     ],
     "win": {
       "target": [
@@ -49,7 +62,15 @@
         "zip"
       ],
       "icon": "assets/icon.icns",
-      "category": "public.app-category.developer-tools"
+      "category": "public.app-category.developer-tools",
+      "extendInfo": {
+        "NSBluetoothAlwaysUsageDescription": "用于扫描、连接和调试附近的 BLE 设备。",
+        "NSCameraUsageDescription": "用于扫描 ControlHub 配对二维码，不保存图像。"
+      },
+      "x64ArchFiles": "**/node_modules/{@abandonware/noble,@serialport/bindings-cpp,usb}/prebuilds/darwin-x64+arm64/*.node",
+      "files": [
+        "!**/node_modules/@stoprocent/bluetooth-hci-socket/prebuilds/darwin-x64+arm64/@stoprocent+bluetooth-hci-socket.node"
+      ]
     },
     "linux": {
       "target": [
@@ -58,7 +79,25 @@
         "rpm"
       ],
       "icon": "assets/icon.png",
-      "category": "Development"
-    }
+      "category": "Development",
+      "executableName": "smart-ble-open",
+      "files": [
+        "!**/node_modules/**/prebuilds/!(linux-${arch})/**"
+      ]
+    },
+    "nativeRebuilder": "sequential",
+    "artifactName": "Lanxi-BLE-Toolkit-${version}-${os}-${arch}.${ext}",
+    "nsis": {
+      "artifactName": "Lanxi-BLE-Toolkit-${version}-${os}-${arch}-setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "Lanxi-BLE-Toolkit-${version}-${os}-${arch}-portable.${ext}"
+    },
+    "afterPack": "scripts/verify-native-pack.cjs",
+    "afterAllArtifactBuild": "scripts/verify-universal-pack.cjs"
+  },
+  "overrides": {
+    "node-gyp": "12.4.0",
+    "@stoprocent/bluetooth-hci-socket": "2.3.0"
   }
 }

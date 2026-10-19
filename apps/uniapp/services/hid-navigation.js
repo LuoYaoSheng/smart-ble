@@ -7,10 +7,8 @@ export {
   buildProfileDetailUrl,
   buildProfileProvisionUrl,
   buildProfileDiagnosticsUrl,
-  buildProfileHistoryUrl,
   buildConnectedDeviceOpenUrl,
   buildHidProvisionUrl,
   buildHidDetailUrl,
-  buildHidDiagnosticsUrl,
-  buildHidHistoryUrl
+  buildHidDiagnosticsUrl
 } from './provisioning/profile-navigation.js';

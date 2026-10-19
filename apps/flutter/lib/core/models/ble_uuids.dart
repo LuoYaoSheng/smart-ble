@@ -64,7 +64,12 @@ class BleUuids {
     '00001812': '人机界面(HID)',
     '0000180d': '心率服务',
     '00001809': '健康温度计',
-    '4fafc201': 'OTA 升级服务',
+    // Smart HID 配网家族（正典 bundle：1002 info / 1003 input / 1004 status；
+    // 与 Q-WIN SERVICE_NAMES_CN 同源，键=完整 32 位小写）
+    '9f1d1001e73b4c8f9d2a6f0b5e8a1c04': 'Smart HID 配网服务',
+    // 4fafc201 前缀为多服务共用（夹具 914b 控制 / 914c 权限 / 914d OTA），
+    // 仅精确匹配 OTA 服务，避免前缀把非 OTA 服务误标（WIN-FAND-003）
+    '4fafc2011fb5459e8fccc5c9c331914d': 'OTA 升级服务',
   };
 
   static final Map<String, String> _characteristicNames = {
@@ -83,19 +88,38 @@ class BleUuids {
     '2a28': '软件版本',
     '2a29': '制造商',
     'beb5': 'OTA 控制',
+    // Smart HID 配网家族（与 Q-WIN CHAR_NAMES_CN 同源，键=完整 32 位小写）
+    '9f1d1002e73b4c8f9d2a6f0b5e8a1c04': '设备信息 (INFO)',
+    '9f1d1003e73b4c8f9d2a6f0b5e8a1c04': '配网数据写入 (INPUT)',
+    '9f1d1004e73b4c8f9d2a6f0b5e8a1c04': '设备状态 (STATUS)',
   };
 
+  /// SHID-FW-LOCK-001：Smart HID INPUT 特征（uuid 归一化比较）
+  static bool isShidInputCharacteristic(String uuid) {
+    final s = uuid.toLowerCase().replaceAll('-', '');
+    return s == '9f1d1003e73b4c8f9d2a6f0b5e8a1c04';
+  }
+
   /// 获取标准服务名称（中文）
+  ///
+  /// flutter_blue_plus 1.36 的 Guid.toString() 对 16 位 UUID 返回短形式
+  /// （如 "1800"），需归一为 "00001800" 再查表（WIN-FAND-003）；
+  /// 32 位 UUID 先精确匹配再回退前 8 位。
   static String? getServiceName(String uuid) {
     final s = uuid.toLowerCase().replaceAll('-', '');
-    final short = s.length >= 8 ? s.substring(0, 8) : s;
-    return _serviceNames[short];
+    if (s.length == 4) return _serviceNames['0000$s'];
+    if (s.length < 8) return _serviceNames[s];
+    return _serviceNames[s] ?? _serviceNames[s.substring(0, 8)];
   }
 
   /// 获取标准特征值名称（中文）
+  ///
+  /// 同上：16 位短形式（如 "2a00"）直接查表；32 位 UUID 先精确后取 4-8 位。
   static String? getCharacteristicName(String uuid) {
     final s = uuid.toLowerCase().replaceAll('-', '');
-    final short = s.length >= 8 ? s.substring(4, 8) : s;
-    return _characteristicNames[short];
+    if (s.length >= 8) {
+      return _characteristicNames[s] ?? _characteristicNames[s.substring(4, 8)];
+    }
+    return _characteristicNames[s];
   }
 }

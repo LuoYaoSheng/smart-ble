@@ -1,0 +1,6 @@
+{"ts": 1790234197924, "shell": "Q", "event": "driver-started", "detail": "QWIN"}
+{"ts": 1790234201311, "shell": "Q", "event": "start-result", "detail": "{\"success\": true, \"detail\": {\"status\": \"Waiting\", \"companyId\": 1, \"bytes\": 4, \"event\": \"started\"}}"}
+{"ts": 1790234201312, "shell": "Q", "event": "started", "detail": "QWIN"}
+{"ts": 1790234501322, "shell": "Q", "event": "stop-result", "detail": "{\"success\": true, \"detail\": {\"event\": \"stopped\"}}"}
+{"ts": 1790234501324, "shell": "Q", "event": "stopped", "detail": "QWIN"}
+{"ts": 1790234504337, "shell": "Q", "event": "exited", "detail": ""}

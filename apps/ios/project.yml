@@ -6,22 +6,26 @@ configs:
   Release: release
 settings:
   base:
-    PRODUCT_NAME: SmartBLE
-    PRODUCT_BUNDLE_IDENTIFIER: com.luoyaosheng.smartble.ios
-    PRODUCT_DISPLAY_NAME: Smart BLE
-    MARKETING_VERSION: 2.0.0
-    CURRENT_PROJECT_VERSION: 1
+    PRODUCT_NAME: "蓝析BLE工具箱"
+    PRODUCT_MODULE_NAME: SmartBLE
+    PRODUCT_BUNDLE_IDENTIFIER: com.i2kai.open.smartble
+    PRODUCT_DISPLAY_NAME: "蓝析BLE工具箱"
+    MARKETING_VERSION: 1.0.5
+    CURRENT_PROJECT_VERSION: 101
     SWIFT_VERSION: 5.9
     IPHONEOS_DEPLOYMENT_TARGET: 15.0
     TARGETED_DEVICE_FAMILY: "1,2"
-    DEVELOPMENT_TEAM: ${IOS_DEVELOPMENT_TEAM}
+    DEVELOPMENT_TEAM: 72MZZQB893  # 本机开发团队（通配 profile 72MZZQB893.* 已含本机证书与真机）；换团队改这里后重跑 xcodegen generate
     CODE_SIGN_STYLE: Automatic
     DEVELOPMENT_ASSET_PATHS: ""
     GENERATE_INFOPLIST_FILE: NO
     INFOPLIST_FILE: SmartBLE/Resources/Info.plist
     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-    INFOPLIST_KEY_CFBundleDisplayName: Smart BLE
+    INFOPLIST_KEY_CFBundleDisplayName: "蓝析BLE工具箱"
+packages:
+  SmartHidCore:
+    path: ../../core/apple/SmartHidCore
 targets:
   SmartBLEiOS:
     type: application
@@ -32,10 +36,55 @@ targets:
     resources:
       - path: Sources/Resources
       - path: SmartBLE/Resources
+    dependencies:
+      - package: SmartHidCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.luoyaosheng.smartble.ios
+        PRODUCT_BUNDLE_IDENTIFIER: com.i2kai.open.smartble
         INFOPLIST_FILE: SmartBLE/Resources/Info.plist
         CODE_SIGN_ENTITLEMENTS: SmartBLE/Resources/SmartBLE.entitlements
-    scheme:
+  SmartBLETests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Tests/SmartBLETests
+    dependencies:
+      - target: SmartBLEiOS
+      - package: SmartHidCore
+    settings:
+      base:
+        PRODUCT_NAME: SmartBLETests
+        PRODUCT_MODULE_NAME: SmartBLETests
+        PRODUCT_BUNDLE_IDENTIFIER: com.i2kai.open.smartble.tests
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: ""
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/蓝析BLE工具箱.app/蓝析BLE工具箱"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+  SmartBLEUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    # UI 测试包仅在 iOS 17+ 模拟器执行；performAccessibilityAudit 要求 iOS 17（App 本体保持 15）
+    deploymentTarget: "17.0"
+    sources:
+      - path: Tests/SmartBLEUITests
+    dependencies:
+      - target: SmartBLEiOS
+    settings:
+      base:
+        PRODUCT_NAME: SmartBLEUITests
+        PRODUCT_MODULE_NAME: SmartBLEUITests
+        PRODUCT_BUNDLE_IDENTIFIER: com.i2kai.open.smartble.uitests
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  SmartBLEiOS:
+    build:
+      targets:
+        SmartBLEiOS: all
+        SmartBLETests: [test]
+        SmartBLEUITests: [test]
+    test:
       gatherCoverageData: false
+      targets:
+        - SmartBLETests
+        - SmartBLEUITests

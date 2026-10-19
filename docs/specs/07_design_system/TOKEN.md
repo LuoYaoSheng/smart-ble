@@ -1,6 +1,6 @@
 # TOKEN —— 设计令牌（全平台共享）
 
-> Design System 三件套之一 · 2026-09-02 冻结 v1.0
+> Design System 三件套之一 · 2026-09-02 冻结 v1.0 · 2026-09-11 升版 v1.1（官网重设计轮：营销字号档与区块节奏档收编，见 §2/§3 与文末变更记录）
 > 来源：prototype/v0-old 十色 Token 正式化（HTML_QA_REPORT §14 移交项）+ 商业级扩展。
 > 效力：**所有平台（apps/*）与所有原型唯一视觉数值来源**。CSS 实现见 [prototype/v1-new/assets/tokens.css](../prototype/v1-new/assets/tokens.css)；平台实现时按 §8 映射，数值不得另立。
 
@@ -68,11 +68,22 @@
 | `--fs-mini` | 11 / 600 | 徽章、状态词、计数 |
 | `--fs-micro` | 10 / 800 | kicker（字距 +2px）、评审面板 pid |
 
+营销档（v1.1 收编，**仅官网/落地页营销区专用**，App 界面不得使用）：
+
+| Token | 值 | 用途 |
+|---|---|---|
+| `--fs-display-lg` | `clamp(36px, 5vw, 58px)` / 800 / 行高 1.08 / 字距 -0.04em | 官网 Hero 主张 |
+| `--fs-display-md` | `clamp(28px, 4vw, 42px)` / 800 / 行高 1.04 / 字距 -0.03em | 官网区块标题 |
+
 字体族：`-apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif`；等宽（deviceId/HEX/错误码）：`"SF Mono", Menlo, Consolas, monospace`（class `.mono`）。行高：标题 1.3 / 正文 1.55。
 
 ## 3. 间距令牌（4px 基准）
 
 `--sp-1` 4 · `--sp-2` 8 · `--sp-3` 12 · `--sp-4` 16 · `--sp-5` 20 · `--sp-6` 24 · `--sp-7` 28 · `--sp-8` 32
+
+区块节奏档（v1.1 收编，**仅官网/落地页面区块级间距**，组件内部间距仍用 `--sp-*`）：
+
+`--sec-md` 48 · `--sec-lg` 64 · `--sec-xl` 96（px；移动端可降半使用）
 
 约定：页面水平 gutter = 16；卡片内边距 = 16；卡片间距 = 12；卡片组间距 = 20；导航栏底部 = 12。
 
@@ -125,3 +136,11 @@
 2. 语义色不得混用：危险操作一律 danger，不得用 warning 代替；成功态一律 success（薄荷绿），不得用品牌蓝。
 3. 文本对比度：`--c-text/--c-sub` 用于可读正文；`--c-mut` 仅限 ≥12px 辅助信息；`--c-ph` 仅占位/禁用。
 4. 深色仅用于控制台场景（日志深色变体/评审桌面），不做全局深色模式。
+5. 营销档（`--fs-display-lg/md`、`--sec-*`）仅限官网/落地页营销区与区块节奏；App 界面一律使用 §2/§3 基础档。
+
+---
+
+## 变更记录
+
+- **v1.1（2026-09-11）**：官网产品化重设计轮（docs/plans/2026-09-11-website-product-redesign-design.md §6）——收编 style.css 登记例外 ①（营销展示字号 42/58px 上限 → `--fs-display-lg/md`）与 ②（区块节奏间距 36–96px → `--sec-md/lg/xl`）；限定营销档使用范围（规则 5）。原 2026-09-11 落地页收敛轮（verification/web-ui-conv/20260911-landing/REPORT.md）的登记例外自此清零。
+- **v1.0（2026-09-02）**：首次冻结。

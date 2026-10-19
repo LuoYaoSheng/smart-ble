@@ -43,7 +43,7 @@ window.location.search = "?mock=true";
 ## 3. Recommended E2E Test Flow
 When running UI automation (e.g. Playwright / Appium / Patrol), script your actions as follows:
 
-1.  **Initialize Application**: Verify that "BLE Toolkit+" renders and the default state shows Bluetooth as running/stubbed.
+1.  **Initialize Application**: Verify that "蓝析BLE工具箱" renders and the default state shows Bluetooth as running/stubbed.
 2.  **Start Scan**: Click `[🔍 开始扫描]`. Verify the `Dummy-BLE-01` card appears within 1 second.
 3.  **UI Filters**: 
     - Set the "名称前缀" filter to `Dummy`. Verify the card stays.

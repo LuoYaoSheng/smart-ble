@@ -1,0 +1,107 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[SOAK] mode=soak-scans rounds=12 app=SmartBLE-mac
+[BLE] 外围模式已就绪
+[BLE] 蓝牙已开启
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · 62D0（-94 dBm）
+[BLE] 发现设备：未命名 BLE · 355E（-85 dBm）
+[BLE] 发现设备：midea（-90 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · 0466（-76 dBm）
+[BLE] 发现设备：midea（-98 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-93 dBm）
+[BLE] 扫描完成 · 发现 7 台设备
+[SOAK] round=1/12 auto-stopped listed_devices=7 summary="扫描完成 · 发现 7 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-84 dBm）
+[BLE] 发现设备：midea（-95 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-92 dBm）
+[BLE] 发现设备：未命名 BLE · 5A3A（-50 dBm）
+[BLE] 扫描完成 · 发现 4 台设备
+[SOAK] round=2/12 auto-stopped listed_devices=4 summary="扫描完成 · 发现 4 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · 0466（-82 dBm）
+[BLE] 发现设备：midea（-84 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-92 dBm）
+[BLE] 发现设备：未命名 BLE · F868（-59 dBm）
+[BLE] 扫描完成 · 发现 5 台设备
+[SOAK] round=3/12 auto-stopped listed_devices=5 summary="扫描完成 · 发现 5 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · DF54（-95 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · 62D0（-90 dBm）
+[BLE] 发现设备：未命名 BLE · 7820（-94 dBm）
+[BLE] 发现设备：midea（-84 dBm）
+[BLE] 扫描完成 · 发现 5 台设备
+[SOAK] round=4/12 auto-stopped listed_devices=5 summary="扫描完成 · 发现 5 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · 0466（-73 dBm）
+[BLE] 发现设备：midea（-84 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · 62D0（-95 dBm）
+[BLE] 扫描完成 · 发现 4 台设备
+[SOAK] round=5/12 auto-stopped listed_devices=4 summary="扫描完成 · 发现 4 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-84 dBm）
+[BLE] 发现设备：midea（-95 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-92 dBm）
+[BLE] 发现设备：未命名 BLE · 355E（-83 dBm）
+[BLE] 发现设备：未命名 BLE · F868（-44 dBm）
+[BLE] 扫描完成 · 发现 5 台设备
+[SOAK] round=6/12 auto-stopped listed_devices=5 summary="扫描完成 · 发现 5 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · DF54（-91 dBm）
+[BLE] 发现设备：未命名 BLE · 5A3A（-51 dBm）
+[BLE] 发现设备：midea（-94 dBm）
+[BLE] 发现设备：midea（-88 dBm）
+[BLE] 扫描完成 · 发现 4 台设备
+[SOAK] round=7/12 auto-stopped listed_devices=4 summary="扫描完成 · 发现 4 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-99 dBm）
+[BLE] 发现设备：未命名 BLE · 62D0（-93 dBm）
+[BLE] 发现设备：midea（-87 dBm）
+[BLE] 发现设备：未命名 BLE · F868（-45 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-89 dBm）
+[BLE] 发现设备：未命名 BLE · 5A3A（-50 dBm）
+[BLE] 发现设备：未命名 BLE · 355E（-86 dBm）
+[BLE] 扫描完成 · 发现 7 台设备
+[SOAK] round=8/12 auto-stopped listed_devices=7 summary="扫描完成 · 发现 7 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-96 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-93 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · 0466（-73 dBm）
+[BLE] 发现设备：未命名 BLE · 355E（-85 dBm）
+[BLE] 发现设备：未命名 BLE · F868（-49 dBm）
+[BLE] 扫描完成 · 发现 6 台设备
+[SOAK] round=9/12 auto-stopped listed_devices=6 summary="扫描完成 · 发现 6 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-90 dBm）
+[BLE] 发现设备：midea（-90 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-91 dBm）
+[BLE] 发现设备：midea（-96 dBm）
+[BLE] 扫描完成 · 发现 4 台设备
+[SOAK] round=10/12 auto-stopped listed_devices=4 summary="扫描完成 · 发现 4 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · DF54（-91 dBm）
+[BLE] 发现设备：midea（-94 dBm）
+[BLE] 发现设备：未命名 BLE · 62D0（-97 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · 0466（-77 dBm）
+[BLE] 发现设备：未命名 BLE · 355E（-96 dBm）
+[BLE] 扫描完成 · 发现 6 台设备
+[SOAK] round=11/12 auto-stopped listed_devices=6 summary="扫描完成 · 发现 6 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-96 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-90 dBm）
+[BLE] 发现设备：midea（-94 dBm）
+[BLE] 扫描完成 · 发现 4 台设备
+[SOAK] round=12/12 auto-stopped listed_devices=4 summary="扫描完成 · 发现 4 台"
+[SOAK] result=PASS detail="全部 12 轮完成（实际 12）"
+[SOAK] result=PASS detail="日志条数不超上限 500（当前 87）"
+[SOAK] mem before=91840KB after=88448KB delta=-3.3MB
+[SOAK] result=PASS detail="驻留内存增量 < 64MB（实测 -3.3MB）"
+[SOAK] done failures=0

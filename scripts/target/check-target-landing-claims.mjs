@@ -22,7 +22,8 @@ export function run(ctx) {
 
   // Claim 登记
   const claims = d.claims || [];
-  c.assert('TEST-C-010', 'CLAIM 全体', claims.length >= 31, `CLAIM ≥31（实际 ${claims.length}）`);
+  // 2026-09-14 MAC-001：CLAIM-027（微信小程序入口）随微信目标退役移除，下限 31→30。
+  c.assert('TEST-C-010', 'CLAIM 全体', claims.length >= 30, `CLAIM ≥30（实际 ${claims.length}）`);
   const badClaim = claims.filter((x) => !x.id || !x.statement || !(x.evidence_prerequisite || '').trim() || !(x.tests || []).length);
   c.assert('TEST-C-010', 'CLAIM 全体', badClaim.length === 0,
     `每条 Claim 有陈述/证据前置/测试（缺 ${badClaim.map((x) => x.id).slice(0, 6).join(',')}）`);

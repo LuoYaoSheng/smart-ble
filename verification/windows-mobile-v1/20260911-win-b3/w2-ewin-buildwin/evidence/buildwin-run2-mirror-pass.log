@@ -1,0 +1,27 @@
+
+> smart-ble-desktop@1.0.5 build:win
+> electron-builder --win
+
+  • electron-builder  version=24.13.3 os=10.0.19045
+  • loaded configuration  file=package.json ("build" field)
+  • rebuilding native dependencies  dependencies=@abandonware/bluetooth-hci-socket@0.5.3-12, @abandonware/noble@1.9.2-26, usb@2.16.0 platform=win32 arch=x64
+  • packaging       platform=win32 arch=x64 electron=27.3.11 appOutDir=dist\win-unpacked
+  ⨯ cannot execute  cause=exit status 1
+                    errorOut=Fatal error: Unable to commit changes
+
+                    command='C:\Users\11066\AppData\Local\electron-builder\Cache\winCodeSign\winCodeSign-2.6.0\rcedit-x64.exe' 'E:\project\xf\smart-ble\apps\desktop\electron\dist\win-unpacked\BLE Toolkit+.exe' --set-version-string FileDescription 'BLE Toolkit+' --set-version-string ProductName 'BLE Toolkit+' --set-version-string LegalCopyright 'Copyright © 2026 SmartBLE' --set-file-version 1.0.5 --set-product-version 1.0.5.0 --set-version-string InternalName 'BLE Toolkit+' --set-version-string OriginalFilename '' --set-version-string CompanyName SmartBLE --set-icon 'E:\project\xf\smart-ble\apps\desktop\electron\assets\icon.ico'
+                    workingDir=
+  • Above command failed, retrying 3 more times
+  ⨯ cannot execute  cause=exit status 1
+                    errorOut=Fatal error: Unable to commit changes
+
+                    command='C:\Users\11066\AppData\Local\electron-builder\Cache\winCodeSign\winCodeSign-2.6.0\rcedit-x64.exe' 'E:\project\xf\smart-ble\apps\desktop\electron\dist\win-unpacked\BLE Toolkit+.exe' --set-version-string FileDescription 'BLE Toolkit+' --set-version-string ProductName 'BLE Toolkit+' --set-version-string LegalCopyright 'Copyright © 2026 SmartBLE' --set-file-version 1.0.5 --set-product-version 1.0.5.0 --set-version-string InternalName 'BLE Toolkit+' --set-version-string OriginalFilename '' --set-version-string CompanyName SmartBLE --set-icon 'E:\project\xf\smart-ble\apps\desktop\electron\assets\icon.ico'
+                    workingDir=
+  • Above command failed, retrying 2 more times
+  • building        target=nsis file=dist\BLE Toolkit+ Setup 1.0.5.exe archs=x64 oneClick=true perMachine=false
+  • downloading     url=https://npmmirror.com/mirrors/electron-builder-binaries/nsis-3.0.4.1/nsis-3.0.4.1.7z size=1.3 MB parts=1
+  • downloaded      url=https://npmmirror.com/mirrors/electron-builder-binaries/nsis-3.0.4.1/nsis-3.0.4.1.7z duration=1.173s
+  • downloading     url=https://npmmirror.com/mirrors/electron-builder-binaries/nsis-resources-3.4.1/nsis-resources-3.4.1.7z size=731 kB parts=1
+  • downloaded      url=https://npmmirror.com/mirrors/electron-builder-binaries/nsis-resources-3.4.1/nsis-resources-3.4.1.7z duration=787ms
+  • building block map  blockMapFile=dist\BLE Toolkit+ Setup 1.0.5.exe.blockmap
+  • building        target=portable file=dist\BLE Toolkit+ 1.0.5.exe archs=x64

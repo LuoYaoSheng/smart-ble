@@ -1,0 +1,55 @@
+{
+ "driver": "uand-f014-f017-e5.py",
+ "serial_dev": "R5CR1284Y7H",
+ "started": "09:30:37",
+ "total": 9,
+ "pass": 9,
+ "fail": 0,
+ "results": [
+  {
+   "name": "P008-open",
+   "ok": true,
+   "detail": "广播页就绪：Android 块（模式/功率/开关）+4 字段默认值 ['SmartBLE-A', 'FFE0', '0001', 'BLE']（WIN-UAND-002 修复后）"
+  },
+  {
+   "name": "F016-budget-default",
+   "ok": true,
+   "detail": "默认预算 7/31（名称不含+UUID不含+厂商块 2+2+3）"
+  },
+  {
+   "name": "F016-budget-uuid-toggle",
+   "ok": true,
+   "detail": "添加服务UUID 开 → 7→11（+2+2 FFE0）"
+  },
+  {
+   "name": "F016-budget-name-toggle",
+   "ok": true,
+   "detail": "包含设备名称 开 → 11→23（+2+10 SmartBLE-A）"
+  },
+  {
+   "name": "F016-budget-toggles-restore",
+   "ok": true,
+   "detail": "两开关还原关 → 7/31"
+  },
+  {
+   "name": "F016-overflow-blocked",
+   "ok": true,
+   "detail": "厂商数据 30 字符 → 34/31 超限红显=True；toast 拦截=True；未进入广播=True"
+  },
+  {
+   "name": "F016-budget-restore",
+   "ok": true,
+   "detail": "冷重启默认恢复 → 7/31（字段=['SmartBLE-A', 'FFE0', '0001', 'BLE']）"
+  },
+  {
+   "name": "F015-standard-base-plugin-missing",
+   "ok": true,
+   "detail": "标准基座无原生插件：检查支持 → 日志「插件未初始化」（未就绪态）"
+  },
+  {
+   "name": "F015-standard-base-start-fallback",
+   "ok": true,
+   "detail": "合法载荷启动 → 插件未初始化错误且不进入广播；正路径需自定义基座=BLOCKED_TOOLCHAIN"
+  }
+ ]
+}

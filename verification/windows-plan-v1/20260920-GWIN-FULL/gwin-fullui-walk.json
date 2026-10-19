@@ -1,0 +1,262 @@
+{
+ "flavor": "real",
+ "steps": [
+  {
+   "name": "boot",
+   "ok": true,
+   "detail": {
+    "title": "BLE Toolkit+",
+    "tabs": [
+     {
+      "tab": "scan",
+      "text": "扫描",
+      "visible": true
+     },
+     {
+      "tab": "connected",
+      "text": "已连接0",
+      "visible": true
+     },
+     {
+      "tab": "broadcast",
+      "text": "广播",
+      "visible": false
+     },
+     {
+      "tab": "about",
+      "text": "关于",
+      "visible": true
+     }
+    ]
+   }
+  },
+  {
+   "name": "bridge+embed-version",
+   "ok": true,
+   "detail": {
+    "version": "1.0.5",
+    "platform": {
+     "arch": "amd64",
+     "platform": "win32"
+    }
+   }
+  },
+  {
+   "name": "P008-win32-broadcast-degrade",
+   "ok": true,
+   "detail": {
+    "start": {
+     "error": "Advertising is not supported on win32. True peripheral mode requires native apps (e.g., macOS SmartBLE) or Linux with bleno.",
+     "success": false
+    },
+    "stop": {
+     "error": "Advertising is not supported on win32",
+     "success": false
+    }
+   }
+  },
+  {
+   "name": "P001-real-scan",
+   "ok": true,
+   "detail": {
+    "cards": 13,
+    "scanWord": "扫描完成 · 发现 13 台",
+    "hasShid": true,
+    "names": [
+     "S\n                        \n                            SHID-00000001疑似 Smart HID",
+     "未\n                        \n                            未命名 BLE · 23AC\n          ",
+     "未\n                        \n                            未命名 BLE · 180F\n          ",
+     "N\n                        \n                            NZ5QK2hf+lvxuyXc6Fp7Y8i/U",
+     "未\n                        \n                            未命名 BLE · FDC2\n          ",
+     "未\n                        \n                            未命名 BLE · 3D6B\n          "
+    ]
+   }
+  },
+  {
+   "name": "P002-provision-form",
+   "ok": true,
+   "detail": {
+    "connWord": "已连接",
+    "devId": "10:B4:1D:CD:23:8E",
+    "devName": "SHID-00000001",
+    "stepper": "✓连接设备2填写配置3下发状态",
+    "submitDisabled": true
+   }
+  },
+  {
+   "name": "P002-qr-sheet",
+   "ok": true,
+   "detail": {
+    "camStatus": "取景识别中…（摄像头）",
+    "sheetOpen": true,
+    "videoVisible": true
+   }
+  },
+  {
+   "name": "P002-paste-fallback",
+   "ok": true,
+   "detail": {
+    "invalidRejected": true,
+    "errText": "未识别到有效配对码（非 shid://pair 或缺少/非法参数）",
+    "validParsed": true,
+    "hub": "192.168.1.8:17892",
+    "ssid": "TestNet",
+    "submitEnabled": true
+   }
+  },
+  {
+   "name": "P002-back-clean",
+   "ok": true,
+   "detail": {
+    "backOnScan": true,
+    "leaveModal": false,
+    "hadLeaveModal": false
+   }
+  },
+  {
+   "name": "P006-gatt-tree",
+   "ok": true,
+   "detail": {
+    "svcNames": [
+     "未知服务"
+    ],
+    "actions": [
+     "read",
+     "notify",
+     "write",
+     "read",
+     "notify"
+    ],
+    "note": "tinygo Uncached 枚举=1 服务（9f1d 配网），E-WIN 缓存枚举见 2+"
+   }
+  },
+  {
+   "name": "P006-char-read",
+   "ok": true,
+   "detail": {
+    "readLog": "   成功\n                    [SmartHID] device HID-00000001 fw=1.2.0 state=unprovisioned17:58:55\n                    系统\n                    [SmartHID] 连接 10:B4:1D:CD:23:8E 并验证 Device Info…17:58:54\n                    系统\n                    自动停止扫描（5秒）\n            "
+   }
+  },
+  {
+   "name": "P006-notify-toggle",
+   "ok": true,
+   "detail": {
+    "on": "停止监听",
+    "off": "开始监听"
+   }
+  },
+  {
+   "name": "P007-connected",
+   "ok": true,
+   "detail": {
+    "cards": [
+     "S\n                        \n                            SHID-00000001疑似 Smart HID · 弱匹配\n             "
+    ],
+    "count": "1",
+    "hasDisconnectAll": true
+   }
+  },
+  {
+   "name": "exit-confirm-busy",
+   "ok": true,
+   "detail": {
+    "connected": "1",
+    "text": "退出确认\n                \n                \n                    有 BLE 会话正在运行（连接/广播）。确认退出将断开会话并停止监听。\n                    \n                        当前连接设备：1 台\n                    \n                \n                退出继续使用",
+    "stayClicked": true,
+    "modalGone": true,
+    "note": ""
+   }
+  },
+  {
+   "name": "disconnect-all",
+   "ok": true,
+   "detail": {
+    "count": "0"
+   }
+  },
+  {
+   "name": "mock-mode-enter",
+   "ok": true,
+   "detail": {
+    "mock": true,
+    "search": "?mock=true"
+   }
+  },
+  {
+   "name": "mock-device-cards",
+   "ok": true,
+   "detail": {
+    "chip": "4",
+    "count": 4
+   }
+  },
+  {
+   "name": "filter-panel",
+   "ok": true,
+   "detail": {
+    "resetClicked": true,
+    "closed": true
+   }
+  },
+  {
+   "name": "P005-write-dialog",
+   "ok": true,
+   "detail": {
+    "wClick": true,
+    "sendClick": "确认写入",
+    "dialogGone": false,
+    "log": "                发现 3 个服务17:59:18\n                    成功\n                    设备已连接17:59:17\n                    系统\n                    正在连接 SIM-A1...\n            "
+   }
+  },
+  {
+   "name": "P008-broadcast-ui",
+   "ok": true,
+   "detail": {
+    "badge": "未就绪",
+    "byteTotal": "21",
+    "platform": "平台：Desktop · 未知",
+    "visible": true
+   }
+  },
+  {
+   "name": "P009-about",
+   "ok": true,
+   "detail": {
+    "env": "Desktop · Windows",
+    "versionChip": "v1.0.5-dev.unknown",
+    "versionLine": "v1.0.5-dev.unknown · preview · 零后端 · 零本地持久化"
+   }
+  },
+  {
+   "name": "P010-versions",
+   "ok": true,
+   "detail": {
+    "versions": "当前版本\n                \n                    1.0.5-dev.unknown\n                    Preview\n                \n               "
+   }
+  },
+  {
+   "name": "exit-final-quit",
+   "ok": true,
+   "detail": {
+    "connected": "0",
+    "text": "退出确认\n                \n                \n                    桌面端为常驻运行。确认退出？\n                    \n                        （",
+    "quitClicked": true,
+    "processExited": true
+   }
+  },
+  {
+   "name": "console-clean",
+   "ok": true,
+   "detail": {
+    "count": 0,
+    "sample": []
+   }
+  }
+ ],
+ "consoleErrors": [],
+ "summary": {
+  "pass": 23,
+  "total": 23,
+  "fatal": false
+ }
+}

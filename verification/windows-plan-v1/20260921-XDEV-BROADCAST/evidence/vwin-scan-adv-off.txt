@@ -1,0 +1,99 @@
+T|系统
+T|系统
+T|最小化
+T|最大化
+T|关闭
+T|BLE TOOLKIT+
+T|扫描
+T|蓝牙就绪
+T|扫描完成 · 发现 8 台
+T|开始扫描
+T|开始扫描
+T|附近设备
+T|8
+T|筛选
+T|筛选
+T|S
+T|SHID-00000001
+T|Smart HID · 强匹配
+T|10B41DCD238E
+T|-38 dBm
+T|配置 Smart HID
+T|配置 Smart HID
+T|连接
+T|连接
+T|未
+T|未命名 BLE 设备
+T|2E027B616C4C（未命名）
+T|-65 dBm
+T|连接
+T|连接
+T|未
+T|未命名 BLE 设备
+T|74033825F39（未命名）
+T|-63 dBm
+T|连接
+T|连接
+T|未
+T|未命名 BLE 设备
+T|4459BEFD5776（未命名）
+T|-78 dBm
+T|连接
+T|连接
+T|未
+T|未命名 BLE 设备
+T|26B69A7B5FF4（未命名）
+T|-73 dBm
+T|连接
+T|连接
+T|未
+T|未命名 BLE 设备
+T|751F5EBBF129（未命名）
+T|-84 dBm
+T|连接
+T|连接
+T|未
+T|未命名 BLE 设备
+T|3F59518F058D（未命名）
+T|-85 dBm
+T|连接
+T|连接
+T|8
+T|873
+T|C2001DFCFC19
+T|-98 dBm
+T|连接
+T|连接
+T|Avalonia.Controls.PathIcon
+T|Avalonia.Controls.PathIcon
+T|扫描
+T|扫描
+T|已连接
+T|已连接
+T|广播
+T|广播
+T|关于
+T|关于
+B|最小化=1
+B|最大化=1
+B|关闭=1
+B|开始扫描=1
+B|筛选=1
+B|配置 Smart HID=1
+B|连接=1
+B|连接=1
+B|连接=1
+B|连接=1
+B|连接=1
+B|连接=1
+B|连接=1
+B|连接=1
+B|Avalonia.Controls.PathIcon=1
+B|=1
+B|=1
+B|Avalonia.Controls.PathIcon=1
+B|扫描=1
+B|已连接=1
+B|广播=1
+B|关于=1
+OK state

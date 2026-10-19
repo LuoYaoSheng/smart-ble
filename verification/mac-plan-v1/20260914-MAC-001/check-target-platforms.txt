@@ -1,0 +1,16 @@
+ok   : [TEST-C-004] platform-target.json 可解析
+ok   : [TEST-C-004] 恰好三平台（实际 3）
+ok   : [TEST-C-004] android-app 目标公开状态 VERIFIED（实际 VERIFIED）
+ok   : [TEST-C-004] android-app 状态取自五词表
+ok   : [TEST-C-004] h5 目标公开状态 UNSUPPORTED（实际 UNSUPPORTED）
+ok   : [TEST-C-004] h5 状态取自五词表
+ok   : [TEST-C-004] ios-app 目标公开状态 NOT_RELEASED（实际 NOT_RELEASED）
+ok   : [TEST-C-004] ios-app 状态取自五词表
+ok   : [TEST-C-004] 能力条目 ≥28（实际 28）
+ok   : [TEST-C-004] 能力 ID 唯一
+ok   : [TEST-C-004] 能力值在值域内且正式入口降级必有说明（违规 ）
+ok   : [TEST-C-004] 08 号能力矩阵登记 android-app（Android App）
+ok   : [TEST-C-004] 08 号能力矩阵登记 h5（H5）
+ok   : [TEST-C-004] 08 号能力矩阵登记 ios-app（iOS App）
+
+check-target-platforms: PASS（14/14）

@@ -10,6 +10,7 @@ class MainFlutterWindow: NSWindow {
 
     RegisterGeneratedPlugins(registry: flutterViewController)
 
+    self.title = "蓝析BLE工具箱"
     super.awakeFromNib()
   }
 }

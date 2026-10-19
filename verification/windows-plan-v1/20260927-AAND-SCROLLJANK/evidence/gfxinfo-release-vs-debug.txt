@@ -1,0 +1,38 @@
+AAND-SCROLLJANK · release 对照与归因矩阵（决定性实验）
+设备：华为 TAS-AN00（FEC0220629005177） 2026-09-27 08:38-08:56
+release 包 = assembleRelease（isMinifyEnabled=false）+ 本机 debug.keystore 签名
+（与 debug 包同签名 → adb install -r 原地升级保数据）
+
+═══ 归因矩阵（同一场景：点「开始扫描」→ 5s 会话内连滚 4 次）═══
+
+  构建形态      代码     回调量   帧数   掉帧率      中位帧   90th
+  debug         旧码     ≥287/s5   91    95.60%       44ms    89ms
+  debug         +两刀     268/s5    56    75.00%       48ms    97ms
+  release       旧码      265/s5   181    24.86%       19ms    34ms
+  release       +两刀      270/s5   207     1.45%        7ms    17ms   ← 08:41 实测
+
+═══ 纯滚动（不扫描，残留列表，4 次 swipe）═══
+
+  debug  +两刀  三连测：60.87% / 68.63% / 69.39%，中位稳定 57ms（噪声大：
+                    更早一轮冷态测过 49.09%/32ms —— debug 形态方差本身巨大）
+  release +两刀 三连测：1.00% / 0.47% / 0.46%，中位稳定 6ms（201~216 帧，
+                    接近满 60fps，测量稳定）
+
+═══ 结论 ═══
+1. 两刀代码修复在 release 形态下把扫描期掉帧 24.86% → 1.45%（17 倍），
+   是真实有效功：57Hz 主线程风暴连 release 也扛不住。
+2. debug 形态即使不扫描也 60-77% 掉帧（中位 57ms）——用户日常侧载 debug 包
+   的「滚动卡顿」主体是 debug 构建固有开销（JIT+调试运行时+未优化代码生成），
+   代码侧不可修。日常使用应侧载 release 签名包。
+3. framestats 佐证：慢帧集中在 traversal 派发 26-76ms（debug Compose 遍历），
+   measure/layout 子阶段与 GPU（3-6ms）均无罪。
+
+═══ 坑位账（本轮新增）═══
+- adb install 输出接 `| tail` 会吃掉失败退出码：增量安装异常后静默无操作
+  （08:47 那次「装了」实际 lastUpdateTime 未变）——install 必须裸跑看 Success。
+- EMUI install 走 "Incremental not allowed" 异常后回退 Streamed Install 属正常，
+  以末行 Success 为准。
+- 手机侧验尸法：onScanResult 日志的 TID==PID → 旧码（主线程回调）；
+  TID!=PID → 修复版（ble-scan-callbacks 工作线程）。比 gfxinfo 数字更硬。
+- gfxinfo 单轮测量受热态影响方差大（debug 49%↔77%），归因结论必须建立在
+  重复测量 + 对照矩阵上。

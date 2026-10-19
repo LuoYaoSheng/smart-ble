@@ -36,7 +36,7 @@
 | ota-dialog/ota-dialog | OTA 完整交互弹窗（非受控） | device/detail |
 | hid/provision-stepper | 配网三步骤条 | hid/add |
 | hid/provision-progress | 配网四行进度 | hid/add |
-| about/app-card | 推广小程序卡片 | about/index |
+| ~~about/app-card~~ | ~~推广小程序卡片~~（随 F028 推广区 2026-09-10 移除） | — |
 
 ## 3. 组合式函数（4 个，每页一个专属编排器）
 
@@ -47,7 +47,7 @@
 | 模块 | 文件数 | 职责要点 |
 |---|---|---|
 | services/ble-runtime | 16 | uni BLE 全局回调唯一所有者 + 会话注册表（8 态）+ 写队列（串行/5s/深16）+ 重连（3 次 1s/3s/5s） |
-| services/provisioning | 5 | 设备无关配网框架：Profile 注册表、GATT transport（MTU 247/帧间隔 30ms/加密写失败 2s 重试）、orchestrator、builtins |
+| services/provisioning | 5 | 设备无关配网框架：Profile 注册表、GATT transport（MTU 247/明文写/帧间隔 30ms/失败立即上抛）、orchestrator、builtins |
 | services/smart-hid | 11 | Smart HID 专属：门面/Profile/工作流引擎（纯 JS 状态机）/表单/known-devices（随 F023 移除） |
 | services/broadcast | 6 | 广播会话（单 owner 6 态）/适配器/31B 负载预算/观察证据 |
 | services/ota | 3 | OTA 事务状态机（12 态）/包模型/校验器 |
@@ -59,8 +59,8 @@
 
 ## 6. 配置与静态资源
 
-- `config/product.js`（产品信息/推广位 RELATED_MINI_PROGRAMS）、`config/release-metadata.generated.*`（脚本生成）
-- `static/`：logo / share / tabs 8 图 / placeholders 8 图 / brand / other-apps
+- `config/product.js`（产品信息/功能特性；推广位 RELATED_MINI_PROGRAMS 随 F028 2026-09-10 移除）、`config/release-metadata.generated.*`（脚本生成）
+- `static/`：logo / share / tabs 8 图 / placeholders 8 图 / brand（other-apps 图标目录随 86952f4 缩写徽章方案先行退役，2026-09-10 F028 移除后目录确认不存在）
 - `styles/design-system.css`：`--ble-*` token 唯一来源
 - `locale/`：zh-CN + en-US（未接线资产）
 

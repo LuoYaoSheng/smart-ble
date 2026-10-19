@@ -1,11 +1,15 @@
 <template>
 	<view class="ble-shell connected-shell">
-		<app-navbar kicker="SmartBLE Mini" title="已连接设备" />
+		<AppNavbar kicker="SESSIONS" title="已连接">
+			<template #status>
+				<AppChip :text="hidStore.sessionOnline ? '配网会话在线' : '通用调试会话'" :tone="hidStore.sessionOnline ? 'warning' : 'neutral'" />
+			</template>
+		</AppNavbar>
 
 		<view class="ble-content page-content">
 			<view v-if="connectedDevicesList.length > 1" class="summary-card ble-card">
-				<text class="ble-section-caption">{{ connectedDevicesList.length }} 台设备保持连接</text>
-				<button class="ble-btn ble-btn--ghost ble-btn--md" @click="disconnectAllDevices">全部断开</button>
+				<text class="ble-section-caption">{{ connectedDevicesList.length }} 台在线 · 全部为内存会话</text>
+				<AppButton label="全部断开" tone="danger" size="sm" icon="x" @tap="disconnectAllDevices" />
 			</view>
 
 			<view class="results-panel ble-card">
@@ -15,23 +19,24 @@
 
 				<view class="tab-content">
 					<scroll-view scroll-y class="device-scroll">
-						<empty-state
+						<AppEmpty
 							id="connected-empty"
 							v-if="connectedDevicesList.length === 0"
-							image="/static/placeholders/empty_connected.png"
+							ill="link"
 							title="还没有连接中的设备"
-							:description="hidStore.sessionOnline ? 'Smart HID 配网连接进行中，这里列出通用调试连接。' : '先在“扫描”页找到设备并连接，这里会保留会话入口。'"
+							:description="hidStore.sessionOnline ? 'Smart HID 配网连接进行中，这里列出通用调试连接。' : '先在「扫描」页找到设备并连接，会话将保存在这里。'"
 							action-label="去扫描"
+							action-icon="scan"
 							@action="goScan"
 						/>
 						<template v-else>
-							<device-card
+							<DeviceCard
 								v-for="device in connectedDevicesList"
 								:key="device.deviceId"
 								:device="device"
-								:isConnectionTab="true"
-								@click="openConnectedDevice"
-								@action="disconnectDeviceFromList"
+								variant="conn"
+								@tap="openConnectedDevice"
+								@disconnect="disconnectDeviceFromList"
 							/>
 						</template>
 					</scroll-view>
@@ -43,10 +48,12 @@
 
 <script setup>
 import { computed } from 'vue';
-import { onShareAppMessage } from '@dcloudio/uni-app';
-import AppNavbar from '../../components/common/app-navbar.vue';
-import DeviceCard from '../../components/device-card/device-card.vue';
-import EmptyState from '../../components/common/empty-state.vue';
+// UI-G2：P007 改挂正典组件层（AppNavbar 会话 chip / DeviceCard conn 变体 / AppEmpty）
+import AppNavbar from '../../components/ui/AppNavbar.vue';
+import AppChip from '../../components/ui/AppChip.vue';
+import AppButton from '../../components/ui/AppButton.vue';
+import AppEmpty from '../../components/ui/AppEmpty.vue';
+import DeviceCard from '../../components/ui/DeviceCard.vue';
 import { useBleStore } from '../../store/ble';
 import { useHidStore } from '../../store/hid';
 import { summarizeDisconnectAllResults } from '../../services/connected-disconnect.js';
@@ -57,13 +64,6 @@ const bleStore = useBleStore();
 const hidStore = useHidStore();
 
 const connectedDevicesList = computed(() => bleStore.connectedDevicesList);
-
-// #ifdef MP-WEIXIN
-onShareAppMessage(() => ({
-	title: '分享一个好用的 BLE 工具: BLE Toolkit+',
-	path: '/pages/connected/index'
-}));
-// #endif
 
 const goScan = () => {
 	uni.switchTab({ url: '/pages/index/index' });
@@ -121,14 +121,14 @@ const disconnectAllDevices = async () => {
 	align-items: center;
 	justify-content: space-between;
 	gap: 16rpx;
-	padding: 20rpx 24rpx;
+	padding: 20rpx 32rpx;
 }
 
 .results-panel {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	padding: 26rpx;
+	padding: 32rpx;
 	min-height: 0;
 }
 

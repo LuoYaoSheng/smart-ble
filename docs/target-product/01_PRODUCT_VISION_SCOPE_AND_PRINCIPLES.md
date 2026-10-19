@@ -42,7 +42,7 @@ supersedes: []
 | # | 范围项 | 对应目标 |
 |---|---|---|
 | 1 | UniApp Android App（正式产物 APK） | `08` 平台矩阵 Android 列；E5/E6 证据 |
-| 2 | BLE Toolkit+ 微信小程序（正式发布） | `08` 微信列；E5 证据；正式小程序码 |
+| 2 | 蓝析BLE工具箱 微信小程序（正式发布） | `08` 微信列；E5 证据；正式小程序码 |
 | 3 | H5 页面/文档与明确 BLE 降级 | `08` H5 列；UNSUPPORTED 诚实提示 |
 | 4 | UniApp iOS 目标定义 | `08` iOS 列；未发布时 NOT_RELEASED |
 | 5 | LightBLE `fixture_peripheral` 固件 | `12` 第 3–8 节 |
@@ -76,7 +76,7 @@ supersedes: []
 | 平台/组件 | 角色 | 首版状态目标 |
 |---|---|---|
 | UniApp Android App | 正式产品入口之一；BLE 能力 Full | E5 后 VERIFIED |
-| 微信小程序 BLE Toolkit+ | 正式产品入口之一；BLE 能力 Full/Adapted（权限策略不同） | E5 后 VERIFIED |
+| 微信小程序 蓝析BLE工具箱 | 正式产品入口之一；BLE 能力 Full/Adapted（权限策略不同） | E5 后 VERIFIED |
 | H5（同仓文档站） | 文档、落地页入口、模拟演示；BLE UNSUPPORTED | 始终诚实降级 |
 | UniApp iOS | 目标已定义、产物未发布 | NOT_RELEASED（DEC-005） |
 | LightBLE fixture_peripheral | 公开标准测试夹具（不是示例代码） | 固件可下载/可复现后 VERIFIED |
@@ -144,7 +144,7 @@ supersedes: []
 | ID | 需求 | 优先级 |
 |---|---|---|
 | REQ-005 | 蓝牙权限请求前置，状态区展示权限状态；拒绝后可重试 | Must |
-| REQ-006 | 微信小程序权限按能力检测最小化申请：不预取定位；点击扫描时先申请 BLE 所需最小权限，仅当当前运行环境明确要求定位时才申请/引导定位（DEC-003） | Must |
+<!-- REQ-006（微信小程序权限最小化申请）已于 2026-09-14 MAC-001 随微信目标退役移除 -->
 | REQ-007 | 永久拒绝提供跳系统设置的恢复路径 | Must |
 | REQ-008 | 蓝牙关闭时引导打开系统蓝牙设置 | Must |
 | REQ-009 | 平台不支持 BLE 时诚实提示 UNSUPPORTED，不模拟 | Must |

@@ -1,0 +1,34 @@
+/* ============================================================
+   微信系统层样式（平台还原层 · 非 Web/App 设计系统管辖）
+   仅用于「微信客户端渲染」的 UI 示意：右上角胶囊按钮。
+   产品界面一律 tokens.css + components.css（07_design_system 冻结 v1.0）。
+   本文件色值为微信客户端 chrome 还原值（深灰 #1B1B1F 等），
+   不属于「圈外色值」违规 —— 见本目录 README 资源清单。
+   ============================================================ */
+
+/* ---- 客户端胶囊（••• | ⊙ · 由微信客户端渲染，原型仅示意） ---- */
+.wxcap{position:absolute;top:30px;right:10px;z-index:30;display:flex;align-items:center;gap:8px;
+  height:32px;padding:0 10px;border-radius:16px;background:rgba(255,255,255,.78);
+  border:1px solid rgba(0,0,0,.08);backdrop-filter:blur(6px);pointer-events:none;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);font-family:var(--font);}
+.wxcap .ic-more{display:flex;gap:3px;align-items:center;}
+.wxcap .ic-more i{width:4px;height:4px;border-radius:50%;background:#1B1B1F;}
+.wxcap .cap-div{width:1px;height:18px;background:rgba(0,0,0,.12);}
+.wxcap .ic-tgt{position:relative;width:14px;height:14px;display:inline-block;}
+.wxcap .ic-tgt::before{content:'';position:absolute;inset:1.5px;border:1.5px solid #1B1B1F;border-radius:50%;}
+.wxcap .ic-tgt::after{content:'';position:absolute;left:50%;top:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:#1B1B1F;}
+
+/* ---- 手机下方实例标注 ---- */
+.wx-col{display:flex;flex-direction:column;align-items:center;gap:10px;flex-shrink:0;}
+.wx-cap{font-size:var(--fs-mini);color:var(--c-mut);line-height:1.7;text-align:center;max-width:395px;}
+.wx-cap b{color:var(--c-sub);}
+
+/* ---- 生态能力矩阵卡（11_ecosystem · 平台功能差异矩阵 v1.0 · 2026-09-03，评审栏呈现层） ---- */
+.rev-mx{display:flex;flex-direction:column;gap:3px;margin:6px 0 2px;}
+.mx-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;
+  font-size:var(--fs-cap);color:var(--c-sub);padding:4px 8px;border-radius:8px;background:rgba(96,117,141,.08);}
+.mx-row .k{flex-shrink:0;font-weight:var(--fw-med);}
+.mx-row .v{text-align:right;}
+.mx-row .v .mx-n{display:block;font-size:var(--fs-mini);color:var(--c-mut);font-weight:400;line-height:1.5;}
+.mx-ok{color:var(--c-success);} .mx-warn{color:var(--c-warning);}
+.mx-bad{color:var(--c-danger);} .mx-conf{color:var(--c-danger);font-weight:var(--fw-bold);}

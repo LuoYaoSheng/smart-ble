@@ -1,0 +1,118 @@
+ok   : [TEST-C-009] flows-target.json 可解析
+ok   : [TEST-C-009] FLOW-001..014 连续完整（实际 FLOW-001,FLOW-002,FLOW-003,FLOW-004,FLOW-005,FLOW-006,FLOW-007,FLOW-008,FLOW-009,FLOW-010,FLOW-011,FLOW-012,FLOW-013,FLOW-014）
+ok   : [TEST-C-009] FLOW-001 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-001 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-001 有取消与清理语义
+ok   : [TEST-C-009] FLOW-001 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-001 有计划测试
+ok   : [TEST-C-009] FLOW-001 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-002 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-002 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-002 有取消与清理语义
+ok   : [TEST-C-009] FLOW-002 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-002 有计划测试
+ok   : [TEST-C-009] FLOW-002 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-003 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-003 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-003 有取消与清理语义
+ok   : [TEST-C-009] FLOW-003 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-003 有计划测试
+ok   : [TEST-C-009] FLOW-003 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-004 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-004 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-004 有取消与清理语义
+ok   : [TEST-C-009] FLOW-004 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-004 有计划测试
+ok   : [TEST-C-009] FLOW-004 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-005 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-005 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-005 有取消与清理语义
+ok   : [TEST-C-009] FLOW-005 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-005 有计划测试
+ok   : [TEST-C-009] FLOW-005 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-006 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-006 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-006 有取消与清理语义
+ok   : [TEST-C-009] FLOW-006 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-006 有计划测试
+ok   : [TEST-C-009] FLOW-006 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-007 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-007 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-007 有取消与清理语义
+ok   : [TEST-C-009] FLOW-007 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-007 有计划测试
+ok   : [TEST-C-009] FLOW-007 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-008 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-008 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-008 有取消与清理语义
+ok   : [TEST-C-009] FLOW-008 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-008 有计划测试
+ok   : [TEST-C-009] FLOW-008 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-009 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-009 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-009 有取消与清理语义
+ok   : [TEST-C-009] FLOW-009 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-009 有计划测试
+ok   : [TEST-C-009] FLOW-009 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-010 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-010 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-010 有取消与清理语义
+ok   : [TEST-C-009] FLOW-010 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-010 有计划测试
+ok   : [TEST-C-009] FLOW-010 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-011 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-011 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-011 有取消与清理语义
+ok   : [TEST-C-009] FLOW-011 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-011 有计划测试
+ok   : [TEST-C-009] FLOW-011 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-012 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-012 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-012 有取消与清理语义
+ok   : [TEST-C-009] FLOW-012 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-012 有计划测试
+ok   : [TEST-C-009] FLOW-012 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-013 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-013 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-013 有取消与清理语义
+ok   : [TEST-C-009] FLOW-013 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-013 有计划测试
+ok   : [TEST-C-009] FLOW-013 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-014 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-014 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-014 有取消与清理语义
+ok   : [TEST-C-009] FLOW-014 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-014 有计划测试
+ok   : [TEST-C-009] FLOW-014 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] ≥7 条流程带 mermaid 时序图（实际 14）
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-001
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-002
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-003
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-004
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-005
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-006
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-007
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-008
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-009
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-010
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-011
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-012
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-013
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-014
+ok   : [TEST-C-009] 06 号 mermaid 图 ≥10（实际 28）
+ok   : [TEST-C-009] FLOW-001 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-002 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-003 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-004 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-005 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-006 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-007 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-008 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-009 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-010 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-011 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-012 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-013 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-014 planned_tests 形如 TEST-X-nnn（坏 ）
+
+check-target-flows: PASS（116/116）

@@ -15,6 +15,7 @@ import {
   smartHidRecoveryAction,
 } from '../services/smart-hid/workflow.js';
 import { describeScanCodeFailure } from '../services/smart-hid/scan-code-feedback.js';
+import { requestFeatureConsent } from '../services/privacy-consent.js';
 
 const STEPS = [
   { key: 'connect', label: '连接' },
@@ -124,7 +125,8 @@ export function useSmartHidProvisioning() {
     await connectDevice();
   };
 
-  const scanControlHubQr = () => {
+  const scanControlHubQr = async () => {
+    if (!await requestFeatureConsent()) return;
     uni.scanCode({
       onlyFromCamera: false,
       scanType: ['qrCode'],

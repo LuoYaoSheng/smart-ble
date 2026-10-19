@@ -1,28 +1,64 @@
-/* docs/.vitepress/theme/style.css */
+/* docs/.vitepress/theme/style.css
+   —— Smart BLE 站点皮肤 · 2026-09-11 收编设计系统（07_design_system 冻结 v1.0）
+   SSOT：docs/specs/07_design_system/TOKEN.md · core/assets-generator/meta/design-tokens.json
+   本文件为落地页投影（手工同步，值不得另立；与 apps/uniapp/styles/tokens.css 同源对齐）。
+   例外登记（原 ①② 见 verification/web-ui-conv/20260911-landing/REPORT.md）：
+   ① 营销展示型 clamp 字号（42/58px 上限）——2026-09-11 官网重设计轮已收编为 v1.1 营销档
+     （--fs-display-md/lg），不再是例外；
+   ② 区块节奏间距（36–96px）——2026-09-11 已收编为 v1.1 节奏档（--sec-md/lg/xl = 48/64/96），不再是例外；
+   ③ #C77E14 为正典衍生警告文字色（与 specs/prototype/v1-new components.css chip.warning 同源，对应 --log-read）；
+   ④ 组件级登记内距沿用契约：.smartble-platform-badge 3px 10px = B3 AppBadge（components.css .badge）、
+     .smartble-inline-badge 2px 9px = B2 AppChip；正文行高一律 1.55（TOKEN.md §2），kicker 依 §2 用 --fs-micro/+2px 字距。 */
+
+/* ═══ 设计令牌投影（SSOT: TOKEN.md）═══ */
 :root {
-  --vp-c-brand-1: #1b6dff;
-  --vp-c-brand-2: #2f87ff;
-  --vp-c-brand-3: #56a9ff;
-  --vp-c-brand-soft: rgba(27, 109, 255, 0.1);
-  --smartble-bg-top: #f4f8ff;
-  --smartble-bg-bottom: #eaf2fc;
-  --smartble-text-main: #13243d;
-  --smartble-text-sub: #60758f;
-  --smartble-card-line: rgba(19, 64, 126, 0.1);
+  /* 色彩 */
+  --c-primary: #1B6DFF; --c-primary-deep: #0E4FC4; --c-primary-weak: #E8F1FF;
+  --c-success: #17C7A8; --c-success-weak: #E2F8F4;
+  --c-danger: #F2555F; --c-danger-weak: #FDEBEC;
+  --c-warning-weak: #FFF3E4;
+  --c-text: #18222E; --c-sub: #42536A; --c-mut: #60758D;
+  --c-line: #E3EAF3; --c-line-soft: #EDF2F9;
+  --c-fill: #F1F5FB; --c-bg: #F8FBFF; --c-card: #FFFFFF;
+  /* 字号/字重（fs-micro=kicker 正典档） */
+  --fs-display: 24px; --fs-title: 20px; --fs-h1: 17px; --fs-h2: 15px;
+  --fs-body: 13px; --fs-cap: 12px; --fs-mini: 11px; --fs-micro: 10px;
+  --fw-med: 600; --fw-bold: 700; --fw-xbold: 800;
+  /* 圆角/阴影/动效（r-sm 补投影 2026-09-11 全维度收敛） */
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 20px; --r-round: 999px;
+  --shadow-1: 0 1px 2px rgba(16, 32, 64, .04), 0 4px 12px rgba(16, 32, 64, .06);
+  --shadow-2: 0 8px 24px rgba(16, 32, 64, .16);
+  --shadow-primary: 0 6px 16px rgba(27, 109, 255, .32);
+  --dur-fast: 120ms; --dur: 200ms; --ease: cubic-bezier(.2, .7, .3, 1);
+  /* 间距（4px 基准） */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-7: 28px; --sp-8: 32px;
+  /* 正典衍生：警告文字色（--log-read 同源，见文件头注 ③） */
+  --c-warning-text: #C77E14;
 }
 
+/* ═══ VitePress 品牌变量映射（ramp 全部取 token）═══ */
 :root {
+  --vp-c-brand-1: var(--c-primary);
+  --vp-c-brand-2: var(--c-primary-deep);
+  --vp-c-brand-3: var(--c-primary);
+  --vp-c-brand-soft: rgba(27, 109, 255, .1);
   --vp-c-brand: var(--vp-c-brand-1);
   --vp-c-brand-light: var(--vp-c-brand-2);
   --vp-c-brand-lighter: var(--vp-c-brand-3);
-  --vp-c-brand-dark: #1558d1;
-  --vp-c-brand-darker: #0f43a3;
+  --vp-c-brand-dark: var(--c-primary-deep);
+  --vp-c-brand-darker: var(--c-primary-deep);
+  --smartble-bg-top: var(--c-bg);
+  --smartble-bg-bottom: var(--c-fill);
+  --smartble-text-main: var(--c-text);
+  --smartble-text-sub: var(--c-sub);
+  --smartble-card-line: var(--c-line);
 }
 
 .VPHome {
   background:
-    radial-gradient(circle at 0% 0%, rgba(123, 224, 255, 0.18), transparent 28%),
-    radial-gradient(circle at 100% 0%, rgba(27, 109, 255, 0.14), transparent 24%),
+    radial-gradient(circle at 0% 0%, rgba(27, 109, 255, .10), transparent 28%),
+    radial-gradient(circle at 100% 0%, rgba(27, 109, 255, .08), transparent 24%),
     linear-gradient(180deg, var(--smartble-bg-top) 0%, var(--smartble-bg-bottom) 100%);
 }
 
@@ -45,41 +81,41 @@
 
 .VPHomeHero .image-src {
   max-width: 360px;
-  border-radius: 36px;
-  box-shadow: 0 24px 60px rgba(17, 43, 78, 0.2);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-2);
 }
 
 .VPButton.brand {
-  box-shadow: 0 14px 34px rgba(27, 109, 255, 0.24);
+  box-shadow: var(--shadow-primary);
 }
 
 .smartble-home {
   max-width: 1220px;
   margin: 0 auto;
-  padding: 24px 24px 96px;
+  padding: var(--sp-6) var(--sp-6) 96px; /* 96 = 区块节奏例外 ② */
   color: var(--smartble-text-main);
 }
 
 .smartble-kicker {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  font-size: var(--fs-micro); /* TOKEN.md §2 kicker 档 */
+  font-weight: var(--fw-xbold);
+  letter-spacing: 2px; /* TOKEN.md §2：kicker 字距 +2px */
   text-transform: uppercase;
-  color: var(--vp-c-brand-1);
+  color: var(--c-primary);
 }
 
 .smartble-section-head {
   max-width: 720px;
-  margin-bottom: 28px;
+  margin-bottom: var(--sp-7);
 }
 
 .smartble-section-head h2 {
-  margin: 0 0 12px;
-  font-size: clamp(28px, 4vw, 42px);
+  margin: 0 0 var(--sp-3);
+  font-size: clamp(var(--fs-display), 4vw, 42px); /* 上限例外 ① */
   line-height: 1.08;
   letter-spacing: -0.03em;
 }
@@ -87,15 +123,15 @@
 .smartble-section-head p {
   margin: 0;
   color: var(--smartble-text-sub);
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: var(--fs-h1);
+  line-height: 1.55;
 }
 
 .smartble-signal-band {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
-  margin-bottom: 28px;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-7);
 }
 
 .smartble-signal-card,
@@ -104,53 +140,53 @@
 .smartble-download-card,
 .smartble-learning-card {
   border: 1px solid var(--smartble-card-line);
-  border-radius: 26px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(243, 249, 255, 0.94) 100%);
-  box-shadow: 0 18px 44px rgba(17, 43, 78, 0.08);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  box-shadow: var(--shadow-1);
 }
 
 .smartble-signal-card {
-  padding: 22px 22px 20px;
+  padding: var(--sp-5);
 }
 
 .smartble-signal-value {
-  font-size: 34px;
-  font-weight: 700;
+  font-size: var(--fs-display);
+  font-weight: var(--fw-bold);
   line-height: 1;
   letter-spacing: -0.03em;
 }
 
 .smartble-signal-label {
-  margin-top: 10px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--vp-c-brand-1);
+  margin-top: var(--sp-3);
+  font-size: var(--fs-cap);
+  font-weight: var(--fw-bold);
+  color: var(--c-primary);
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
 
 .smartble-signal-card p {
-  margin: 14px 0 0;
+  margin: var(--sp-3) 0 0;
   color: var(--smartble-text-sub);
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: var(--fs-body);
+  line-height: 1.55;
 }
 
 .smartble-product-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(400px, 0.95fr);
-  gap: 28px;
+  gap: var(--sp-7);
   align-items: center;
-  margin-bottom: 84px;
+  margin-bottom: 84px; /* 区块节奏例外 ② */
 }
 
 .smartble-product-copy {
-  padding: 12px 4px;
+  padding: var(--sp-3) var(--sp-1);
 }
 
 .smartble-product-copy h2 {
-  margin: 0 0 16px;
-  font-size: clamp(34px, 5vw, 58px);
+  margin: 0 0 var(--sp-4);
+  font-size: clamp(var(--fs-display), 5vw, 58px); /* 上限例外 ① */
   line-height: 0.98;
   letter-spacing: -0.05em;
 }
@@ -159,48 +195,48 @@
   margin: 0;
   max-width: 620px;
   color: var(--smartble-text-sub);
-  font-size: 17px;
-  line-height: 1.8;
+  font-size: var(--fs-h1);
+  line-height: 1.55;
 }
 
 .smartble-copy-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 24px;
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
 }
 
 .smartble-copy-grid article {
-  padding: 18px 20px;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.74);
-  border: 1px solid rgba(19, 64, 126, 0.08);
+  padding: var(--sp-5);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  border: 1px solid var(--c-line-soft);
 }
 
 .smartble-copy-grid h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-h1);
 }
 
 .smartble-copy-grid p {
   margin: 0;
   color: var(--smartble-text-sub);
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: var(--fs-body);
+  line-height: 1.55;
 }
 
 .smartble-product-visual img {
   width: 100%;
   display: block;
-  border-radius: 32px;
-  box-shadow: 0 26px 60px rgba(17, 43, 78, 0.2);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-2);
 }
 
 .smartble-flow-lane,
 .smartble-platform-matrix,
 .smartble-download-hub,
 .smartble-learning-grid {
-  margin-top: 88px;
+  margin-top: 88px; /* 区块节奏例外 ② */
 }
 
 .smartble-flow-grid,
@@ -208,7 +244,7 @@
 .smartble-download-grid,
 .smartble-learning-cards {
   display: grid;
-  gap: 18px;
+  gap: var(--sp-4);
 }
 
 .smartble-flow-grid {
@@ -216,15 +252,15 @@
 }
 
 .smartble-flow-card {
-  padding: 24px;
+  padding: var(--sp-6);
 }
 
 .smartble-flow-index {
   display: inline-flex;
-  margin-bottom: 12px;
-  color: var(--vp-c-brand-1);
-  font-size: 13px;
-  font-weight: 700;
+  margin-bottom: var(--sp-3);
+  color: var(--c-primary);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
   letter-spacing: 0.14em;
 }
 
@@ -232,8 +268,8 @@
 .smartble-platform-card h3,
 .smartble-download-card h3,
 .smartble-learning-card h3 {
-  margin: 0 0 10px;
-  font-size: 20px;
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fs-title);
   letter-spacing: -0.02em;
 }
 
@@ -243,8 +279,8 @@
 .smartble-learning-card p {
   margin: 0;
   color: var(--smartble-text-sub);
-  font-size: 14px;
-  line-height: 1.7;
+  font-size: var(--fs-body);
+  line-height: 1.55;
 }
 
 .smartble-platform-grid {
@@ -252,30 +288,29 @@
 }
 
 .smartble-platform-card {
-  padding: 24px;
+  padding: var(--sp-6);
 }
 
 .smartble-platform-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-4);
 }
 
-.smartble-platform-icon {
-  font-size: 28px;
-}
+/* 2026-09-11 清理：.smartble-platform-icon / .smartble-download-icon 为无消费者死规则（font-size 式文本图标位），
+   随 token 化一并移除；卡片图标如需回归须走 ICON_CATALOG 登记的 SVG。 */
 
 .smartble-platform-badge {
   display: inline-flex;
   align-items: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
-  font-size: 12px;
-  font-weight: 700;
+  padding: 3px 10px; /* B3 badge 规格 */
+  border-radius: var(--r-round);
+  background: var(--c-primary-weak);
+  color: var(--c-primary);
+  font-size: var(--fs-mini);
+  font-weight: var(--fw-bold);
 }
 
 .smartble-download-grid {
@@ -285,33 +320,29 @@
 .smartble-download-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 24px;
+  gap: var(--sp-3);
+  padding: var(--sp-6);
   color: inherit;
   text-decoration: none;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 
 .smartble-download-card:hover,
 .smartble-learning-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(27, 109, 255, 0.22);
-  box-shadow: 0 20px 46px rgba(17, 43, 78, 0.1);
+  border-color: rgba(27, 109, 255, .32); /* --shadow-primary 同 alpha */
+  box-shadow: var(--shadow-2);
 }
 
 .smartble-download-card--source {
-  background: linear-gradient(180deg, rgba(238, 247, 255, 0.96) 0%, rgba(244, 255, 249, 0.95) 100%);
-}
-
-.smartble-download-icon {
-  font-size: 30px;
+  background: linear-gradient(180deg, var(--c-primary-weak), var(--c-success-weak));
 }
 
 .smartble-download-cta {
   margin-top: auto;
-  color: var(--vp-c-brand-1);
-  font-size: 13px;
-  font-weight: 700;
+  color: var(--c-primary);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
   letter-spacing: 0.02em;
 }
 
@@ -321,7 +352,7 @@
 
 .smartble-learning-card {
   display: block;
-  padding: 24px;
+  padding: var(--sp-6);
   color: inherit;
   text-decoration: none;
 }
@@ -342,7 +373,7 @@
 
 @media (max-width: 640px) {
   .smartble-home {
-    padding: 16px 18px 72px;
+    padding: var(--sp-4) var(--sp-5) 72px; /* 72 = 区块节奏例外 ② */
   }
 
   .smartble-signal-band,
@@ -355,28 +386,28 @@
   }
 
   .smartble-product-copy h2 {
-    font-size: 34px;
+    font-size: var(--fs-display);
   }
 }
 
-/* PUBLIC-HONESTY-001: PREVIEW / NOT_RELEASED / BLOCKED / REFERENCE */
+/* PUBLIC-HONESTY-001: PREVIEW / NOT_RELEASED / BLOCKED / REFERENCE（语义色收编 token） */
 .smartble-status-band {
   display: grid;
-  gap: 12px;
-  margin: 8px 0 28px;
-  padding: 18px 20px;
-  border-radius: 18px;
-  border: 1px solid rgba(27, 109, 255, 0.18);
-  background: linear-gradient(180deg, rgba(238, 247, 255, 0.92), rgba(255, 255, 255, 0.88));
+  gap: var(--sp-3);
+  margin: var(--sp-2) 0 var(--sp-7);
+  padding: var(--sp-5);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--c-line);
+  background: var(--c-primary-weak);
 }
 
 .smartble-status-pill {
   display: inline-flex;
   width: fit-content;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-round);
+  font-size: var(--fs-cap);
+  font-weight: var(--fw-bold);
   letter-spacing: 0.04em;
 }
 
@@ -384,60 +415,60 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px 14px;
-  margin-bottom: 12px;
-  font-size: 18px;
+  gap: var(--sp-3) var(--sp-4);
+  margin-bottom: var(--sp-3);
+  font-size: var(--fs-h1);
 }
 
 .smartble-version-hero strong {
-  font-size: 22px;
-  font-weight: 800;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-xbold);
   color: var(--vp-c-text-1);
 }
 
 .smartble-version-hero > span {
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
   color: var(--vp-c-text-2);
 }
 
 .smartble-status-pill--preview,
 .smartble-badge--preview {
-  background: rgba(27, 109, 255, 0.12);
-  color: #1b6dff;
+  background: var(--c-primary-weak);
+  color: var(--c-primary);
 }
 
 .smartble-badge--not-released {
-  background: rgba(120, 120, 120, 0.14);
-  color: #555;
+  background: var(--c-fill);
+  color: var(--c-mut);
 }
 
 .smartble-badge--blocked {
-  background: rgba(198, 40, 40, 0.12);
-  color: #b71c1c;
+  background: var(--c-danger-weak);
+  color: var(--c-danger);
 }
 
 .smartble-badge--reference,
 .smartble-badge--unsupported {
-  background: rgba(121, 85, 72, 0.12);
-  color: #5d4037;
+  background: var(--c-warning-weak);
+  color: var(--c-warning-text); /* 正典衍生 ③ */
 }
 
 .smartble-inline-badge {
   display: inline-flex;
   align-items: center;
-  margin-right: 6px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
+  margin-right: var(--sp-2);
+  padding: 2px 9px; /* B2 AppChip 登记内距（COMPONENT_CONTRACT §B2） */
+  border-radius: var(--r-round);
+  font-size: var(--fs-mini);
+  font-weight: var(--fw-bold);
 }
 
 .smartble-download-card--disabled {
   cursor: default;
   pointer-events: none;
-  opacity: 0.92;
-  background: rgba(248, 249, 251, 0.96);
+  opacity: .92;
+  background: var(--c-bg);
   border-style: dashed;
 }
 
@@ -448,28 +479,624 @@
 }
 
 .smartble-download-cta--muted {
-  color: #777;
-  font-weight: 600;
+  color: var(--c-mut);
+  font-weight: var(--fw-med);
 }
 
 .smartble-limits {
-  margin-top: 36px;
+  margin-top: 36px; /* 区块节奏例外 ② */
 }
 
 .smartble-limits-list {
-  margin: 0 0 24px;
+  margin: 0 0 var(--sp-6);
   padding-left: 1.2em;
-  line-height: 1.7;
+  line-height: 1.55;
 }
 
 .smartble-learning-card--static {
   cursor: default;
   pointer-events: none;
   border-style: dashed;
-  opacity: 0.95;
+  opacity: .95;
 }
 
 .smartble-learning-card--static:hover {
   transform: none;
   box-shadow: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   产品化首页（2026-09-11 重设计，sb- 前缀）
+   v1.1 营销档与节奏档已收编 TOKEN.md（见文件头注 ①②）
+   ═══════════════════════════════════════════════════════════════ */
+
+/* v1.1 营销字号档 + 区块节奏档 */
+:root {
+  --fs-display-lg: clamp(36px, 5vw, 58px);
+  --fs-display-md: clamp(28px, 4vw, 42px);
+  --sec-md: 48px;
+  --sec-lg: 64px;
+  --sec-xl: 96px;
+}
+
+/* —— Hero：氛围图仅装饰（诚实红线 ④），层级与蓝色收敛 —— */
+.VPHomeHero {
+  position: relative;
+  overflow: hidden;
+}
+
+.VPHomeHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/brand/ambiance.webp') right center / cover no-repeat;
+  opacity: .14;
+  pointer-events: none;
+}
+
+.VPHomeHero .container {
+  position: relative;
+}
+
+.VPHomeHero .name {
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-xbold);
+  letter-spacing: .02em;
+  color: var(--c-primary);
+}
+
+.VPHomeHero .text {
+  font-size: var(--fs-display-lg);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  color: var(--c-text);
+}
+
+.VPHomeHero .tagline {
+  font-size: var(--fs-h1);
+  line-height: 1.55;
+  color: var(--c-sub);
+}
+
+.sb-hero-badge {
+  margin: var(--sp-4) 0 0;
+  font-size: var(--fs-cap);
+  font-weight: var(--fw-med);
+  letter-spacing: .04em;
+  color: var(--c-mut);
+}
+
+.sb-hero-badge a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* —— 首页区块骨架 —— */
+.sb-home {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 var(--sp-6);
+  color: var(--c-text);
+}
+
+.sb-section {
+  margin-top: var(--sec-xl);
+}
+
+.sb-section:first-child {
+  margin-top: var(--sec-md);
+}
+
+.sb-section-head {
+  max-width: 720px;
+  margin-bottom: var(--sp-7);
+}
+
+.sb-section-head h2 {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fs-display-md);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--c-text);
+}
+
+.sb-section-head p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-h1);
+  line-height: 1.55;
+}
+
+.sb-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-xbold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--c-primary);
+}
+
+/* —— #get 获取区：微信码主卡 + 平台获取卡（真实路径，无假下载） —— */
+.sb-get-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, .95fr) repeat(3, minmax(0, 1fr));
+  gap: var(--sp-4);
+  align-items: stretch;
+}
+
+.sb-get-qr-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--sp-7) var(--sp-6);
+  border-radius: var(--r-xl);
+  border: 1px solid rgba(27, 109, 255, .30);
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--c-primary-weak) 100%);
+  box-shadow: var(--shadow-1);
+}
+
+.sb-qr-img {
+  width: 172px;
+  height: 172px;
+  padding: 6px;
+  border-radius: var(--r-md);
+  background: #FFFFFF;
+}
+
+.sb-get-qr-card h3 {
+  margin: var(--sp-4) 0 var(--sp-2);
+  font-size: var(--fs-title);
+  letter-spacing: -0.02em;
+}
+
+.sb-get-qr-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+.sb-get-qr-card .sb-get-hint {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-cap);
+  color: var(--c-mut);
+}
+
+.sb-get-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-6);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  box-shadow: var(--shadow-1);
+  color: inherit;
+  text-decoration: none;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.sb-get-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(27, 109, 255, .32);
+  box-shadow: var(--shadow-2);
+}
+
+.sb-get-tag {
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-bold);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--c-mut);
+}
+
+.sb-get-card h3 {
+  margin: var(--sp-2) 0 var(--sp-3);
+  font-size: var(--fs-title);
+  letter-spacing: -0.02em;
+}
+
+.sb-get-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+.sb-get-cta {
+  margin-top: auto;
+  padding-top: var(--sp-5);
+  color: var(--c-primary);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+}
+
+/* —— 能力区 6 卡 —— */
+.sb-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.sb-feature-card {
+  padding: var(--sp-6);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  box-shadow: var(--shadow-1);
+}
+
+.sb-feature-card h3 {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-h1);
+  letter-spacing: -0.02em;
+}
+
+.sb-feature-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+.sb-feature-note {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-cap);
+  color: var(--c-mut);
+}
+
+/* —— 工作流四段 —— */
+.sb-flow-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.sb-flow-card {
+  padding: var(--sp-6);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  box-shadow: var(--shadow-1);
+}
+
+.sb-flow-index {
+  display: inline-flex;
+  margin-bottom: var(--sp-3);
+  color: var(--c-primary);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: .14em;
+}
+
+.sb-flow-card h3 {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-h1);
+  letter-spacing: -0.02em;
+}
+
+.sb-flow-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+/* —— 平台家族卡（多平台多框架） —— */
+.sb-platform-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.sb-platform-card {
+  display: block;
+  padding: var(--sp-6);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  box-shadow: var(--shadow-1);
+  color: inherit;
+  text-decoration: none;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+a.sb-platform-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(27, 109, 255, .32);
+  box-shadow: var(--shadow-2);
+}
+
+a.sb-feature-card--link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+a.sb-feature-card--link:hover {
+  transform: translateY(-4px);
+  border-color: rgba(27, 109, 255, .32);
+  box-shadow: var(--shadow-2);
+}
+
+/* —— 下载矩阵 —— */
+.sb-dl-wrap {
+  margin-top: var(--sp-6);
+  overflow-x: auto;
+  border-radius: var(--r-lg);
+}
+
+.sb-dl-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--c-card);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.sb-dl-table th,
+.sb-dl-table td {
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--c-line-soft);
+  font-size: var(--fs-body);
+  text-align: left;
+  vertical-align: top;
+}
+
+.sb-dl-table th {
+  background: var(--c-fill);
+  font-weight: var(--fw-bold);
+  color: var(--c-sub);
+}
+
+.sb-dl-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.sb-dl-table td:first-child {
+  font-weight: var(--fw-med);
+}
+
+.sb-dl-wait,
+.sb-dl-ok {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--sp-3);
+  border-radius: 999px;
+  font-size: var(--fs-cap);
+  font-weight: var(--fw-med);
+  white-space: nowrap;
+}
+
+.sb-dl-wait {
+  border: 1px dashed var(--c-line);
+  color: var(--c-mut);
+}
+
+.sb-dl-ok {
+  border: 1px solid rgba(27, 109, 255, .32);
+  color: var(--c-primary);
+}
+
+.sb-dl-table a {
+  color: var(--c-sub);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* —— 界面一览分组 —— */
+.sb-gallery-h3 {
+  margin: var(--sp-6) 0 var(--sp-4);
+  font-size: var(--fs-title);
+  letter-spacing: -0.01em;
+}
+
+.sb-gallery-grid--duo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.sb-platform-card h3 {
+  margin: var(--sp-2) 0 var(--sp-3);
+  font-size: var(--fs-title);
+  letter-spacing: -0.02em;
+}
+
+.sb-platform-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+.sb-platform-status {
+  display: inline-flex;
+  font-size: var(--fs-cap);
+  font-weight: var(--fw-med);
+  color: var(--c-mut);
+}
+
+.sb-platform-footnote {
+  margin: var(--sp-5) 0 0;
+  font-size: var(--fs-cap);
+  color: var(--c-mut);
+}
+
+.sb-platform-footnote a {
+  color: var(--c-sub);
+}
+
+/* —— Gallery —— */
+.sb-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.sb-gallery-grid figure {
+  margin: 0;
+}
+
+.sb-gallery-grid img {
+  width: 100%;
+  display: block;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+}
+
+.sb-gallery-grid figcaption {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-cap);
+  color: var(--c-mut);
+  text-align: center;
+}
+
+/* —— 开源与参与 —— */
+.sb-oss-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.sb-oss-card {
+  display: block;
+  padding: var(--sp-6);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  box-shadow: var(--shadow-1);
+  color: inherit;
+  text-decoration: none;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.sb-oss-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(27, 109, 255, .32);
+  box-shadow: var(--shadow-2);
+}
+
+.sb-oss-card h3 {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-h1);
+  letter-spacing: -0.02em;
+}
+
+.sb-oss-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+.sb-oss-card--static {
+  cursor: default;
+  border-style: dashed;
+}
+
+.sb-oss-card--static:hover {
+  transform: none;
+  box-shadow: var(--shadow-1);
+  border-color: var(--c-line);
+}
+
+/* —— 全站页脚 —— */
+.sb-footer {
+  margin-top: var(--sec-xl);
+  border-top: 1px solid var(--c-line);
+  background: var(--c-fill);
+}
+
+.sb-footer-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: var(--sp-7) var(--sp-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5) var(--sp-8);
+}
+
+.sb-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-xbold);
+  letter-spacing: -0.01em;
+  color: var(--c-text);
+}
+
+.sb-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  font-size: var(--fs-cap);
+}
+
+.sb-footer-nav a {
+  color: var(--c-sub);
+  text-decoration: none;
+}
+
+.sb-footer-nav a:hover {
+  color: var(--c-primary);
+}
+
+.sb-footer-status {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--fs-cap);
+  line-height: 1.55;
+  color: var(--c-mut);
+}
+
+.sb-footer-status a {
+  color: var(--c-sub);
+}
+
+/* —— 响应式 —— */
+@media (max-width: 1100px) {
+  .sb-get-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sb-feature-grid,
+  .sb-flow-grid,
+  .sb-platform-grid,
+  .sb-oss-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sb-gallery-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .sb-home {
+    padding: 0 var(--sp-5);
+  }
+
+  .sb-get-grid,
+  .sb-feature-grid,
+  .sb-flow-grid,
+  .sb-platform-grid,
+  .sb-gallery-grid--duo,
+  .sb-oss-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sb-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

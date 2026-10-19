@@ -15,9 +15,12 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult as LeScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.ParcelUuid
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
 import android.util.Log
 import com.smartble.core.model.BleCharacteristic
@@ -27,6 +30,7 @@ import com.smartble.core.model.ConnectionState
 import com.smartble.core.model.Property
 import com.smartble.core.model.ScanRecord
 import com.smartble.core.model.ScanResult
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,7 +38,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import java.util.UUID
 
 /**
@@ -52,8 +58,11 @@ class BleManager private constructor(private val context: Context) {
         private const val AUTO_STOP_SCAN_DURATION_MS = 5000L
 
         // Auto reconnect policy
-        private const val AUTO_RECONNECT_DELAY_MS = 2000L
         private const val MAX_AUTO_RECONNECT_ATTEMPTS = 3
+
+        // 常规连接也统一协商的 MTU（WIN-AAND-006：不协商则通知载荷被截到 20 字节；
+        // 与 OTA 流程、F-AND（FBP 自动协商 247）对齐）
+        const val REQUESTED_MTU = 247
 
         @Volatile
         private var instance: BleManager? = null
@@ -68,20 +77,99 @@ class BleManager private constructor(private val context: Context) {
     private val bluetoothManager: BluetoothManager =
         context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     private val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
-    private val bluetoothLeScanner: BluetoothLeScanner? = bluetoothAdapter?.bluetoothLeScanner
+    private val bluetoothLeScanner: BluetoothLeScanner?
+        get() = if (hasPermission(Manifest.permission.BLUETOOTH_SCAN) && hasPermission(Manifest.permission.BLUETOOTH_CONNECT))
+            bluetoothAdapter?.bluetoothLeScanner else null
 
-    private val gattConnections = mutableMapOf<String, BluetoothGatt>()
+    private fun hasPermission(permission: String): Boolean = Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
+        context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+
+    private val gattConnections = java.util.concurrent.ConcurrentHashMap<String, BluetoothGatt>()
+    private val connectTimeouts = java.util.concurrent.ConcurrentHashMap<String, Runnable>()
+    private val operationQueues = java.util.concurrent.ConcurrentHashMap<String, GattOperationQueue>()
+    private val operationTimeouts = java.util.concurrent.ConcurrentHashMap<String, Runnable>()
+
+    private fun owns(gatt: BluetoothGatt): Boolean = gattConnections[gatt.device.address] === gatt
+
+    private val _operationFailures = MutableSharedFlow<GattFailureEvent>(extraBufferCapacity = 64)
+    val operationFailures: Flow<GattFailureEvent> = _operationFailures.asSharedFlow()
+
+    private fun failOperation(deviceId: String, message: String) {
+        _operationFailures.tryEmit(GattFailureEvent(deviceId, message))
+        Log.e(TAG, message)
+    }
+
+    private fun operationKey(kind: String, service: String, characteristic: String) =
+        "$kind:${service.lowercase()}:${characteristic.lowercase()}"
+
+    private fun completeOperation(gatt: BluetoothGatt, key: String) {
+        val queue = operationQueues[gatt.device.address] ?: return
+        if (queue.activeKey != key) return
+        operationTimeouts.remove(gatt.device.address)?.let { reconnectHandler.removeCallbacks(it) }
+        queue.complete(key)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun enqueueOperation(gatt: BluetoothGatt, key: String, timeoutMs: Long, action: () -> Boolean): Boolean {
+        val deviceId = gatt.device.address
+        val queue = operationQueues.getOrPut(deviceId) { GattOperationQueue() }
+        return queue.submit(key) {
+            if (!owns(gatt)) return@submit false
+            val timer = Runnable {
+                if (owns(gatt)) {
+                    failOperation(deviceId, "GATT 操作超时: $key")
+                    // Android callbacks have no request ID. Retire the connection so
+                    // a late receipt cannot complete another write to the same UUID.
+                    retireConnection(gatt)
+                    if (autoReconnectEnabled.contains(deviceId)) scheduleAutoReconnect(deviceId)
+                }
+            }
+            operationTimeouts[deviceId] = timer
+            reconnectHandler.postDelayed(timer, timeoutMs)
+            val submitted = action()
+            if (!submitted) {
+                operationTimeouts.remove(deviceId)
+                reconnectHandler.removeCallbacks(timer)
+                failOperation(deviceId, "GATT 操作提交失败: $key")
+            }
+            submitted
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun retireConnection(gatt: BluetoothGatt) {
+        val deviceId = gatt.device.address
+        if (!gattConnections.remove(deviceId, gatt)) return
+        connectTimeouts.remove(deviceId)?.let { reconnectHandler.removeCallbacks(it) }
+        operationTimeouts.remove(deviceId)?.let { reconnectHandler.removeCallbacks(it) }
+        operationQueues.remove(deviceId)?.clear()
+        gatt.disconnect()
+        gatt.close()
+        _negotiatedMtus.update { it - deviceId }
+        updateConnectionState(deviceId, ConnectionState.Disconnected)
+        updateServices(deviceId, emptyList())
+    }
 
     // Auto-stop scan timer - aligned with UniApp behavior
     private val autoStopHandler = Handler(Looper.getMainLooper())
+
+    // 扫描回调线程（20260927 滚动卡顿修复第二刀）：BluetoothLeScanner 的回调
+    // 固定投递到主线程 Looper（startScan 无 Handler 变体）——办公环境
+    // ALL_MATCHES+AGGRESSIVE 下 ~57 条/秒的回调体（adv hex 拼串、ScanRecord/
+    // Map 重建、全列表快照 toList）全部挤占主线程，与滚动帧互斥。回调对象里
+    // 只做 post，重活转发到专用 HandlerThread；单例进程生命周期常驻（release
+    // 后单例仍存活，不 quit）；UI 刷新频率由 DeviceListViewModel 的
+    // sample(400ms) 节流兜底。
+    private val scanCallbackThread = HandlerThread("ble-scan-callbacks").apply { start() }
+    private val scanCallbackHandler = Handler(scanCallbackThread.looper)
     private var autoStopRunnable: Runnable? = null
 
     // Auto reconnect state
     private val reconnectHandler = Handler(Looper.getMainLooper())
-    private val reconnectRunnables = mutableMapOf<String, Runnable>()
-    private val reconnectAttempts = mutableMapOf<String, Int>()
-    private val autoReconnectEnabled = mutableSetOf<String>()
-    private val userInitiatedDisconnects = mutableSetOf<String>()
+    private val reconnectRunnables = java.util.concurrent.ConcurrentHashMap<String, Runnable>()
+    private val reconnectAttempts = java.util.concurrent.ConcurrentHashMap<String, Int>()
+    private val autoReconnectEnabled = java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
+    private val userInitiatedDisconnects = java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
 
     // State flows
     private val _scanResults = MutableSharedFlow<List<ScanResult>>(replay = 1)
@@ -96,11 +184,31 @@ class BleManager private constructor(private val context: Context) {
     private val _servicesByDevice = MutableStateFlow<Map<String, List<BleService>>>(emptyMap())
     val servicesByDevice: Flow<Map<String, List<BleService>>> = _servicesByDevice.asStateFlow()
 
-    private val _characteristicChanges = MutableSharedFlow<CharacteristicChangeEvent>()
+    // WIN-AAND-008：无缓冲 SharedFlow 的 tryEmit 在采集方未就绪/忙碌时静默丢事件
+    // （栈层 89 次 onCharacteristicChanged 而 collect 0 次实证）——加缓冲 + 丢最旧。
+    private val _characteristicChanges = MutableSharedFlow<CharacteristicChangeEvent>(
+        replay = 0,
+        extraBufferCapacity = 64,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val characteristicChanges: Flow<CharacteristicChangeEvent> = _characteristicChanges.asSharedFlow()
 
+    // 20260927 真机首曝（EMUI）：连续两个 writeDescriptor 不等回调，第二个被
+    // Android GATT 串行队列拒绝（返回 false 且永远没有 onDescriptorWrite）——
+    // 订阅方必须等到本事件落地再发下一个 descriptor 写。
+    private val _descriptorWriteEvents = MutableSharedFlow<DescriptorWriteEvent>(
+        replay = 0,
+        extraBufferCapacity = 16,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+    val descriptorWriteEvents: Flow<DescriptorWriteEvent> = _descriptorWriteEvents.asSharedFlow()
+
+    // 协商后的 ATT MTU（WIN-AAND-006 记录；配网分帧按它切 chunk——缺失时保守 23）
+    private val _negotiatedMtus = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val negotiatedMtus: Flow<Map<String, Int>> = _negotiatedMtus.asStateFlow()
+
     // Scan result storage
-    private val scanResultsMap = mutableMapOf<String, ScanResult>()
+    private val scanResultsMap = java.util.concurrent.ConcurrentHashMap<String, ScanResult>()
 
     /**
      * 获取蓝牙状态
@@ -108,6 +216,7 @@ class BleManager private constructor(private val context: Context) {
     val bluetoothState: BluetoothState
         get() = when {
             bluetoothAdapter == null -> BluetoothState.Unavailable
+            !hasPermission(Manifest.permission.BLUETOOTH_CONNECT) -> BluetoothState.Unauthorized
             bluetoothAdapter.isEnabled -> BluetoothState.On
             else -> BluetoothState.Off
         }
@@ -235,6 +344,7 @@ class BleManager private constructor(private val context: Context) {
             else -> {}
         }
 
+        stopScan()
         val device = bluetoothAdapter?.getRemoteDevice(deviceId) ?: run {
             Log.e(TAG, "Device not found: $deviceId")
             return false
@@ -253,6 +363,15 @@ class BleManager private constructor(private val context: Context) {
             device.connectGatt(context, false, gattCallback)
         }
         gattConnections[deviceId] = gatt
+        val timeout = Runnable {
+            if (owns(gatt) && currentConnectionState(deviceId) == ConnectionState.Connecting) {
+                failOperation(deviceId, "连接超时（10s）")
+                retireConnection(gatt)
+                if (autoReconnectEnabled.contains(deviceId)) scheduleAutoReconnect(deviceId)
+            }
+        }
+        connectTimeouts[deviceId] = timeout
+        reconnectHandler.postDelayed(timeout, 10_000L)
 
         Log.i(TAG, "Connecting to ${device.address}")
         return true
@@ -265,9 +384,7 @@ class BleManager private constructor(private val context: Context) {
     fun disconnect(deviceId: String) {
         userInitiatedDisconnects.add(deviceId)
         disableAutoReconnect(deviceId)
-        gattConnections[deviceId]?.disconnect()
-        gattConnections[deviceId]?.close()
-        gattConnections.remove(deviceId)
+        gattConnections[deviceId]?.let { retireConnection(it) }
         updateConnectionState(deviceId, ConnectionState.Disconnected)
         updateServices(deviceId, emptyList())
     }
@@ -286,7 +403,7 @@ class BleManager private constructor(private val context: Context) {
      */
     @SuppressLint("MissingPermission")
     fun disconnectAll() {
-        val deviceIds = connectedDeviceIds.toList()
+        val deviceIds = gattConnections.keys.toList()
         for (deviceId in deviceIds) {
             disconnect(deviceId)
         }
@@ -296,7 +413,18 @@ class BleManager private constructor(private val context: Context) {
      */
     @SuppressLint("MissingPermission")
     fun discoverServices(deviceId: String): Boolean {
-        return gattConnections[deviceId]?.discoverServices() ?: false
+        val gatt = gattConnections[deviceId] ?: return false
+        return enqueueOperation(gatt, "services", 5000L) { gatt.discoverServices() }
+    }
+
+    /**
+     * 幂等服务发现：已有服务表时跳过（避免 onMtuChanged 与 UI 层重复触发
+     * 造成整表重放，WIN-AAND-007 的翻倍/重置链路之一）
+     */
+    @SuppressLint("MissingPermission")
+    private fun discoverServicesOnce(deviceId: String): Boolean {
+        if (!_servicesByDevice.value[deviceId].isNullOrEmpty()) return true
+        return discoverServices(deviceId)
     }
 
     /**
@@ -307,7 +435,9 @@ class BleManager private constructor(private val context: Context) {
         val gatt = gattConnections[deviceId] ?: return false
         val characteristic = getCharacteristic(gatt, serviceUuid, characteristicUuid) ?: return false
 
-        return gatt.readCharacteristic(characteristic)
+        return enqueueOperation(gatt, operationKey("read", serviceUuid, characteristicUuid), 3000L) {
+            gatt.readCharacteristic(characteristic)
+        }
     }
 
     /**
@@ -319,21 +449,17 @@ class BleManager private constructor(private val context: Context) {
         val gatt = gattConnections[deviceId] ?: return false
         val characteristic = getCharacteristic(gatt, serviceUuid, characteristicUuid) ?: return false
 
-        characteristic.value = value
-
+        val payload = value.copyOf()
         val writeType = when {
-            characteristic.properties and BluetoothGattCharacteristic.PROPERTY_WRITE != 0 -> {
-                BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-            }
-            characteristic.properties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE != 0 -> {
-                BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
-            }
+            characteristic.properties and BluetoothGattCharacteristic.PROPERTY_WRITE != 0 -> BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+            characteristic.properties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE != 0 -> BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
             else -> return false
         }
-
-        characteristic.writeType = writeType
-
-        return gatt.writeCharacteristic(characteristic)
+        return enqueueOperation(gatt, operationKey("write", serviceUuid, characteristicUuid), 5000L) {
+            characteristic.value = payload
+            characteristic.writeType = writeType
+            gatt.writeCharacteristic(characteristic)
+        }
     }
 
     /**
@@ -345,19 +471,54 @@ class BleManager private constructor(private val context: Context) {
         val gatt = gattConnections[deviceId] ?: return false
         val characteristic = getCharacteristic(gatt, serviceUuid, characteristicUuid) ?: return false
 
-        if (!gatt.setCharacteristicNotification(characteristic, enable)) {
-            return false
-        }
-
-        // 写入 CCC Descriptor
         val descriptor = characteristic.getDescriptor(CCC_DESCRIPTOR_UUID) ?: return false
-        descriptor.value = if (enable) {
-            BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-        } else {
-            BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+        val cccd = when {
+            !enable -> BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+            characteristic.properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0 -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+            characteristic.properties and BluetoothGattCharacteristic.PROPERTY_INDICATE != 0 -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+            else -> return false
         }
+        return enqueueOperation(gatt, operationKey("notify", serviceUuid, characteristicUuid), 5000L) {
+            if (!gatt.setCharacteristicNotification(characteristic, enable)) return@enqueueOperation false
+            descriptor.value = cccd
+            gatt.writeDescriptor(descriptor)
+        }
+    }
 
-        return gatt.writeDescriptor(descriptor)
+    @SuppressLint("MissingPermission")
+    suspend fun setNotificationAwait(
+        deviceId: String, serviceUuid: String, characteristicUuid: String,
+        enable: Boolean, timeoutMs: Long = 5000,
+    ): Boolean {
+        val previous = _servicesByDevice.value[deviceId]
+            ?.find { it.uuid.equals(serviceUuid, ignoreCase = true) }
+            ?.characteristics?.find { it.uuid.equals(characteristicUuid, ignoreCase = true) }
+            ?.isNotifying ?: false
+        val success = awaitGattAcknowledgement(
+            descriptorWriteEvents.filter {
+                it.deviceId == deviceId &&
+                    it.serviceUuid.equals(serviceUuid, ignoreCase = true) &&
+                    it.characteristicUuid.equals(characteristicUuid, ignoreCase = true)
+            }.map { it.status == BluetoothGatt.GATT_SUCCESS },
+            timeoutMs,
+        ) { setNotification(deviceId, serviceUuid, characteristicUuid, enable) }
+        if (success) {
+            val services = _servicesByDevice.value[deviceId] ?: return false
+            updateServices(deviceId, services.map { service ->
+                if (!service.uuid.equals(serviceUuid, ignoreCase = true)) service
+                else service.copy(characteristics = service.characteristics.map { characteristic ->
+                    if (characteristic.uuid.equals(characteristicUuid, ignoreCase = true))
+                        characteristic.copyWithNotifying(enable) else characteristic
+                })
+            })
+        } else {
+            val gatt = gattConnections[deviceId]
+            val characteristic = gatt?.let { getCharacteristic(it, serviceUuid, characteristicUuid) }
+            if (gatt != null && characteristic != null) {
+                gatt.setCharacteristicNotification(characteristic, previous)
+            }
+        }
+        return success
     }
 
     /**
@@ -365,14 +526,15 @@ class BleManager private constructor(private val context: Context) {
      */
     @SuppressLint("MissingPermission")
     fun readRemoteRssi(deviceId: String): Boolean {
-        return gattConnections[deviceId]?.readRemoteRssi() ?: false
+        val gatt = gattConnections[deviceId] ?: return false
+        return enqueueOperation(gatt, "rssi", 3000L) { gatt.readRemoteRssi() }
     }
 
     @SuppressLint("MissingPermission")
     fun requestMtu(deviceId: String, mtu: Int): Boolean {
         val gatt = gattConnections[deviceId] ?: return false
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            gatt.requestMtu(mtu)
+            enqueueOperation(gatt, "mtu", 5000L) { gatt.requestMtu(mtu) }
         } else {
             false
         }
@@ -399,18 +561,21 @@ class BleManager private constructor(private val context: Context) {
             .distinctUntilChanged()
     }
 
+    /** 设备当前协商 MTU；未协商/未知返回保守默认 23（ATT 规范下限，配网分帧按此切 chunk） */
+    fun currentMtu(deviceId: String): Int = _negotiatedMtus.value[deviceId] ?: 23
+
     fun currentConnectionState(deviceId: String): ConnectionState {
         return _connectionStates.value[deviceId] ?: ConnectionState.Disconnected
     }
 
     private fun updateConnectionState(deviceId: String, state: ConnectionState) {
-        _connectionStates.value = _connectionStates.value.toMutableMap().apply {
+        _connectionStates.update { current -> current.toMutableMap().apply {
             if (state == ConnectionState.Disconnected) {
                 remove(deviceId)
             } else {
                 this[deviceId] = state
             }
-        }
+        } }
 
         scanResultsMap[deviceId]?.let { existing ->
             scanResultsMap[deviceId] = existing.copy(
@@ -421,16 +586,16 @@ class BleManager private constructor(private val context: Context) {
     }
 
     private fun updateServices(deviceId: String, services: List<BleService>) {
-        _servicesByDevice.value = _servicesByDevice.value.toMutableMap().apply {
+        _servicesByDevice.update { current -> current.toMutableMap().apply {
             if (services.isEmpty()) {
                 remove(deviceId)
             } else {
                 this[deviceId] = services
             }
-        }
+        } }
     }
 
-    private fun scheduleAutoReconnect(deviceId: String) {
+    @Synchronized private fun scheduleAutoReconnect(deviceId: String) {
         val attempts = reconnectAttempts[deviceId] ?: 0
         if (!autoReconnectEnabled.contains(deviceId) || attempts >= MAX_AUTO_RECONNECT_ATTEMPTS) {
             Log.w(TAG, "Auto reconnect skipped: device=$deviceId, attempts=$attempts")
@@ -442,13 +607,15 @@ class BleManager private constructor(private val context: Context) {
         reconnectAttempts[deviceId] = attempt
         val reconnectRunnable = Runnable {
             Log.i(TAG, "Auto reconnect attempt $attempt/$MAX_AUTO_RECONNECT_ATTEMPTS for $deviceId")
-            connectInternal(deviceId)
+            if (!connectInternal(deviceId) && autoReconnectEnabled.contains(deviceId)) {
+                scheduleAutoReconnect(deviceId)
+            }
         }
         reconnectRunnables[deviceId] = reconnectRunnable
-        reconnectHandler.postDelayed(reconnectRunnable, AUTO_RECONNECT_DELAY_MS)
+        reconnectHandler.postDelayed(reconnectRunnable, reconnectDelayMillis(attempt))
     }
 
-    private fun cancelAutoReconnect(deviceId: String) {
+    @Synchronized private fun cancelAutoReconnect(deviceId: String) {
         reconnectRunnables.remove(deviceId)?.let {
             reconnectHandler.removeCallbacks(it)
         }
@@ -463,31 +630,9 @@ class BleManager private constructor(private val context: Context) {
 
     // Scan callback
     private val scanCallback = object : ScanCallback() {
-        @SuppressLint("MissingPermission")
         override fun onScanResult(callbackType: Int, result: LeScanResult) {
-            val device = result.device
-            val scanRecord = result.scanRecord
-
-            val bleDevice = BleDevice(
-                deviceId = device.address,
-                name = device.name,
-                rssi = result.rssi,
-                state = currentConnectionState(device.address),
-                scanRecord = ScanRecord(
-                    serviceUuids = scanRecord?.serviceUuids?.map { it.uuid.toString() },
-                    manufacturerData = null,  // Simplified for now
-                    serviceData = scanRecord?.serviceData?.mapKeys { it.key.toString() },
-                    txPowerLevel = scanRecord?.txPowerLevel,
-                ),
-            )
-
-            val scanResult = ScanResult(
-                device = bleDevice,
-                timestampNanos = result.timestampNanos,
-            )
-
-            scanResultsMap[device.address] = scanResult
-            _scanResults.tryEmit(scanResultsMap.values.toList())
+            // 回调本身在主线程，重活转发（见 scanCallbackThread 注释）
+            scanCallbackHandler.post { handleScanResult(result) }
         }
 
         override fun onScanFailed(errorCode: Int) {
@@ -496,25 +641,76 @@ class BleManager private constructor(private val context: Context) {
         }
 
         override fun onBatchScanResults(results: List<LeScanResult>) {
-            results.forEach { onScanResult(ScanSettings.CALLBACK_TYPE_ALL_MATCHES, it) }
+            scanCallbackHandler.post { results.forEach { handleScanResult(it) } }
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun handleScanResult(result: LeScanResult) {
+        val device = result.device
+        val scanRecord = result.scanRecord
+        // 联调旁证（20260921 跨端广播验证）：逐条扫见记录进 logcat（含 adv 原始字节
+        // hex，验证对端厂商块保真度），绕开 EMUI uiautomator Compose 文本 bounds=[0,0] 变体（F013 坑位账）。
+        // 20260924：DEBUG→INFO——EMUI/HyperOS 默认丢弃第三方 app 的 Log.d，INFO 级联调才可见。
+        val advHex = scanRecord?.bytes?.joinToString("") { "%02x".format(it) } ?: "-"
+        Log.i(TAG, "onScanResult: ${device.address} name=${device.name} rssi=${result.rssi} adv=$advHex")
+
+        val bleDevice = BleDevice(
+            deviceId = device.address,
+            name = device.name,
+            rssi = result.rssi,
+            state = currentConnectionState(device.address),
+            scanRecord = ScanRecord(
+                serviceUuids = scanRecord?.serviceUuids?.map { it.uuid.toString() },
+                manufacturerData = scanRecord?.manufacturerSpecificData?.let { sparse ->
+                    if (sparse.size() == 0) null else buildMap {
+                        for (index in 0 until sparse.size()) put(sparse.keyAt(index), sparse.valueAt(index))
+                    }
+                },
+                serviceData = scanRecord?.serviceData?.mapKeys { it.key.toString() },
+                txPowerLevel = scanRecord?.txPowerLevel,
+                rawBytes = scanRecord?.bytes,
+            ),
+        )
+
+        val scanResult = ScanResult(
+            device = bleDevice,
+            timestampNanos = result.timestampNanos,
+        )
+
+        scanResultsMap[device.address] = scanResult
+        _scanResults.tryEmit(scanResultsMap.values.toList())
     }
 
     // GATT callback
     private val gattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+            if (!owns(gatt)) return
             val device = gatt.device
+            if (newState == BluetoothGatt.STATE_CONNECTED || newState == BluetoothGatt.STATE_DISCONNECTED) {
+                connectTimeouts.remove(device.address)?.let { reconnectHandler.removeCallbacks(it) }
+            }
             Log.d(TAG, "onConnectionStateChange: ${device.address}, status=$status, newState=$newState")
 
             when (newState) {
                 BluetoothGatt.STATE_CONNECTED -> {
+                    if (status != BluetoothGatt.GATT_SUCCESS) {
+                        retireConnection(gatt)
+                        if (autoReconnectEnabled.contains(device.address)) scheduleAutoReconnect(device.address)
+                        return
+                    }
                     cancelAutoReconnect(device.address)
                     reconnectAttempts[device.address] = 0
                     userInitiatedDisconnects.remove(device.address)
                     gattConnections[device.address] = gatt
                     updateConnectionState(device.address, ConnectionState.Connected)
-                    // 自动发现服务
-                    discoverServices(device.address)
+                    // WIN-AAND-006：连接即协商 MTU 247，协商完成（onMtuChanged）
+                    // 后再发现服务——并发 GATT 操作会互斥失败，顺序固定为
+                    // requestMtu → onMtuChanged → discoverServices。
+                    val requested = requestMtu(device.address, REQUESTED_MTU)
+                    if (!requested) {
+                        discoverServicesOnce(device.address)
+                    }
                 }
                 BluetoothGatt.STATE_DISCONNECTED -> {
                     val deviceId = device.address
@@ -523,11 +719,7 @@ class BleManager private constructor(private val context: Context) {
                         autoReconnectEnabled.contains(deviceId) &&
                         attempts < MAX_AUTO_RECONNECT_ATTEMPTS
 
-                    gatt.close()
-                    gattConnections.remove(deviceId)
-
-                    updateConnectionState(deviceId, ConnectionState.Disconnected)
-                    updateServices(deviceId, emptyList())
+                    retireConnection(gatt)
 
                     if (shouldReconnect) {
                         Log.w(
@@ -554,6 +746,7 @@ class BleManager private constructor(private val context: Context) {
 
         @SuppressLint("MissingPermission")
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+            if (!owns(gatt)) return
             Log.d(TAG, "onServicesDiscovered: status=$status")
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
@@ -565,6 +758,34 @@ class BleManager private constructor(private val context: Context) {
             } else {
                 Log.e(TAG, "Service discovery failed: $status")
             }
+            completeOperation(gatt, "services")
+        }
+
+        @SuppressLint("MissingPermission")
+        override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
+            if (!owns(gatt)) return
+            Log.d(TAG, "onMtuChanged: mtu=$mtu, status=$status")
+            if (status == BluetoothGatt.GATT_SUCCESS && mtu > 0) {
+                _negotiatedMtus.update { it + (gatt.device.address to mtu) }
+            }
+            // WIN-AAND-006：MTU 协商完成后进入服务发现（连接路径唯一入口，
+            // requestMtu 失败的兜底分支与 OTA 的二次 requestMtu 都汇到这里）
+            if (currentConnectionState(gatt.device.address) == ConnectionState.Connected) {
+                discoverServicesOnce(gatt.device.address)
+            }
+            completeOperation(gatt, "mtu")
+        }
+
+        @SuppressLint("MissingPermission")
+        @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+        override fun onCharacteristicRead(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            status: Int
+        ) {
+            // API<33（本机实测 TAS-AN00=API31）框架只调本签名，value 自 characteristic.value；
+            // 转发到新签名统一发射，否则读值在这类设备上结构性不可见
+            onCharacteristicRead(gatt, characteristic, characteristic.value ?: ByteArray(0), status)
         }
 
         @SuppressLint("MissingPermission")
@@ -574,6 +795,7 @@ class BleManager private constructor(private val context: Context) {
             value: ByteArray,
             status: Int
         ) {
+            if (!owns(gatt)) return
             Log.d(TAG, "onCharacteristicRead: ${characteristic.uuid}, status=$status")
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
@@ -583,7 +805,20 @@ class BleManager private constructor(private val context: Context) {
                     characteristic.uuid.toString(),
                     value
                 )
+                // WIN-AAND-004：读取结果必须进可观察流（此前只写内存模型，
+                // UI/日志层结构性看不到读值）
+                _characteristicChanges.tryEmit(
+                    CharacteristicChangeEvent(
+                        deviceId = gatt.device.address,
+                        serviceUuid = characteristic.service.uuid.toString(),
+                        characteristicUuid = characteristic.uuid.toString(),
+                        value = value,
+                        kind = CharacteristicChangeKind.Read
+                    )
+                )
             }
+            if (status != BluetoothGatt.GATT_SUCCESS) failOperation(gatt.device.address, "读取失败: GATT status=$status")
+            completeOperation(gatt, operationKey("read", characteristic.service.uuid.toString(), characteristic.uuid.toString()))
         }
 
         @SuppressLint("MissingPermission")
@@ -592,7 +827,34 @@ class BleManager private constructor(private val context: Context) {
             characteristic: BluetoothGattCharacteristic,
             status: Int
         ) {
+            if (!owns(gatt)) return
             Log.d(TAG, "onCharacteristicWrite: ${characteristic.uuid}, status=$status")
+            // 写完成进可观察流（配网分帧写需要逐帧确认；GATT_SUCCESS 携带所写字节）
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                @Suppress("DEPRECATION")
+                val written = characteristic.value ?: ByteArray(0)
+                _characteristicChanges.tryEmit(
+                    CharacteristicChangeEvent(
+                        deviceId = gatt.device.address,
+                        serviceUuid = characteristic.service.uuid.toString(),
+                        characteristicUuid = characteristic.uuid.toString(),
+                        value = written,
+                        kind = CharacteristicChangeKind.Write
+                    )
+                )
+            }
+            if (status != BluetoothGatt.GATT_SUCCESS) failOperation(gatt.device.address, "写入失败: GATT status=$status")
+            completeOperation(gatt, operationKey("write", characteristic.service.uuid.toString(), characteristic.uuid.toString()))
+        }
+
+        @SuppressLint("MissingPermission")
+        @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic
+        ) {
+            // API<33 走本签名（value 自 characteristic.value），转发到新签名统一发射
+            onCharacteristicChanged(gatt, characteristic, characteristic.value ?: ByteArray(0))
         }
 
         @SuppressLint("MissingPermission")
@@ -601,6 +863,7 @@ class BleManager private constructor(private val context: Context) {
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray
         ) {
+            if (!owns(gatt)) return
             Log.d(TAG, "onCharacteristicChanged: ${characteristic.uuid}")
 
             updateCharacteristicValue(
@@ -628,11 +891,26 @@ class BleManager private constructor(private val context: Context) {
 
         @SuppressLint("MissingPermission")
         override fun onDescriptorWrite(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
+            if (!owns(gatt)) return
             Log.d(TAG, "onDescriptorWrite: ${descriptor.uuid}, status=$status")
+            if (status != BluetoothGatt.GATT_SUCCESS) failOperation(gatt.device.address, "通知设置失败: GATT status=$status")
+            _descriptorWriteEvents.tryEmit(
+                DescriptorWriteEvent(
+                    deviceId = gatt.device.address,
+                    characteristicUuid = descriptor.characteristic?.uuid?.toString() ?: "",
+                    status = status,
+                    serviceUuid = descriptor.characteristic?.service?.uuid?.toString() ?: "",
+                )
+            )
+            descriptor.characteristic?.let {
+                completeOperation(gatt, operationKey("notify", it.service.uuid.toString(), it.uuid.toString()))
+            }
         }
 
         override fun onReadRemoteRssi(gatt: BluetoothGatt, rssi: Int, status: Int) {
+            if (!owns(gatt)) return
             Log.d(TAG, "onReadRemoteRssi: rssi=$rssi, status=$status")
+            completeOperation(gatt, "rssi")
         }
     }
 
@@ -720,8 +998,7 @@ class BleManager private constructor(private val context: Context) {
         val deviceIds = gattConnections.keys.toList()
         deviceIds.forEach { deviceId ->
             userInitiatedDisconnects.add(deviceId)
-            gattConnections[deviceId]?.disconnect()
-            gattConnections[deviceId]?.close()
+            gattConnections[deviceId]?.let { retireConnection(it) }
         }
         gattConnections.clear()
         _connectionStates.value = emptyMap()
@@ -747,13 +1024,32 @@ enum class BluetoothState {
 }
 
 /**
+ * 特征值事件来源：通知推送 vs 主动读取 vs 带响应写完成（WIN-AAND-004：读值
+ * 必须进可观察流；W3：写完成为配网分帧逐帧确认进同一流，UI 按 kind 区分呈现）
+ */
+enum class CharacteristicChangeKind {
+    Notify,
+    Read,
+    Write,
+}
+
+/** descriptor（CCCD）写完成事件：status==0 即 GATT_SUCCESS */
+data class DescriptorWriteEvent(
+    val deviceId: String,
+    val characteristicUuid: String,
+    val status: Int,
+    val serviceUuid: String = "",
+)
+
+/**
  * 特征值变化事件
  */
 data class CharacteristicChangeEvent(
     val deviceId: String,
     val serviceUuid: String,
     val characteristicUuid: String,
-    val value: ByteArray
+    val value: ByteArray,
+    val kind: CharacteristicChangeKind = CharacteristicChangeKind.Notify
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -764,6 +1060,7 @@ data class CharacteristicChangeEvent(
         if (deviceId != other.deviceId) return false
         if (serviceUuid != other.serviceUuid) return false
         if (characteristicUuid != other.characteristicUuid) return false
+        if (kind != other.kind) return false
         if (!value.contentEquals(other.value)) return false
 
         return true
@@ -773,7 +1070,11 @@ data class CharacteristicChangeEvent(
         var result = deviceId.hashCode()
         result = 31 * result + serviceUuid.hashCode()
         result = 31 * result + characteristicUuid.hashCode()
+        result = 31 * result + kind.hashCode()
         result = 31 * result + value.contentHashCode()
         return result
     }
 }
+
+/** Async GATT errors must reach the device UI rather than only logcat. */
+data class GattFailureEvent(val deviceId: String, val message: String)

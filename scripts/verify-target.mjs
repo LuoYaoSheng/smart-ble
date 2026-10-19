@@ -5,13 +5,56 @@
 
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { buildCaseRecord, parseFileHeaderMeta } from '../tests/target/lib/case-meta.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
+
+// ---------------------------------------------------------------------------
+// TS 桥（TEST-BRIDGE-TS-001）：目标层单测经 import-target 内联
+// core/protocols/*.ts，需要 Node 内置类型剥离（>= 22.18 / >= 23.6）。
+// 解析顺序：NODE_BIN 环境变量 → 当前 Node → NVM_HOME 下最高可用版本；
+// 解析到更高能力 Node 时整进程重执行（子 checker/单测继承同一 runtime）。
+// 找不到则按当前 Node 继续，相关用例会给出明确的 TS_BRIDGE 失败信息。
+// ---------------------------------------------------------------------------
+function nodeSupportsTs(exe) {
+  const r = spawnSync(exe, ['--version'], { encoding: 'utf8' });
+  const m = String(r.stdout || '').match(/v(\d+)\.(\d+)/);
+  if (!m) return false;
+  const [major, minor] = [Number(m[1]), Number(m[2])];
+  if (major >= 24) return true;
+  if (major === 23 && minor >= 6) return true;
+  if (major === 22 && minor >= 18) return true;
+  return false;
+}
+
+function resolveTsCapableNode() {
+  if (process.env.NODE_BIN && nodeSupportsTs(process.env.NODE_BIN)) return process.env.NODE_BIN;
+  if (nodeSupportsTs(process.execPath)) return null;
+  const nvmRoot = process.env.NVM_HOME || join(process.env.APPDATA || '', 'nvm');
+  if (!existsSync(nvmRoot)) return null;
+  let found = null;
+  for (const cand of readdirSync(nvmRoot).filter((d) => /^v/.test(d)).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))) {
+    const exe = join(nvmRoot, cand, process.platform === 'win32' ? 'node.exe' : 'bin/node');
+    if (existsSync(exe) && nodeSupportsTs(exe)) found = exe;
+  }
+  return found;
+}
+
+function reexecWithTsNodeIfNeeded() {
+  if (process.env.SMART_BLE_VERIFY_TARGET_TS_EXEC === '1') return;
+  const exe = resolveTsCapableNode();
+  if (!exe) return;
+  console.error(`[TS 桥] 当前 Node ${process.version} 无类型剥离，改用 ${exe} 重新执行`);
+  const r = spawnSync(exe, [fileURLToPath(import.meta.url), ...process.argv.slice(2)], {
+    stdio: 'inherit',
+    env: { ...process.env, SMART_BLE_VERIFY_TARGET_TS_EXEC: '1' },
+  });
+  process.exit(r.status ?? 1);
+}
 
 function parseArgs() {
   const mode = (process.argv.find((a) => a.startsWith('--mode='))?.split('=')[1] || 'all');
@@ -343,7 +386,24 @@ function runPageSpecs() {
       blockers: ['BLK-TEST-PAGE-DRIVER'],
     };
   }
-  const r = spawnSync('npx', ['playwright', 'test', 'tests/target/pages/specs'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  // Windows 下 npx 是 npx.cmd，需经 shell 解析；spawn 失败（r.error）按工具链阻塞计，
+  // 不让 runPageSpecs 崩溃吞掉整轮结果（修改前基线：out=0 → TypeError out.match）。
+  const r = spawnSync('npx', ['playwright', 'test', 'tests/target/pages/specs'], {
+    cwd: ROOT,
+    encoding: 'utf8',
+    maxBuffer: 64 * 1024 * 1024,
+    shell: process.platform === 'win32',
+  });
+  if (r.error || typeof r.stdout !== 'string') {
+    return {
+      pass: 0, fail: 0, skipped: 0, failures: [], cases: [],
+      blocked: [{ testId: 'playwright', reason: 'BLOCKED_BY_TOOLCHAIN', count: 1, layer: 'current', source: 'tests/target/pages' }],
+      blockedSummary: { BLOCKED_BY_TOOLCHAIN: 1 },
+      pages: { blocked_specs: 1, blocked_cases: blockedCases, reason: 'BLOCKED_BY_TOOLCHAIN' },
+      notExecuted: true,
+      blockers: ['BLK-TOOL-PLAYWRIGHT'],
+    };
+  }
   const out = r.stdout + r.stderr;
   const pass = Number((out.match(/(\d+) passed/) || [])[1] ?? 0);
   const fail = Number((out.match(/(\d+) failed/) || [])[1] ?? 0);
@@ -389,6 +449,7 @@ function firstBreakpointsFrom(cases) {
 }
 
 const { mode, format } = parseArgs();
+reexecWithTsNodeIfNeeded();
 const result = {
   mode,
   system: { pass: 0, fail: 0, checkers: [], contract: null, pages_contract: null },

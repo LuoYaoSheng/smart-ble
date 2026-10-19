@@ -1,0 +1,429 @@
+/* SmartBLE Desktop - Styles
+   历史组件/页面样式已全部由 prototype.css（原型正典对齐层）取代：
+   P001 扫描/P006 GATT/P007 已连接/P008 广播/P010 版本记录均使用正典类名。
+   本文件仅保留 P009 关于页 about-* 命名空间（同源自 prototype，前缀隔离）。 */
+
+/* ============================================================
+   P009 关于页 —— 对齐 HTML 原型 docs/specs/prototype/platform/desktop/high-fi
+   （tokens.css v1.0 数值；F028 推广卡已按产品决定于桌面线裁撤）
+   ============================================================ */
+
+.about-shell {
+    height: 100%;
+    max-width: 768px;
+    margin: 0 auto;
+    padding: 8px 20px 4px;
+    overflow-y: auto;
+}
+
+.about-ic {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.about-ic.sm {
+    width: 17px;
+    height: 17px;
+}
+
+.about-ic.xs {
+    width: 13px;
+    height: 13px;
+}
+
+/* 导航行（原型 .navbar） */
+.about-navbar {
+    padding: 8px 2px 12px;
+    border-bottom: 1px solid #EDF2F9;
+    margin-bottom: 12px;
+}
+
+.about-kicker {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.about-navrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2px;
+}
+
+.about-page-title {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.about-verchip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 2px 9px;
+    background: #F1F5FB;
+    color: #42536A;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.7;
+    white-space: nowrap;
+}
+
+/* 卡片（原型 .card） */
+.about-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 2px rgba(16, 32, 64, 0.04), 0 4px 12px rgba(16, 32, 64, 0.06);
+    margin-bottom: 12px;
+}
+
+/* 身份卡（原型 P009 首卡） */
+.about-identity {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.about-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-app-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.about-verline {
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+/* 分节标题（原型 .sec-t） */
+.about-sec-t {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 4px 2px 10px;
+}
+
+.about-sec-t .t {
+    font-size: 17px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.about-sec-t .t .about-ic {
+    color: var(--primary);
+}
+
+/* 键值行（原型 .kv） */
+.about-kv {
+    display: flex;
+    align-items: baseline;
+    padding: 9px 0;
+    border-bottom: 1px solid #EDF2F9;
+    font-size: 13px;
+}
+
+.about-kv .k {
+    width: 96px;
+    flex-shrink: 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.about-kv .v {
+    flex: 1;
+    color: var(--text-primary);
+    word-break: break-all;
+    line-height: 1.5;
+}
+
+.about-kv .v.mono,
+.mono {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+}
+
+.about-kv .v.dim {
+    color: var(--text-tertiary);
+}
+
+/* 功能特性 chips（原型 .chip.primary） */
+.about-chiprow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.about-feature-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 999px;
+    padding: 2px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.7;
+    white-space: nowrap;
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+/* 平台状态行（原型 .rel-row + .stword） */
+.about-rel-row {
+    padding: 9px 0;
+    border-bottom: 1px solid #EDF2F9;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.about-rel-row:last-child {
+    border-bottom: none;
+}
+
+.about-rel-name {
+    color: var(--text-primary);
+}
+
+.about-rel-st {
+    display: inline-flex;
+    gap: 5px;
+}
+
+.about-stword {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 10px;
+    border-radius: 5px;
+    padding: 1px 7px;
+    font-weight: 700;
+}
+
+.about-st-VERIFIED {
+    background: #E2F8F4;
+    color: #0E9A80;
+}
+
+.about-st-PREVIEW {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.about-st-BLOCKED {
+    background: #FFF3E4;
+    color: #C77E14;
+}
+
+.about-st-UNSUPPORTED {
+    background: #F1F5FB;
+    color: var(--text-secondary);
+}
+
+.about-st-NOT_RELEASED {
+    background: #FDEBEC;
+    color: var(--error);
+}
+
+.about-st-REFERENCE {
+    background: #F1F5FB;
+    color: #42536A;
+}
+
+/* 菜单行（原型 .menu-row） */
+.about-menu {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.about-menu-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 13px 2px;
+    border: none;
+    border-bottom: 1px solid #EDF2F9;
+    background: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-family: inherit;
+}
+
+.about-menu-row:last-child {
+    border-bottom: none;
+}
+
+.about-menu-row .lead {
+    color: var(--text-secondary);
+    display: flex;
+}
+
+.about-menu-row .t {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.about-menu-row .arr {
+    color: var(--text-tertiary);
+    display: flex;
+}
+
+.about-menu-row:hover .t {
+    color: var(--primary);
+}
+
+/* 页脚（原型 .foot） */
+.about-foot {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    padding: 18px 0 6px;
+    line-height: 1.7;
+}
+
+/* ---------- P010 版本记录 ---------- */
+
+.versions-shell {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.versions-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.versions-header h2 {
+    font-size: 20px;
+    color: var(--text-primary, #1c1c1e);
+}
+
+.versions-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.versions-current h4,
+.versions-body h4 {
+    margin: 16px 0 8px;
+    font-size: 14px;
+    color: var(--text-secondary, #8e8e93);
+}
+
+.versions-current-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.versions-kv {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--bg-secondary, rgba(255, 255, 255, 0.82));
+}
+
+.versions-kv span {
+    font-size: 12px;
+    color: var(--text-secondary, #8e8e93);
+}
+
+.versions-kv strong {
+    font-size: 14px;
+    color: var(--text-primary, #1c1c1e);
+    word-break: break-all;
+}
+
+.versions-platform-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.versions-platform-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
+    color: var(--text-primary, #1c1c1e);
+}
+
+.versions-platform-table td:last-child {
+    text-align: right;
+    font-weight: 700;
+    color: var(--text-secondary, #8e8e93);
+}
+
+.versions-limitations {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+    color: var(--text-secondary, #8e8e93);
+    line-height: 1.7;
+}
+
+.versions-release-card {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--bg-secondary, rgba(255, 255, 255, 0.82));
+    margin-bottom: 10px;
+}
+
+.versions-preview-card {
+    background: rgba(27, 109, 255, 0.06);
+}
+
+.versions-release-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.versions-release-tag {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary, #1c1c1e);
+}
+
+.versions-release-status {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary, #007aff);
+}
+
+.versions-release-meta {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-secondary, #8e8e93);
+}
+
+.versions-empty {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-secondary, #8e8e93);
+}

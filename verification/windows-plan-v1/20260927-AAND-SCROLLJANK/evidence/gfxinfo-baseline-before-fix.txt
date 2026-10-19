@@ -1,0 +1,28 @@
+AAND-SCROLLJANK · 基线（修复前，R2 build 331d927 装机态）
+设备：华为 TAS-AN00（FEC0220629005177，1080x2340@480dpi，EMUI）
+场景：扫描 Tab（上轮残留 14 台）→ dumpsys gfxinfo reset → 点「开始扫描」(844,394)
+     → 5s 扫描会话内连滚 4 次（swipe 300ms × 4，下/上/下/上）→ dumpsys gfxinfo
+时间：2026-09-27 08:20:00（logcat: Scan started 08:20:00.890 / Auto-stop 08:20:05.950）
+
+adb shell dumpsys gfxinfo com.smartble.android（节选）：
+------------------------------------------------------------------
+Total frames rendered: 91
+Janky frames: 87 (95.60%)
+Janky frames (legacy): 91 (100.00%)
+50th percentile: 44ms
+90th percentile: 89ms
+95th percentile: 97ms
+99th percentile: 121ms
+Number Missed Vsync: 64
+50th gpu percentile: 3ms
+90th gpu percentile: 4ms
+95th gpu percentile: 5ms
+99th gpu percentile: 6ms
+------------------------------------------------------------------
+
+同窗口广播回调负载（logcat -s BleManager:I，buffer 存活部分）：
+onScanResult ≥ 287 条 / 5.0s 会话 ≈ 57 条/秒（buffer 已滚动，为下限）
+
+结论：GPU 仅 3-4ms，掉帧全在主线程 CPU——每条回调触发
+全列表 map → combine → filterDevices → StateFlow 整表替换 →
+LazyColumn 全量 diff + 可见卡重组，~17ms/轮，吃光滚动帧预算（16ms@60Hz）。

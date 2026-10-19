@@ -13,8 +13,6 @@ import {
   writeFrames
 } from './transport.js';
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 function requireProfile(profile) {
   if (!profile?.id) throw new Error('profile is required');
   if (!profile.codec?.buildCandidate) throw new Error(`profile ${profile.id}: codec.buildCandidate is required`);
@@ -42,7 +40,7 @@ export async function connectProfileSession(deviceId, profile) {
 
 /**
  * 将 candidate 编码为帧并写入 INPUT（或 profile.transport.inputAlias）。
- * 支持 encrypt 失败后短暂等待再重试一次。
+ * V1 简化后不发起 SMP/配对；旧加密固件错误立即上抛并提示重烧。
  */
 export async function writeProfileCandidate(session, profile, input, options = {}) {
   const selected = requireProfile(profile);
@@ -53,25 +51,12 @@ export async function writeProfileCandidate(session, profile, input, options = {
   const bytes = selected.codec.buildCandidate(input);
   const frames = encodePayloadFrames(bytes, framing, session.mtu);
   const resultWaiter = options.beforeWrite?.();
-  const onEncryptRetry = options.onEncryptRetry;
-  const encryptRetryDelayMs = options.encryptRetryDelayMs ?? 2000;
 
   try {
     await writeFrames(session, characteristicUuid(selected, inputAlias), frames);
   } catch (error) {
-    if (error?.kind === 'encrypt') {
-      onEncryptRetry?.(error);
-      await sleep(encryptRetryDelayMs);
-      try {
-        await writeFrames(session, characteristicUuid(selected, inputAlias), frames);
-      } catch (retryError) {
-        resultWaiter?.cancel?.(retryError?.message || '候选写入失败');
-        throw retryError;
-      }
-    } else {
-      resultWaiter?.cancel?.(error?.message || '候选写入失败');
-      throw error;
-    }
+    resultWaiter?.cancel?.(error?.message || '候选写入失败');
+    throw error;
   }
 
   return { ok: true, frames: frames.length, bytes: bytes.length, framing };

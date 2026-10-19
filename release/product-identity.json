@@ -1,0 +1,35 @@
+{
+  "product": "蓝析BLE工具箱",
+  "application_id": "com.i2kai.open.smartble",
+  "publisher_type": "individual",
+  "public_support_email": "121912336@qq.com",
+  "store_materials_status": "DEFERRED_BY_USER",
+  "platforms": [
+    "android",
+    "ios"
+  ],
+  "implementations": [
+    "kotlin",
+    "swiftui",
+    "flutter",
+    "uniapp"
+  ],
+  "rule": "These are alternative implementations of one product. Each channel release selects one validated package; do not upload parallel implementations under the same build number.",
+  "android_signing_environment": [
+    "SMART_BLE_KEYSTORE",
+    "SMART_BLE_STORE_PASSWORD",
+    "SMART_BLE_KEY_ALIAS",
+    "SMART_BLE_KEY_PASSWORD"
+  ],
+  "secrets_location": "External local signing configuration; never commit keystore, passwords, or private signing material.",
+  "apple_store_implementations": {
+    "ios": "swiftui",
+    "macos": "appkit"
+  },
+  "apple_store_application_id": "com.i2kai.open.smartble",
+  "apple_store_team_id": "72MZZQB893",
+  "apple_store_team_name": "longcan cai",
+  "display_name": "蓝析BLE工具箱",
+  "artifact_prefix": "Lanxi-BLE-Toolkit",
+  "name_updated_at": "2026-10-19"
+}

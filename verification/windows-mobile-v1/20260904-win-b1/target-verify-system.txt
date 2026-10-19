@@ -1,0 +1,89 @@
+{
+  "system": {
+    "pass": 412,
+    "fail": 0,
+    "checkers": [
+      {
+        "id": "TEST-C-contract",
+        "pass": 111,
+        "fail": 0
+      },
+      {
+        "id": "TEST-C-pages",
+        "pass": 63,
+        "fail": 0
+      },
+      {
+        "id": "TEST-C-flows",
+        "pass": 116,
+        "fail": 0
+      },
+      {
+        "id": "TEST-C-platforms",
+        "pass": 17,
+        "fail": 0
+      },
+      {
+        "id": "TEST-C-protocols",
+        "pass": 56,
+        "fail": 0
+      },
+      {
+        "id": "TEST-C-traceability",
+        "pass": 21,
+        "fail": 0
+      },
+      {
+        "id": "TEST-C-landing",
+        "pass": 15,
+        "fail": 0
+      }
+    ],
+    "contract": {
+      "pass": 7,
+      "fail": 0
+    },
+    "pages_contract": {
+      "pass": 6,
+      "fail": 0
+    }
+  },
+  "harness": {
+    "pass": 105,
+    "fail": 3
+  },
+  "current": {
+    "pass": 0,
+    "fail": 0,
+    "layers": [],
+    "cases": []
+  },
+  "pages": null,
+  "blocked": {
+    "BLOCKED_BY_TOOLCHAIN": 0,
+    "BLOCKED_BY_TARGET_DRIVER": 0,
+    "BLOCKED_BY_FIXTURE": 0,
+    "BLOCKED_BY_CREDENTIAL": 0,
+    "NOT_EXECUTED": 0
+  },
+  "page_environment": {
+    "playwright": false,
+    "browser": false,
+    "config": true,
+    "testDir": true,
+    "driver_env": false,
+    "driver_runtime": true,
+    "base_url_set": false,
+    "status": "BLOCKED_BY_TOOLCHAIN",
+    "page_execution": "BLOCKED_BY_TOOLCHAIN"
+  },
+  "first_breakpoints": [],
+  "SYSTEM_PASS": 412,
+  "SYSTEM_FAIL": 0,
+  "HARNESS_PASS": 105,
+  "HARNESS_FAIL": 3,
+  "CURRENT_PASS": 0,
+  "CURRENT_FAIL": 0,
+  "TARGET_CONTRACT_FAIL": 0,
+  "TEST_INFRA_FAIL": 0
+}

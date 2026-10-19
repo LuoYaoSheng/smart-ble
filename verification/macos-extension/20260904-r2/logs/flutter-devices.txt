@@ -1,0 +1,15 @@
+Found 3 connected devices:
+  sdk gphone64 arm64 (mobile) • emulator-5554 • android-arm64  • Android 15 (API 35) (emulator)
+  macOS (desktop)             • macos         • darwin-arm64   • macOS 26.5.2 25F84 darwin-arm64
+  Chrome (web)                • chrome        • web-javascript • Google Chrome 152.0.7977.76
+
+Checking for wireless devices...
+
+No wireless devices were found.
+
+Error: Browsing on the local area network for iphone. Ensure the device is unlocked and attached with a cable or associated with the same local area network as this Mac.
+The device must be opted into Developer Mode to connect wirelessly. (code -27)
+
+Run "flutter emulators" to list and start any available device emulators.
+
+If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.

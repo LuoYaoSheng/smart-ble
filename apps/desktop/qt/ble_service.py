@@ -1,0 +1,617 @@
+"""Q-WIN BLE 服务：bleak（WinRT）扫描 + GATT 客户端封装。
+
+扫描：工作线程内独立 asyncio loop 跑一次 5s 扫描（bleak 官方推荐模式），
+结果经 Qt 信号回 UI 线程；与 E/T/V/F/G 各壳的 5s 扫描超时口径一致。
+
+GATT：GattWorker 线程常驻一个 asyncio loop，UI 线程经 submit() 投递协程
+（connect/disconnect/read/write/notify），结果与事件（通知、断连）经 Qt
+信号回 UI 线程。写操作恒带响应（PARITY-007：writeNoResponse 在 Windows
+栈上字节腐败）。bleak 3.x：connect() 自动服务发现，services 属性取树。
+
+铁律（SHID-FW-LOCK-001）：永不向 9f1d1003（INPUT）特征写真实数据；
+写能力仅在非 SHID INPUT 特征上使用。
+"""
+
+from __future__ import annotations
+
+import asyncio
+import threading
+from concurrent.futures import Future
+from dataclasses import dataclass, field
+from reconnect_policy import reconnect
+from gatt_routing import resolve_characteristic, key as gatt_key
+from att_client import AttClient, owns_native
+from bluetooth_availability import availability, exception_availability, query_windows_availability
+
+from PySide6.QtCore import QObject, QThread, Signal, Slot
+
+# ── UUID 展示名（与 G-WIN app.go 的 serviceNamesCN/charNamesCN 同源移植）──
+
+SERVICE_NAMES_CN = {
+    "1800": "通用访问", "1801": "通用属性", "180A": "设备信息", "180F": "电池服务",
+    "1812": "人机界面(HID)", "180D": "心率服务", "1809": "健康温度计", "181C": "用户数据",
+    # Smart HID 配网家族（正典 bundle：1002 info / 1003 input / 1004 status）
+    "9F1D1001-E73B-4C8F-9D2A-6F0B5E8A1C04": "Smart HID 配网服务",
+    "4FAFC201-CFB0-11E5-A3B4-0001A340D001": "OTA 升级服务",
+}
+
+CHAR_NAMES_CN = {
+    "2A00": "设备名称", "2A01": "外观", "2A02": "隐私标志", "2A03": "重连地址",
+    "2A04": "连接参数", "2A05": "服务变更", "2A19": "电池电量", "2A23": "系统标识符",
+    "2A24": "型号", "2A25": "序列号", "2A26": "固件版本", "2A27": "硬件版本",
+    "2A28": "软件版本", "2A29": "制造商", "2A37": "心率测量", "2A38": "身体传感器位置",
+    "BEB5483E-36E1-4688-B7F5-EA07361B26A8": "OTA 控制",
+    "9F1D1002-E73B-4C8F-9D2A-6F0B5E8A1C04": "设备信息 (INFO)",
+    "9F1D1003-E73B-4C8F-9D2A-6F0B5E8A1C04": "配网数据写入 (INPUT)",
+    "9F1D1004-E73B-4C8F-9D2A-6F0B5E8A1C04": "设备状态 (STATUS)",
+}
+
+# SHID-FW-LOCK-001：INPUT 特征写禁（UI 层双重保险，运营规则之外的代码护栏）
+INPUT_CHAR_UUID = "9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04"
+
+
+def service_display_name(uuid: str) -> str:
+    key = uuid.replace("-", "").upper()
+    short = key[4:8] if len(key) == 32 and key.startswith("0000") else key
+    return SERVICE_NAMES_CN.get(short, SERVICE_NAMES_CN.get(uuid.upper(), ""))
+
+
+def char_display_name(uuid: str) -> str:
+    key = uuid.replace("-", "").upper()
+    short = key[4:8] if len(key) == 32 and key.startswith("0000") else key
+    return CHAR_NAMES_CN.get(short, CHAR_NAMES_CN.get(uuid.upper(), ""))
+
+
+def hex_spaced(data: bytes) -> str:
+    return " ".join(f"{b:02X}" for b in data)
+
+
+def try_utf8(data: bytes) -> str:
+    """可打印 ASCII/UTF-8 则返回解码文本，否则空串（INFO 身份读展示用）。"""
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError:
+        return ""
+    return text if text and all(ch >= " " or ch in "\t\n\r" for ch in text) else ""
+
+
+@dataclass
+class ScanHit:
+    """一次扫描命中的设备（C1 设备卡字段子集 + F004 广播数据弹窗字段）。"""
+
+    address: str
+    name: str
+    rssi: int = -100
+    manufacturer_id: int | None = None
+    manufacturer_data: bytes = b""
+    service_uuids: list[str] = field(default_factory=list)
+    service_data: list[tuple[str, bytes]] = field(default_factory=list)
+
+
+class _ScanWorker(QThread):
+    """在自有线程里跑一次 bleak 扫描（timeout 秒）。"""
+
+    finished_ok = Signal(list)  # list[ScanHit]
+    failed = Signal(str)
+    cancelled = Signal()
+    started_scan = Signal()
+    availability_changed = Signal(object)
+
+    def __init__(self, timeout: float = 5.0, parent: QObject | None = None, availability_reader=None) -> None:
+        super().__init__(parent)
+        self._timeout = timeout
+        self._availability_reader = availability_reader or query_windows_availability
+        self._loop = None
+        self._task = None
+
+    def cancel(self):
+        self.requestInterruption()
+        if self._loop is not None and self._task is not None and self._loop.is_running():
+            self._loop.call_soon_threadsafe(self._task.cancel)
+
+    def run(self) -> None:  # pragma: no cover - 线程体
+        async def _scan() -> list[ScanHit]:
+            state = await self._availability_reader()
+            self.availability_changed.emit(state)
+            if not state.can_scan:
+                raise RuntimeError(state.hint)
+            from bleak import BleakScanner
+            async with BleakScanner() as scanner:
+                self.started_scan.emit()
+                await asyncio.sleep(self._timeout)
+                found = scanner.discovered_devices_and_advertisement_data
+            hits: list[ScanHit] = []
+            for dev, adv in found.values():
+                mfr_id = None
+                mfr_data = b""
+                if adv.manufacturer_data:
+                    mfr_id = next(iter(adv.manufacturer_data))
+                    mfr_data = bytes(adv.manufacturer_data[mfr_id])
+                hits.append(
+                    ScanHit(
+                        address=str(dev.address),
+                        name=adv.local_name or dev.name or "",
+                        rssi=adv.rssi if adv.rssi is not None else -100,
+                        manufacturer_id=mfr_id,
+                        manufacturer_data=mfr_data,
+                        service_uuids=[str(u) for u in adv.service_uuids],
+                        service_data=[(str(u), bytes(d)) for u, d in adv.service_data.items()],
+                    )
+                )
+            # 信号强度降序（与各壳设备列表排序一致）
+            hits.sort(key=lambda h: h.rssi, reverse=True)
+            return hits[:100]
+
+        async def execute():
+            self._loop = asyncio.get_running_loop()
+            self._task = asyncio.current_task()
+            if self.isInterruptionRequested():
+                raise asyncio.CancelledError
+            return await _scan()
+
+        try:
+            hits = asyncio.run(execute())
+            self.finished_ok.emit(hits)
+        except asyncio.CancelledError:
+            self.cancelled.emit()
+        except Exception as exc:  # noqa: BLE001 - 扫描失败要落到 UI 状态词
+            self.failed.emit(str(exc))
+
+
+class GattWorker(QThread):
+    """常驻 asyncio loop 的 GATT 工作线程。
+
+    UI 线程 submit(coro_factory) 投递协程；notify 回调与 disconnected
+    回调都发生在 loop 线程内，经 Qt 信号（自动 Queued）回 UI 线程。
+    """
+
+    def __init__(self, parent: QObject | None = None) -> None:
+        super().__init__(parent)
+        self._loop: asyncio.AbstractEventLoop | None = None
+        self._ready = threading.Event()
+
+    def run(self) -> None:  # pragma: no cover - 线程体
+        self._loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self._loop)
+        self._ready.set()
+        try:
+            self._loop.run_forever()
+        finally:
+            self._loop.close()
+
+    def submit(self, coro):
+        """线程安全投递协程，返回 concurrent.futures.Future。"""
+        self._ready.wait(10.0)
+        assert self._loop is not None
+        return asyncio.run_coroutine_threadsafe(coro, self._loop)
+
+    def stop(self) -> None:
+        if self._loop is not None and self._loop.is_running():
+            async def drain():
+                tasks = [task for task in asyncio.all_tasks() if task is not asyncio.current_task()]
+                for task in tasks: task.cancel()
+                if tasks: await asyncio.wait(tasks, timeout=1.0)
+                self._loop.stop()
+            asyncio.run_coroutine_threadsafe(drain(), self._loop)
+        self.wait(5000)
+
+
+class BleService(QObject):
+    """UI 线程侧门面：扫描 + 连接管理 + GATT 原语，结果全部经 Qt 信号。"""
+
+    scan_done = Signal(list)          # list[ScanHit]
+    scan_failed = Signal(str)
+    scan_stopped = Signal()
+    scan_started = Signal()
+    availability_changed = Signal(object)
+    _probe_completed = Signal(object)
+    device_connected = Signal(str, str, object)   # address, name, gatt_tree(dict)
+    device_reconnected = Signal(str, str, object)
+    device_disconnected = Signal(str, bool)       # address, expected(手动断开)
+    char_read = Signal(str, str, str, str, str)        # address, service, uuid, hex, text
+    char_notified = Signal(str, str, str, str)         # address, service, uuid, hex
+    notify_changed = Signal(str, str, str, bool)       # address, service, uuid, on
+    write_done = Signal(str, str, str, int, bool)            # address, service, uuid, nbytes
+    op_failed = Signal(str, str, str)             # op, address, msg
+
+    CONNECT_TIMEOUT = 10.0
+
+    def __init__(self, parent: QObject | None = None, availability_reader=None) -> None:
+        super().__init__(parent)
+        self._availability_reader = availability_reader or query_windows_availability
+        self.availability = availability('checking')
+        self._closing = False
+        self._probe_generation = 0
+        self._probe_future = None
+        self._scan_pending = False
+        self._scanning = False
+        self._probe_completed.connect(self._on_probe_completed)
+        self._worker: _ScanWorker | None = None
+        self._gatt = GattWorker()
+        self._gatt.start()
+        # P008 广播：Win32 走 WIN-BRIDGE 边车（仅厂商块 0xFF 可发，平台事实
+        # 见 win_broadcast.py 头注）；advertising 旗标供生命周期判断
+        from win_broadcast import WinBroadcastBridge
+
+        self._broadcast = WinBroadcastBridge()
+        self.advertising = False
+        self.connected: dict[str, dict] = {}   # address -> {name, tree}
+        self._clients: dict[str, object] = {}  # address -> BleakClient
+        self._notifying: dict[str, set] = {}   # address -> {uuid}
+        self._wanted = {}
+        self._generations = {}
+        self._reconnect_tasks = {}
+
+    @Slot(object)
+    def _apply_availability(self, state):
+        sender = self.sender()
+        if self._closing or isinstance(sender, _ScanWorker) and sender is not self._worker: return
+        self.availability = state
+        self.availability_changed.emit(state)
+        if not state.can_scan and self.scanning: self.stop_scan()
+
+    async def _read_availability(self):
+        try:
+            return await asyncio.wait_for(self._availability_reader(), timeout=7)
+        except Exception as error:
+            return exception_availability(error)
+
+    def refresh_availability(self):
+        if self._closing or (self._probe_future is not None and not self._probe_future.done()): return
+        self._probe_generation += 1
+        generation = self._probe_generation
+        self._apply_availability(availability('checking'))
+        future = self._gatt.submit(self._read_availability())
+        self._probe_future = future
+        def done(result):
+            if self._closing: return
+            try: state = result.result()
+            except Exception as error: state = exception_availability(error)
+            self._probe_completed.emit((generation, state))
+        future.add_done_callback(done)
+
+    @Slot(object)
+    def _on_probe_completed(self, result):
+        generation, state = result
+        if not self._closing and generation == self._probe_generation:
+            self._apply_availability(state)
+
+    @property
+    def scan_start_pending(self): return self._scan_pending
+
+    # ── 广播（P008 · WIN-BRIDGE 边车） ──
+
+    def start_broadcast(self, company_id: int, data: bytes) -> dict:
+        if self._closing: return {'success': False, 'error': '应用正在退出'}
+        self._probe_generation += 1  # a late startup probe cannot overwrite this fresh result
+        try: state = self._gatt.submit(self._read_availability()).result(timeout=8)
+        except Exception as error: state = exception_availability(error)
+        self._apply_availability(state)
+        if not state.can_scan:
+            return {'success': False, 'error': state.hint}
+        result = self._broadcast.start(company_id, data)
+        self.advertising = bool(result.get("success"))
+        return result
+
+    def stop_broadcast(self) -> dict:
+        if not self.advertising: return {'success': True}
+        result = self._broadcast.stop()
+        self.advertising = False
+        return result
+
+    # ── 扫描 ──
+
+    @property
+    def scanning(self) -> bool:
+        return self._scanning
+
+    def start_scan(self, timeout: float = 5.0) -> bool:
+        if self._closing: return False
+        if not self.availability.can_scan:
+            self.scan_failed.emit(self.availability.hint)
+            return False
+        if self._worker is not None and self._worker.isRunning(): return False
+        worker = _ScanWorker(timeout, availability_reader=self._availability_reader)
+        self._worker = worker
+        self._scan_pending = True
+        worker.availability_changed.connect(self._apply_availability)
+        worker.started_scan.connect(self._on_scan_started)
+        worker.finished_ok.connect(self._on_scan_done)
+        worker.failed.connect(self._on_scan_failed)
+        worker.cancelled.connect(self._on_scan_cancelled)
+        worker.start()
+        return True
+
+    @Slot()
+    def _on_scan_started(self):
+        sender = self.sender()
+        if isinstance(sender, _ScanWorker) and sender is not self._worker: return
+        if self._closing or not self._scan_pending: return
+        self._scan_pending = False
+        self._scanning = True
+        self.scan_started.emit()
+
+    @Slot(list)
+    def _on_scan_done(self, hits):
+        sender = self.sender()
+        if isinstance(sender, _ScanWorker) and sender is not self._worker: return
+        self._scan_pending = self._scanning = False
+        if not self._closing: self.scan_done.emit(hits)
+
+    @Slot(str)
+    def _on_scan_failed(self, message):
+        sender = self.sender()
+        if isinstance(sender, _ScanWorker) and sender is not self._worker: return
+        self._scan_pending = self._scanning = False
+        if self._closing: return
+        self.scan_failed.emit(message)
+        self.refresh_availability()  # read real facts; do not infer Off from "radio"
+
+    @Slot()
+    def _on_scan_cancelled(self):
+        sender = self.sender()
+        if isinstance(sender, _ScanWorker) and sender is not self._worker: return
+        self._scan_pending = self._scanning = False
+        if not self._closing: self.scan_stopped.emit()
+
+    def stop_scan(self) -> None:
+        self._scan_pending = self._scanning = False
+        if self._worker is not None: self._worker.cancel()
+
+    # ── 连接管理 ──
+
+    def connect_device(self, hit: ScanHit) -> None:
+        """连接扫描命中的设备；成功发 device_connected（含 GATT 树）。"""
+        self._wanted[hit.address] = hit
+        if hit.address in self.connected:
+            self.device_connected.emit(hit.address, self.connected[hit.address]["name"],
+                                       self.connected[hit.address]["tree"])
+            return
+        generation = self._generations.get(hit.address, 0) + 1
+        self._generations[hit.address] = generation
+
+        def on_disconnect(client) -> None:
+            current = self._clients.get(hit.address)
+            if not owns_native(current, client): return
+            if isinstance(current, AttClient): current.retire(notify=False, disconnect=False)
+            # 单次事件语义：手动断开路径已自行出表并发射；此处仅处理意外断链
+            info = self.connected.pop(hit.address, None)
+            self._clients.pop(hit.address, None)
+            self._notifying.pop(hit.address, None)
+            if info is not None:
+                self.device_disconnected.emit(hit.address, False)
+            if hit.address in self._wanted:
+                task = self._reconnect_tasks.get(hit.address)
+                if task is None or task.done():
+                    self._reconnect_tasks[hit.address] = asyncio.create_task(recover())
+
+        async def _connect():
+            from bleak import BleakClient
+
+            worker = self._worker
+            if worker is not None and worker.isRunning():
+                worker.cancel()
+                stopped = await asyncio.to_thread(worker.wait, 6500)
+                if not stopped:
+                    raise RuntimeError('扫描尚未停止，请重试连接')
+
+            client = BleakClient(
+                hit.address, disconnected_callback=on_disconnect,
+                timeout=self.CONNECT_TIMEOUT,
+            )
+            await client.connect()
+            if hit.address not in self._wanted or self._generations.get(hit.address) != generation:
+                await client.disconnect()
+                raise asyncio.CancelledError
+            tree = self._build_tree(client)
+            self._clients[hit.address] = AttClient(client, retired=lambda reason: (
+                self.op_failed.emit('ATT', hit.address, reason), on_disconnect(client)))
+            self.connected[hit.address] = {"name": hit.name or hit.address, "tree": tree}
+            return tree
+
+        async def recover():
+            tree = None
+            async def attempt():
+                nonlocal tree
+                tree = await _connect()
+            try:
+                restored = await reconnect(lambda: hit.address in self._wanted and self._generations.get(hit.address) == generation, attempt)
+                if restored:
+                    self.device_reconnected.emit(hit.address, hit.name or hit.address, tree)
+                elif hit.address in self._wanted and self._generations.get(hit.address) == generation:
+                    self.op_failed.emit('connect', hit.address, '已尝试三次重连，请手动重试')
+            finally:
+                if self._reconnect_tasks.get(hit.address) is asyncio.current_task():
+                    self._reconnect_tasks.pop(hit.address, None)
+
+        fut = self._gatt.submit(_connect())
+        def _done(f: Future) -> None:
+            if self._generations.get(hit.address) != generation or hit.address not in self._wanted:
+                return
+            try:
+                tree = f.result()
+            except Exception as exc:  # noqa: BLE001 - 连接失败落状态词
+                self.op_failed.emit("connect", hit.address, str(exc))
+            else:
+                self.device_connected.emit(hit.address, hit.name or hit.address, tree)
+        fut.add_done_callback(_done)
+
+    def disconnect_device(self, address: str) -> None:
+        self._wanted.pop(address, None)
+        self._generations[address] = self._generations.get(address, 0) + 1
+        client = self._clients.pop(address, None)
+        self.connected.pop(address, None)
+        self._notifying.pop(address, None)
+        if client is None:
+            self.device_disconnected.emit(address, True)
+            return
+
+        async def _disc():
+            try:
+                await client.disconnect()
+            except Exception:  # noqa: BLE001 - 已断链时 disconnect 报错属正常
+                pass
+        self._gatt.submit(_disc())
+        self.device_disconnected.emit(address, True)
+
+    def disconnect_all(self) -> None:
+        for address in list(set(self._clients) | set(self._wanted)):
+            self.disconnect_device(address)
+
+    def shutdown(self) -> None:
+        """退出前收尾：先停广播边车（dwin-quit 正典顺序），再断全部连接，停 GATT 线程。"""
+        self._closing = True
+        self._probe_generation += 1
+        self._wanted.clear()
+        for address in self._generations:
+            self._generations[address] += 1
+        for task in list(self._reconnect_tasks.values()):
+            if self._gatt._loop is not None and self._gatt._loop.is_running():
+                self._gatt._loop.call_soon_threadsafe(task.cancel)
+        if self._worker is not None and self._worker.isRunning():
+            self._worker.cancel()
+            self._worker.wait(6500)
+        if self.advertising:
+            try:
+                self._broadcast.stop(timeout=3.0)
+            except Exception:  # noqa: BLE001
+                pass
+            self.advertising = False
+        self._broadcast.shutdown()
+        for address in list(self._clients):
+            client = self._clients.get(address)
+            if client is not None:
+                try:
+                    self._gatt.submit(client.disconnect()).result(timeout=8.0)
+                except Exception:  # noqa: BLE001
+                    pass
+        self._clients.clear()
+        self.connected.clear()
+        self._gatt.stop()
+
+    def _build_tree(self, client) -> dict:
+        """bleak services → 展示树（服务/特征中文名 + props 徽章）。"""
+        services = []
+        for svc in client.services:
+            chars = []
+            for ch in svc.characteristics:
+                chars.append({
+                    "uuid": str(ch.uuid),
+                    "name": char_display_name(str(ch.uuid)),
+                    "props": sorted(set(ch.properties or [])),
+                })
+            services.append({
+                "uuid": str(svc.uuid),
+                "name": service_display_name(str(svc.uuid)),
+                "chars": chars,
+            })
+        return {"services": services}
+
+    # ── GATT 原语 ──
+
+    def read_char(self, address: str, uuid: str, service_uuid: str | None = None) -> None:
+        client = self._clients.get(address)
+        if client is None:
+            self.op_failed.emit("read", address, "未连接")
+            return
+        try:
+            characteristic = resolve_characteristic(client, service_uuid, uuid)
+            owner = str(characteristic.service_uuid)
+        except (ValueError, AttributeError) as error:
+            self.op_failed.emit("read", address, str(error))
+            return
+
+        async def _read():
+            data = bytes(await client.read_gatt_char(characteristic))
+            return data
+        self._submit_op("read", address, uuid, _read(),
+                        lambda v: self.char_read.emit(address, owner, uuid, hex_spaced(v), try_utf8(v)))
+
+    def write_char(self, address: str, uuid: str, data: bytes, service_uuid: str | None = None) -> None:
+        if uuid.replace("-", "").lower() == INPUT_CHAR_UUID.replace("-", ""):
+            self.op_failed.emit("write", address,
+                                "INPUT 特征写入已被禁用（SHID-FW-LOCK-001 设备保护）")
+            return
+        client = self._clients.get(address)
+        if client is None:
+            self.op_failed.emit("write", address, "未连接")
+            return
+        try:
+            characteristic = resolve_characteristic(client, service_uuid, uuid)
+            owner = str(characteristic.service_uuid)
+        except (ValueError, AttributeError) as error:
+            self.op_failed.emit("write", address, str(error))
+            return
+
+        properties = set(characteristic.properties)
+        if not properties & {'write', 'write-without-response'}:
+            self.op_failed.emit('write', address, '特征不支持写入')
+            return
+        with_response = 'write' in properties
+        async def _write():
+            # Prefer ATT acknowledgement, but honor a WRITE_NR-only characteristic.
+            await client.write_gatt_char(characteristic, data, response=with_response)
+            return len(data)
+        self._submit_op("write", address, uuid, _write(),
+                        lambda n: self.write_done.emit(address, owner, uuid, n, with_response))
+
+    def set_notify(self, address: str, uuid: str, on: bool, service_uuid: str | None = None) -> None:
+        client = self._clients.get(address)
+        if client is None:
+            self.op_failed.emit("notify", address, "未连接")
+            return
+        try:
+            characteristic = resolve_characteristic(client, service_uuid, uuid)
+            owner = str(characteristic.service_uuid)
+        except (ValueError, AttributeError) as error:
+            self.op_failed.emit("notify", address, str(error))
+            return
+
+        def _on_notify(_char, data: bytearray, _a=address, _u=uuid) -> None:
+            if self._clients.get(_a) is client:
+                self.char_notified.emit(_a, owner, _u, hex_spaced(bytes(data)))
+
+        async def _start():
+            await client.start_notify(characteristic, _on_notify)
+        async def _stop():
+            await client.stop_notify(characteristic)
+
+        if on:
+            def _ok_start(_v) -> None:
+                self._mark_notify(address, uuid, True, owner)
+                self.notify_changed.emit(address, owner, uuid, True)
+            self._submit_op("notify", address, uuid, _start(), _ok_start)
+        else:
+            def _ok_stop(_v) -> None:
+                self._mark_notify(address, uuid, False, owner)
+                self.notify_changed.emit(address, owner, uuid, False)
+            self._submit_op("notify", address, uuid, _stop(), _ok_stop)
+
+    def notifying(self, address: str, uuid: str, service_uuid: str | None = None) -> bool:
+        subscriptions = self._notifying.get(address, set())
+        if service_uuid:
+            return gatt_key(service_uuid, uuid) in subscriptions
+        matches = [entry for entry in subscriptions if entry[1] == gatt_key('', uuid)[1]]
+        return len(matches) == 1
+
+    def _mark_notify(self, address: str, uuid: str, on: bool, service_uuid: str) -> None:
+        table = self._notifying.setdefault(address, set())
+        entry = gatt_key(service_uuid, uuid)
+        if on: table.add(entry)
+        else: table.discard(entry)
+
+    def _submit_op(self, op: str, address: str, uuid: str, aw, on_ok) -> None:
+        client = self._clients.get(address)
+        generation = self._generations.get(address, 0)
+        fut = self._gatt.submit(aw)
+
+        def _done(f: Future) -> None:
+            if self._clients.get(address) is not client or self._generations.get(address, 0) != generation:
+                return
+            try:
+                v = f.result()
+            except Exception as exc:  # noqa: BLE001 - GATT 失败落日志
+                self.op_failed.emit(op, address, f"{uuid}: {exc}")
+            else:
+                on_ok(v)
+        fut.add_done_callback(_done)

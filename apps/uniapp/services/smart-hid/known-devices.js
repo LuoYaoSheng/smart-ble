@@ -1,16 +1,14 @@
-/** Smart HID known-device history normalization (non-sensitive metadata only). */
-
-export const KNOWN_DEVICE_TTL_MS = 90 * 24 * 60 * 60 * 1000;
-export const KNOWN_DEVICES_MAX = 20;
+/** Smart HID 会话快照归一化（仅内存，非敏感元数据）。
+ *
+ * 2026-09-02 决策：F023 已配网设备历史移除（PAGE004/首页面板/90 天 TTL/20 条上限/
+ * 本地持久化一并移除，应用零本地持久化）。本文件只保留 P003「最近配置」所需的
+ * 内存快照清洗：按 deviceId 去重（保留最新 configuredAt）+ 字段兜底。
+ */
 
 /**
- * Deduplicate by deviceId (keep newest configuredAt), drop expired rows, cap list size.
- * Records without configuredAt are kept but sorted last.
+ * Deduplicate by deviceId (keep newest configuredAt) and sanitize snapshot fields.
  */
-export function normalizeKnownDevices(devices, options = {}) {
-  const now = Number.isFinite(options.now) ? options.now : Date.now();
-  const ttlMs = Number.isFinite(options.ttlMs) ? options.ttlMs : KNOWN_DEVICE_TTL_MS;
-  const max = Number.isFinite(options.max) ? options.max : KNOWN_DEVICES_MAX;
+export function normalizeKnownDevices(devices) {
   const byId = new Map();
 
   for (const raw of Array.isArray(devices) ? devices : []) {
@@ -18,8 +16,6 @@ export function normalizeKnownDevices(devices, options = {}) {
     if (!deviceId) continue;
 
     const configuredAt = Number(raw.configuredAt) || 0;
-    if (ttlMs > 0 && configuredAt > 0 && now - configuredAt > ttlMs) continue;
-
     const meta = {
       deviceId,
       name: raw.name || 'Smart HID',
@@ -37,7 +33,5 @@ export function normalizeKnownDevices(devices, options = {}) {
     }
   }
 
-  return [...byId.values()]
-    .sort((a, b) => (Number(b.configuredAt) || 0) - (Number(a.configuredAt) || 0))
-    .slice(0, Math.max(0, max));
+  return [...byId.values()].sort((a, b) => (Number(b.configuredAt) || 0) - (Number(a.configuredAt) || 0));
 }

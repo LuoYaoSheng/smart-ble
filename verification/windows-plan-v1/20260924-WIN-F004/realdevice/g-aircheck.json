@@ -1,0 +1,23 @@
+{
+  "discrimination_run": true,
+  "mfg_frames": 0,
+  "shid_frames": 116,
+  "mfg": [],
+  "shid": [
+    [
+      "SHID",
+      6575.5,
+      "SHID-00000001"
+    ],
+    [
+      "SHID",
+      6575.7,
+      "SHID-00000001"
+    ],
+    [
+      "SHID",
+      6575.7,
+      "SHID-00000001"
+    ]
+  ]
+}

@@ -1,0 +1,550 @@
+
+=== Electron Main Process Started ===
+
+DevTools listening on ws://127.0.0.1:9222/devtools/browser/76c75a5c-5119-41b6-9840-ac1339f3bdb4
+Creating main window...
+IPC: ble:init called
+Loading noble module...
+Noble loaded, state: unknown
+Setting up BLE events
+Window ready to show
+BLE State changed: poweredOn
+[Main -> Renderer] ble:stateChanged: { state: 'poweredOn' }
+Sending initial state: poweredOn to renderer
+[Main -> Renderer] ble:stateChanged: { state: 'poweredOn' }
+IPC: ble:init result: true
+[Main -> Renderer] ble:deviceDiscovered: {
+  id: '7bed925f0e75',
+  name: '',
+  localName: '',
+  rssi: -80,
+  address: '7b:ed:92:5f:0e:75',
+  connectionState: 'disconnected',
+  advertisement: {
+    txPowerLevel: -1012858880,
+    serviceUuids: [],
+    serviceData: [],
+    manufacturerData: '060001092002e62a3966ad5715edaf68e2f5576f30f022b13f157613d5',
+    solicitedServiceUuids: [],
+    connectable: true,
+    scannable: true
+  }
+}
+[Main -> Renderer] ble:deviceDiscovered: {
+  id: '39d83e0e6478',
+  name: '',
+  localName: '',
+  rssi: -65,
+  address: '39:d8:3e:0e:64:78',
+  connectionState: 'disconnected',
+  advertisement: {
+    txPowerLevel: 0,
+    serviceUuids: [],
+    serviceData: [],
+    manufacturerData: '060001092002b85dde2a0d1a2bd629377c46b31e2a8088086b6f415399',
+    solicitedServiceUuids: [],
+    connectable: true,
+    scannable: true
+  }
+}
+[Main -> Renderer] ble:deviceDiscovered: {
+  id: '0f64810e1342',
+  name: '',
+  localName: '',
+  rssi: -75,
+  address: '0f:64:81:0e:13:42',
+  connectionState: 'disconnected',
+  advertisement: {
+    txPowerLevel: 0,
+    serviceUuids: [],
+    serviceData: [],
+    manufacturerData: '060001092022555525d6dcf26140d6dfd3bbaa9175f528c6269cfc825f',
+    solicitedServiceUuids: [],
+    connectable: true,
+    scannable: true
+  }
+}
+[Main -> Renderer] ble:deviceDiscovered: {
+  id: '39d83e0e6478',
+  name: '',
+  localName: '',
+  rssi: -66,
+  address: '39:d8:3e:0e:64:78',
+  connectionState: 'disconnected',
+  advertisement: {
+    txPowerLevel: 0,
+    serviceUuids: [],
+    serviceData: [],
+    manufacturerData: '060001092002b85dde2a0d1a2bd629377c46b31e2a8088086b6f415399',
+    solicitedServiceUuids: [],
+    connectable: true,
+    scannable: true
+  }
+}
+[Main -> Renderer] ble:deviceDiscovered: {
+  id: '10b41dcd238d',
+  name: 'BL',
+  localName: 'BL',
+  rssi: -57,
+  address: '10:b4:1d:cd:23:8d',
+  connectionState: 'disconnected',
+  advertisement: {
+    txPowerLevel: -1703118507,
+    serviceUuids: [ '4fafc2011fb5459e8fccc5c9c331914b' ],
+    serviceData: [],
+    manufacturerData: '',
+    solicitedServiceUuids: [],
+    connectable: true,
+    scannable: true
+  }
+}
+[Main -> Renderer] ble:deviceDiscovered: {
+  id: '10b41dcd238d',
+  name: 'BLEToolkit-Server',
+  localName: 'BLEToolkit-Server',
+  rssi: -57,
+  address: '10:b4:1d:cd:23:8d',
+  connectionState: 'disconnected',
+  advertisement: {
+    txPowerLevel: -1703118507,
+    serviceUuids: [],
+    serviceData: [],
+    manufacturerData: 'e0004c69676874424c45',
+    solicitedServiceUuids: [],
+    connectable: true,
+    scannable: true
+  }
+}
+[Main -> Renderer] ble:deviceDiscovered: {
+  id: '7bed925f0e75',
+  name: '',
+  localName: '',
+  rssi: -81,
+  address: '7b:ed:92:5f:0e:75',
+  connectionState: 'disconnected',
+  advertisement: {
+    txPowerLevel: -1012858880,
+    serviceUuids: [],
+    serviceData: [],
+    manufacturerData: '060001092002e62a3966ad5715edaf68e2f5576f30f022b13f157613d5',
+    solicitedServiceUuids: [],
+    connectable: true,
+    scannable: true
+  }
+}
+[Main -> Renderer] ble:deviceDiscovered: {
+  id: '39d83e0e6478',
+  name: '',
+  localName: '',
+  rssi: -57,
+  address: '39:d8:3e:0e:64:78',
+  connectionState: 'disconnected',
+  advertisement: {
+    txPowerLevel: 0,
+    serviceUuids: [],
+    serviceData: [],
+    manufacturerData: '060001092002b85dde2a0d1a2bd629377c46b31e2a8088086b6f415399',
+    solicitedServiceUuids: [],
+    connectable: true,
+    scannable: true
+  }
+}
+Connected to: 10b41dcd238d
+[Main -> Renderer] ble:deviceConnected: { id: '10b41dcd238d' }
+Starting service discovery for: 10b41dcd238d
+Calling peripheral.discoverServices() with callback
+Discovered 5 services
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [] },
+    { uuid: '1801', name: '通用属性', characteristics: [] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: []
+    }
+  ]
+}
+Discovered 2 characteristics for service: 1800
+Service 1800 has 2 characteristics
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [Array] },
+    { uuid: '1801', name: '通用属性', characteristics: [] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: []
+    }
+  ]
+}
+Discovered 1 characteristics for service: 1801
+Service 1801 has 1 characteristics
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [Array] },
+    { uuid: '1801', name: '通用属性', characteristics: [Array] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: []
+    }
+  ]
+}
+Discovered 2 characteristics for service: 4fafc2011fb5459e8fccc5c9c331914b
+Service 4fafc2011fb5459e8fccc5c9c331914b has 2 characteristics
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [Array] },
+    { uuid: '1801', name: '通用属性', characteristics: [Array] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: [Array]
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: []
+    }
+  ]
+}
+Discovered 7 characteristics for service: 4fafc2011fb5459e8fccc5c9c331914c
+Service 4fafc2011fb5459e8fccc5c9c331914c has 7 characteristics
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [Array] },
+    { uuid: '1801', name: '通用属性', characteristics: [Array] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: [Array]
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: [Array]
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: []
+    }
+  ]
+}
+Discovered 3 characteristics for service: 4fafc2011fb5459e8fccc5c9c331914d
+Service 4fafc2011fb5459e8fccc5c9c331914d has 3 characteristics
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [Array] },
+    { uuid: '1801', name: '通用属性', characteristics: [Array] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: [Array]
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: [Array]
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: [Array]
+    }
+  ]
+}
+Service discovery completed, total services: 5
+Notify set to: true
+Notification received: 7b 22 74 79 70 65 22 3a 22 64 65 76 69 63 65 5f 73 74 61 74 75 73 22 2c 22 6c 65 64 22 3a 22 6f 66 66 22 2c 22 75 70 74 69 6d 65 22 3a 33 35 39 35 39 39 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914b',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26a9',
+  value: '7b 22 74 79 70 65 22 3a 22 64 65 76 69 63 65 5f 73 74 61 74 75 73 22 2c 22 6c 65 64 22 3a 22 6f 66 66 22 2c 22 75 70 74 69 6d 65 22 3a 33 35 39 35 39 39 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 7d'
+}
+Notification received: 7b 22 74 79 70 65 22 3a 22 64 65 76 69 63 65 5f 73 74 61 74 75 73 22 2c 22 6c 65 64 22 3a 22 6f 66 66 22 2c 22 75 70 74 69 6d 65 22 3a 33 36 34 36 35 35 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914b',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26a9',
+  value: '7b 22 74 79 70 65 22 3a 22 64 65 76 69 63 65 5f 73 74 61 74 75 73 22 2c 22 6c 65 64 22 3a 22 6f 66 66 22 2c 22 75 70 74 69 6d 65 22 3a 33 36 34 36 35 35 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 7d'
+}
+Read result: 7b 22 66 69 72 6d 77 61 72 65 5f 76 65 72 73 69 6f 6e 22 3a 22 31 2e 30 2e 30 22 2c 22 68 61 72 64 77 61 72 65 22 3a 22 65 73 70 33 32 2d 77 72 6f 6f 6d 2d 33 32 22 2c 22 75 70 74 69 6d 65 22 3a 33 36 37 2c 22 75 70 74 69 6d 65 5f 73 22 3a 33 36 37 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 2c 22 6e 61 6d 65 22 3a 22 42 4c 45 54 6f 6f 6c 6b 69 74 2d 53 65 72 76 65 72 22 2c 22 74 79 70 65 22 3a 22 73 79 73 74 65 6d 5f 69 6e 66 6f 22 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914b',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26a8',
+  value: '7b 22 66 69 72 6d 77 61 72 65 5f 76 65 72 73 69 6f 6e 22 3a 22 31 2e 30 2e 30 22 2c 22 68 61 72 64 77 61 72 65 22 3a 22 65 73 70 33 32 2d 77 72 6f 6f 6d 2d 33 32 22 2c 22 75 70 74 69 6d 65 22 3a 33 36 37 2c 22 75 70 74 69 6d 65 5f 73 22 3a 33 36 37 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 2c 22 6e 61 6d 65 22 3a 22 42 4c 45 54 6f 6f 6c 6b 69 74 2d 53 65 72 76 65 72 22 2c 22 74 79 70 65 22 3a 22 73 79 73 74 65 6d 5f 69 6e 66 6f 22 7d'
+}
+Read result: 7b 22 74 79 70 65 22 3a 22 72 65 61 64 5f 6f 6e 6c 79 22 2c 22 76 61 6c 75 65 22 3a 22 e8 bf 99 e6 98 af e4 b8 80 e4 b8 aa e5 8f aa e8 af bb e7 89 b9 e5 be 81 e5 80 bc 22 2c 22 74 69 6d 65 73 74 61 6d 70 22 3a 33 36 38 30 38 31 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914c',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26b0',
+  value: '7b 22 74 79 70 65 22 3a 22 72 65 61 64 5f 6f 6e 6c 79 22 2c 22 76 61 6c 75 65 22 3a 22 e8 bf 99 e6 98 af e4 b8 80 e4 b8 aa e5 8f aa e8 af bb e7 89 b9 e5 be 81 e5 80 bc 22 2c 22 74 69 6d 65 73 74 61 6d 70 22 3a 33 36 38 30 38 31 7d'
+}
+Writing: FF01 format: hex
+Notification received: 7b 22 74 79 70 65 22 3a 22 77 72 69 74 65 5f 72 65 73 70 6f 6e 73 65 22 2c 22 63 6f 6d 6d 61 6e 64 22 3a 22 46 46 30 31 22 2c 22 6c 65 64 5f 73 74 61 74 65 22 3a 22 6f 6e 22 2c 22 62 6c 69 6e 6b 5f 70 61 74 74 65 72 6e 22 3a 31 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914b',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26a9',
+  value: '7b 22 74 79 70 65 22 3a 22 77 72 69 74 65 5f 72 65 73 70 6f 6e 73 65 22 2c 22 63 6f 6d 6d 61 6e 64 22 3a 22 46 46 30 31 22 2c 22 6c 65 64 5f 73 74 61 74 65 22 3a 22 6f 6e 22 2c 22 62 6c 69 6e 6b 5f 70 61 74 74 65 72 6e 22 3a 31 7d'
+}
+Write success
+Writing: 开灯 format: utf8
+Notification received: 7b 22 74 79 70 65 22 3a 22 77 72 69 74 65 5f 72 65 73 70 6f 6e 73 65 22 2c 22 63 6f 6d 6d 61 6e 64 22 3a 22 e5 bc 80 e7 81 af 22 2c 22 6c 65 64 5f 73 74 61 74 65 22 3a 22 6f 6e 22 2c 22 62 6c 69 6e 6b 5f 70 61 74 74 65 72 6e 22 3a 31 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914b',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26a9',
+  value: '7b 22 74 79 70 65 22 3a 22 77 72 69 74 65 5f 72 65 73 70 6f 6e 73 65 22 2c 22 63 6f 6d 6d 61 6e 64 22 3a 22 e5 bc 80 e7 81 af 22 2c 22 6c 65 64 5f 73 74 61 74 65 22 3a 22 6f 6e 22 2c 22 62 6c 69 6e 6b 5f 70 61 74 74 65 72 6e 22 3a 31 7d'
+}
+Write success
+Notification received: 7b 22 74 79 70 65 22 3a 22 64 65 76 69 63 65 5f 73 74 61 74 75 73 22 2c 22 6c 65 64 22 3a 22 6f 6e 22 2c 22 75 70 74 69 6d 65 22 3a 33 36 39 37 31 31 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914b',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26a9',
+  value: '7b 22 74 79 70 65 22 3a 22 64 65 76 69 63 65 5f 73 74 61 74 75 73 22 2c 22 6c 65 64 22 3a 22 6f 6e 22 2c 22 75 70 74 69 6d 65 22 3a 33 36 39 37 31 31 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 7d'
+}
+Writing: 关灯 format: utf8
+Notification received: 7b 22 74 79 70 65 22 3a 22 77 72 69 74 65 5f 72 65 73 70 6f 6e 73 65 22 2c 22 63 6f 6d 6d 61 6e 64 22 3a 22 e5 85 b3 e7 81 af 22 2c 22 6c 65 64 5f 73 74 61 74 65 22 3a 22 6f 66 66 22 2c 22 62 6c 69 6e 6b 5f 70 61 74 74 65 72 6e 22 3a 30 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914b',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26a9',
+  value: '7b 22 74 79 70 65 22 3a 22 77 72 69 74 65 5f 72 65 73 70 6f 6e 73 65 22 2c 22 63 6f 6d 6d 61 6e 64 22 3a 22 e5 85 b3 e7 81 af 22 2c 22 6c 65 64 5f 73 74 61 74 65 22 3a 22 6f 66 66 22 2c 22 62 6c 69 6e 6b 5f 70 61 74 74 65 72 6e 22 3a 30 7d'
+}
+Write success
+Writing: FF00 format: hex
+Notification received: 7b 22 74 79 70 65 22 3a 22 77 72 69 74 65 5f 72 65 73 70 6f 6e 73 65 22 2c 22 63 6f 6d 6d 61 6e 64 22 3a 22 46 46 30 30 22 2c 22 6c 65 64 5f 73 74 61 74 65 22 3a 22 6f 66 66 22 2c 22 62 6c 69 6e 6b 5f 70 61 74 74 65 72 6e 22 3a 30 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914b',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26a9',
+  value: '7b 22 74 79 70 65 22 3a 22 77 72 69 74 65 5f 72 65 73 70 6f 6e 73 65 22 2c 22 63 6f 6d 6d 61 6e 64 22 3a 22 46 46 30 30 22 2c 22 6c 65 64 5f 73 74 61 74 65 22 3a 22 6f 66 66 22 2c 22 62 6c 69 6e 6b 5f 70 61 74 74 65 72 6e 22 3a 30 7d'
+}
+Write success
+Notification received: 7b 22 74 79 70 65 22 3a 22 64 65 76 69 63 65 5f 73 74 61 74 75 73 22 2c 22 6c 65 64 22 3a 22 6f 66 66 22 2c 22 75 70 74 69 6d 65 22 3a 33 37 34 37 36 37 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914b',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26a9',
+  value: '7b 22 74 79 70 65 22 3a 22 64 65 76 69 63 65 5f 73 74 61 74 75 73 22 2c 22 6c 65 64 22 3a 22 6f 66 66 22 2c 22 75 70 74 69 6d 65 22 3a 33 37 34 37 36 37 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 7d'
+}
+Notification received: 7b 22 74 79 70 65 22 3a 22 64 65 76 69 63 65 5f 73 74 61 74 75 73 22 2c 22 6c 65 64 22 3a 22 6f 66 66 22 2c 22 75 70 74 69 6d 65 22 3a 33 37 39 38 32 33 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914b',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26a9',
+  value: '7b 22 74 79 70 65 22 3a 22 64 65 76 69 63 65 5f 73 74 61 74 75 73 22 2c 22 6c 65 64 22 3a 22 6f 66 66 22 2c 22 75 70 74 69 6d 65 22 3a 33 37 39 38 32 33 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 7d'
+}
+Notify set to: false
+Read result: 7b 22 66 69 72 6d 77 61 72 65 5f 76 65 72 73 69 6f 6e 22 3a 22 31 2e 30 2e 30 22 2c 22 68 61 72 64 77 61 72 65 22 3a 22 65 73 70 33 32 2d 77 72 6f 6f 6d 2d 33 32 22 2c 22 75 70 74 69 6d 65 22 3a 34 30 30 2c 22 75 70 74 69 6d 65 5f 73 22 3a 34 30 30 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 2c 22 6e 61 6d 65 22 3a 22 42 4c 45 54 6f 6f 6c 6b 69 74 2d 53 65 72 76 65 72 22 2c 22 74 79 70 65 22 3a 22 73 79 73 74 65 6d 5f 69 6e 66 6f 22 7d
+[Main -> Renderer] ble:characteristicValueChanged: {
+  deviceId: '10b41dcd238d',
+  serviceUuid: '4fafc2011fb5459e8fccc5c9c331914b',
+  characteristicUuid: 'beb5483e36e14688b7f5ea07361b26a8',
+  value: '7b 22 66 69 72 6d 77 61 72 65 5f 76 65 72 73 69 6f 6e 22 3a 22 31 2e 30 2e 30 22 2c 22 68 61 72 64 77 61 72 65 22 3a 22 65 73 70 33 32 2d 77 72 6f 6f 6d 2d 33 32 22 2c 22 75 70 74 69 6d 65 22 3a 34 30 30 2c 22 75 70 74 69 6d 65 5f 73 22 3a 34 30 30 2c 22 66 69 78 74 75 72 65 5f 72 6f 6c 65 22 3a 22 70 65 72 69 70 68 65 72 61 6c 22 2c 22 6e 61 6d 65 22 3a 22 42 4c 45 54 6f 6f 6c 6b 69 74 2d 53 65 72 76 65 72 22 2c 22 74 79 70 65 22 3a 22 73 79 73 74 65 6d 5f 69 6e 66 6f 22 7d'
+}
+Writing: {"cmd":"fault","type":"disconnect"} format: utf8
+Writing: {"cmd":"fault","type":"disconnect"} format: utf8
+Peripheral disconnected unexpectedly: 10b41dcd238d
+[Main -> Renderer] ble:deviceDisconnected: { id: '10b41dcd238d' }
+Connected to: 10b41dcd238d
+[Main -> Renderer] ble:deviceConnected: { id: '10b41dcd238d' }
+Starting service discovery for: 10b41dcd238d
+Calling peripheral.discoverServices() with callback
+Discovered 5 services
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [] },
+    { uuid: '1801', name: '通用属性', characteristics: [] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: []
+    }
+  ]
+}
+Peripheral disconnected unexpectedly: 10b41dcd238d
+[Main -> Renderer] ble:deviceDisconnected: { id: '10b41dcd238d' }
+Peripheral disconnected unexpectedly: 10b41dcd238d
+[Main -> Renderer] ble:deviceDisconnected: { id: '10b41dcd238d' }
+[Main -> Renderer] ble:deviceDisconnected: { id: '10b41dcd238d' }
+Discovered 2 characteristics for service: 1800
+Service 1800 has 2 characteristics
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [Array] },
+    { uuid: '1801', name: '通用属性', characteristics: [] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: []
+    }
+  ]
+}
+Characteristic discovery timeout for service: 1801
+Service 1801 has 0 characteristics
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [Array] },
+    { uuid: '1801', name: '通用属性', characteristics: [] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: []
+    }
+  ]
+}
+Characteristic discovery timeout for service: 4fafc2011fb5459e8fccc5c9c331914b
+Service 4fafc2011fb5459e8fccc5c9c331914b has 0 characteristics
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [Array] },
+    { uuid: '1801', name: '通用属性', characteristics: [] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: []
+    }
+  ]
+}
+Characteristic discovery timeout for service: 4fafc2011fb5459e8fccc5c9c331914c
+Service 4fafc2011fb5459e8fccc5c9c331914c has 0 characteristics
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [Array] },
+    { uuid: '1801', name: '通用属性', characteristics: [] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: []
+    }
+  ]
+}
+Characteristic discovery timeout for service: 4fafc2011fb5459e8fccc5c9c331914d
+Service 4fafc2011fb5459e8fccc5c9c331914d has 0 characteristics
+[Main -> Renderer] ble:servicesDiscovered: {
+  deviceId: '10b41dcd238d',
+  services: [
+    { uuid: '1800', name: '通用访问', characteristics: [Array] },
+    { uuid: '1801', name: '通用属性', characteristics: [] },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914b',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914c',
+      name: 'OTA 升级服务',
+      characteristics: []
+    },
+    {
+      uuid: '4fafc2011fb5459e8fccc5c9c331914d',
+      name: 'OTA 升级服务',
+      characteristics: []
+    }
+  ]
+}
+Service discovery completed, total services: 5

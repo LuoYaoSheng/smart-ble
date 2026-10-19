@@ -15,16 +15,6 @@ module.exports = {
         },
         "executablePath": ""
     },
-    "mp-weixin": {
-        "port": 9420,
-        "account": "",
-        "args": "",
-        "cwd": "",
-        "launch": true,
-        "teardown": "disconnect",
-        "remote": false,
-        "executablePath": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli"
-    },
     "app-plus": {
         "android": {
             "id": "",

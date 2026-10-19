@@ -1,4 +1,4 @@
-# SmartBLE Tauri - Architecture Documentation
+# 蓝析BLE工具箱 Tauri - Architecture Documentation
 
 ## Overview
 

@@ -80,7 +80,7 @@ test('HARNESS-C-008 故意错误：Must FEAT-081 失去全部测试必须被抓'
 
 test('HARNESS-C-009 故意错误：套件计数与实算不一致必须被抓', () => {
   const files = mutateJson(snapshot('traceability'), 'contracts/target/test-traceability.json', (d) => {
-    d.tests = d.tests.slice(0, 100);
+    d.tests = d.tests.slice(0, 88); // MAC-001 后 91 条；截断必须触发套件计数断言
   });
   const r = runTrace(makeVirtualCtx(files));
   assert.ok(!r.pass);
@@ -194,7 +194,8 @@ test('HARNESS-C-004 故意错误：状态词越界必须被抓', () => {
 
 test('HARNESS-C-004 故意错误：正式入口降级无说明必须被抓', () => {
   const files = mutateJson(snapshot('platforms'), 'contracts/target/platform-target.json', (d) => {
-    const cap = d.capabilities.find((x) => x.wechat === 'Adapted' && (x.degradation_ui || '').trim());
+    // MAC-001 后无 wechat 列；用 android_app 的 Adapted 项（后台保连）验证降级说明守卫
+    const cap = d.capabilities.find((x) => x.android_app === 'Adapted' && (x.degradation_ui || '').trim());
     cap.degradation_ui = '';
   });
   const r = runPlatforms(makeVirtualCtx(files));
@@ -204,7 +205,7 @@ test('HARNESS-C-004 故意错误：正式入口降级无说明必须被抓', () 
 
 test('HARNESS-C-004 故意错误：能力值越界必须被抓', () => {
   const files = mutateJson(snapshot('platforms'), 'contracts/target/platform-target.json', (d) => {
-    d.capabilities[0].wechat = 'Partial';
+    d.capabilities[0].h5 = 'Partial';
   });
   const r = runPlatforms(makeVirtualCtx(files));
   assert.ok(!r.pass);

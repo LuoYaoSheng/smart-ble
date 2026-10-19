@@ -6,6 +6,17 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 // 暴露安全的 API 给渲染进程
 contextBridge.exposeInMainWorld('bleAPI', {
+  // F027 版本元数据：运行时渠道版本（主进程 app.getVersion()）
+  getAppVersion: () => ipcRenderer.invoke('app:getVersion'),
+
+  // 退出确认（10_platform §4：close 被拦截后主进程通知渲染层弹模态；确认后回执退出）
+  onConfirmExit: (callback) => {
+    const listener = (event, data) => callback(data);
+    ipcRenderer.on('app:confirm-exit', listener);
+    return () => ipcRenderer.removeListener('app:confirm-exit', listener);
+  },
+  confirmExit: (quit) => ipcRenderer.invoke('app:confirm-exit', quit),
+
   // 初始化
   init: () => ipcRenderer.invoke('ble:init'),
 
@@ -24,8 +35,8 @@ contextBridge.exposeInMainWorld('bleAPI', {
   readCharacteristic: (deviceId, serviceUuid, charUuid) =>
     ipcRenderer.invoke('ble:readCharacteristic', deviceId, serviceUuid, charUuid),
 
-  writeCharacteristic: (deviceId, serviceUuid, charUuid, data, withoutResponse) =>
-    ipcRenderer.invoke('ble:writeCharacteristic', deviceId, serviceUuid, charUuid, data, withoutResponse),
+  writeCharacteristic: (deviceId, serviceUuid, charUuid, data, format) =>
+    ipcRenderer.invoke('ble:writeCharacteristic', deviceId, serviceUuid, charUuid, data, format),
 
   // writeRaw: accepts raw byte array — used by OTA chunked transfer
   writeRaw: (deviceId, serviceUuid, charUuid, data, withoutResponse) =>

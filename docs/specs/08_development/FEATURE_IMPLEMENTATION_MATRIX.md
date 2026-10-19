@@ -60,14 +60,14 @@
 | F018 | Profile 设备识别 | Profile 配网域 | P0 | 已实现 | P001/P007 | R14 |
 | F019 | Smart HID 配网向导 | Profile 配网域 | P0 | 已实现 | P002 | R15 |
 | F020 | ControlHub 配对码扫码 | Profile 配网域 | P0 | 已实现 | P002 | R16 |
-| F021 | 分帧加密写入+状态跟踪 | Profile 配网域 | P0 | 已实现 | P002 | R17 |
+| F021 | 分帧明文写入+状态跟踪 | Profile 配网域 | P0 | 已实现 | P002 | R17 |
 | F022 | 配网错误恢复 | Profile 配网域 | P0 | 已实现 | P002 | R18 |
 | ~~F023~~ | ~~已配网设备历史~~ | （Profile 配网域） | — | **已移除（2026-09-02）** | — | R19 作废 |
 | F024 | Smart HID 诊断 | Profile 配网域 | P1 | 已实现 | P005 | R20 |
 | F025 | OTA 固件升级 | OTA 域 | P1 | 部分实现（端到端 BLOCKED） | P006 子流程 | R25 |
 | F026 | 日志脱敏 | 系统信息与支撑域 | P0 | 已实现 | 横切 | R28 |
 | F027 | 版本元数据展示 | 系统信息与支撑域 | P2 | 已实现 | P009/P010 | R26 |
-| F028 | 小程序推广跳转 | 系统信息与支撑域 | P2 | 部分实现（二维码待实现） | P009 | R27 |
+| F028 | 小程序推广跳转 | 系统信息与支撑域 | P2 | **已移除（2026-09-10）** | P009 | R27（随移除失效） |
 | F029 | 分享 | 系统信息与支撑域 | P2 | 已实现 | P009+页面级 | — |
 | F030 | 国际化 | 系统信息与支撑域 | P2 | 未实现（不做） | — | R30（现状确认） |
 
@@ -206,7 +206,7 @@
 - **Pinia Store**：Session 写队列——同设备串行 / 跨设备并行 / 超时 5s / 深 16 / 优先级插队（PRD §4.2 · MODULE_ARCH §3）
 - **Service 接口**：ble-runtime —— 写队列
 - **BLE API**：BLE.write(serviceUUID,charUUID,data)（API §9）· wx.writeBLECharacteristicValue（写队列串行化=本功能，API_ACTION_MATRIX §4）
-- **Platform Adapter**：无差异（配网加密写的平台语义差异归 F021）
+- **Platform Adapter**：无差异（配网明文写与旧固件 fail-fast 语义归 F021）
 - **测试用例**：R09 · COVERAGE_CHECKLIST F009 行 · SEQ §3 写分支 · 基准 P006 写弹窗场景
 
 ### F010 Notify 监听（P0）
@@ -360,7 +360,7 @@
 - **Platform Adapter**：**差异·扫码行**（10_platform §4）——微信/App=uni.scanCode（解析 shid://pair）；Desktop=摄像头扫码为主+粘贴/手输兜底（D2 后）；Web=S2 不可达
 - **测试用例**：R16 · COVERAGE_CHECKLIST F020 行 · SEQ §5 扫码分支 · 基准 P002 扫码四分支场景
 
-### F021 分帧加密写入+状态跟踪（P0）
+### F021 分帧明文写入+状态跟踪（P0）
 
 - **业务域**：Profile 配网域
 - **用户入口**：P002 configure 阶段「下发配置」按钮（canSubmit=SSID+Hub+token 齐且非配网中，PAGE_SPEC §2 按钮表 P02-05）；status 阶段「取消等待」（P02-06）
@@ -369,9 +369,9 @@
 - **页面状态**：设备侧 STATUS state/step 驱动四行进度（pairing→hub active、ready→全 done，SM §4）；60s 轮询超时→取消等待
 - **Pinia Store**：hid.js —— 进度
 - **Service 接口**：smart-hid·provisionAndWait（60s）+ core·framing（framed-v1 分帧：帧头 3B [seq][total][len] / 单块≤128B / 组装 1024B / ≤64 帧 / 帧间隔 30ms）（MODULE_ARCH §3 · SEQ §5）
-- **BLE API**：BLE.write（加密顺序写 INPUT 特征 1003，Just Works 加密，API §9）
-- **Platform Adapter**：**差异·BLE 写语义**——Android 首次加密写触发系统配对弹窗，取消 2s 自动重试一次；再取消→失败恢复（二次策略【未知】登记，PLATFORM_ADAPTER_SPEC §4.1 · DEVELOPMENT_SCOPE §7）
-- **测试用例**：R17 · COVERAGE_CHECKLIST F021 行 · SEQ §5 下发分支 · 基准 P002 下发→四行进度至 READY；app 实例系统配对场景
+- **BLE API**：BLE.write（明文顺序写 INPUT 特征 1003，不发起 SMP，API §9）
+- **Platform Adapter**：各平台统一直连写入；旧加密固件错误 fail-fast 并提示重烧 V1 简化固件（PLATFORM_ADAPTER_SPEC §4.1 · DEVELOPMENT_SCOPE §7）
+- **测试用例**：R17 · COVERAGE_CHECKLIST F021 行 · SEQ §5 下发分支 · 基准 P002 下发→四行进度至 READY；断言零系统配对弹窗与单次写失败
 
 ### F022 配网错误恢复（P0）
 
@@ -451,18 +451,19 @@
 - **Platform Adapter**：运行时版本取值渠道分支（APP widget 版本 / 微信 getAccountInfoSync，兜底构建元数据）——取值渠道差异，非行为差异（PAGE_SPEC §9 数据展示规则）
 - **测试用例**：R26 · COVERAGE_CHECKLIST F027 行 · 基准 P010 全页+三空态场景
 
-### F028 小程序推广跳转（P2）
+### F028 小程序推广跳转（P2 · 2026-09-10 已移除）
+
+> **移除说明（用户指示 2026-09-10）**：关于页「更多小程序」推广区整链下线——正典/平台原型（页面+mock+action+CSS）、uniapp（about 页+product.js+app-card 组件）、flutter（_PromoTile+product.dart）、N-IOS（promotionCard）、N-MAC（推广卡+PseudoQRView）全部清除；R27 验收路径与 COVERAGE F028 行随之失效；C11 promo-card 编号退役。以下历史描述仅作存档。
 
 - **业务域**：系统信息与支撑域
-- **用户入口**：P009「更多小程序」推广卡点击（PAGE_SPEC §9 按钮表 P09-04）
-- **对应页面**：P009 关于（推广区）
-- **UI 组件**：C11 promo-card（图标块+名称+说明+「前往」soft sm；微信端点击直接发起跳转无确认弹窗；非微信渠道=推广详情 sheet：小程序码+「打开落地页」主操作）（COMPONENT.md C11）
-- **页面状态**：未配置 appId→toast「该小程序暂未配置跳转」；跳转失败→modal 重试提示（PAGE_SPEC §9 异常处理）
+- **用户入口**：P009「更多小程序」推广卡点击（PAGE_SPEC §9 按钮表 P09-04 · 已随移除删除）
+- **对应页面**：P009 关于（推广区 · 已移除）
+- **UI 组件**：C11 promo-card（已移除，编号退役）
+- **页面状态**：（已移除）
 - **Pinia Store**：—（静态配置投影）
 - **Service 接口**：—（平台能力直调；二维码为静态预生成资源·零后端）
-- **BLE API**：—
-- **Platform Adapter**：**差异·推广跳转行**（10_platform §4）——微信=navigateToMiniProgram 直跳；App=落地页（系统浏览器）+小程序码 sheet；二维码=待实现项（PRD §5 F028 状态「部分实现」）
-- **测试用例**：R27 · COVERAGE_CHECKLIST F028 行 · 基准 P009 推广卡场景（含 v1.4.0「跳转失败」场景）
+- **Platform Adapter**：10_platform §4「推广跳转（F028）」差异行已随移除作废
+- **测试用例**：R27（失效）· COVERAGE_CHECKLIST F028 行（作废）· 基准 P009 推广卡场景（随原型下线）
 
 ### F029 分享（P2）
 

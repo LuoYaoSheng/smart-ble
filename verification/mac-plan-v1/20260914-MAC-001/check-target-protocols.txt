@@ -1,0 +1,58 @@
+ok   : [TEST-C-012] ble-fixture-target.json 可解析
+ok   : [TEST-C-012] SVC-01 服务 UUID 形态合法（4fafc201-1fb5-459e-8fcc-c5c9c331914b）
+ok   : [TEST-C-012] SVC-01 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26a8）
+ok   : [TEST-C-012] SVC-01 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26a9）
+ok   : [TEST-C-012] SVC-02 服务 UUID 形态合法（4fafc201-1fb5-459e-8fcc-c5c9c331914c）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b0）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b1）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b2）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b3）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b4）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b5）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b6）
+ok   : [TEST-C-012] SVC-03 服务 UUID 形态合法（4fafc201-1fb5-459e-8fcc-c5c9c331914d）
+ok   : [TEST-C-012] SVC-03 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26c0）
+ok   : [TEST-C-012] SVC-03 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26c1）
+ok   : [TEST-C-012] SVC-03 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26c2）
+ok   : [TEST-C-012] ≥12 个特征/服务 UUID 全局唯一（实际 15）
+ok   : [TEST-C-012] OTA 事务为 10 步（实际 10）
+ok   : [TEST-C-012] OTA 步骤 pre_step_package_validation 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[0] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[1] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[3] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[4] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[5] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[6] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[8] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[9] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤严格递增（位置 1→3→4→5→6→8→9）
+ok   : [TEST-C-012] OTA 错误码 ≥5（实际 5）
+ok   : [TEST-C-012] DEC-016 固件包 = manifest.json + firmware.bin
+ok   : [TEST-C-012] DEC-016 六项传输前校验字段齐全
+ok   : [TEST-C-012] 串口 JSON：115200 波特、≥8 类事件
+ok   : [TEST-C-012] LED 指令 ≥4
+ok   : [TEST-C-012] 故障注入 ≥7
+ok   : [TEST-C-012] 双夹具：peripheral + observer
+ok   : [TEST-C-012] 12 号文档登记 UUID 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+ok   : [TEST-C-012] 12 号文档登记 UUID 4fafc201-1fb5-459e-8fcc-c5c9c331914c
+ok   : [TEST-C-012] 12 号文档登记 UUID 4fafc201-1fb5-459e-8fcc-c5c9c331914d
+ok   : [TEST-C-013] smart-hid-target.json 可解析
+ok   : [TEST-C-013] 恰好八类错误（实际 8）
+ok   : [TEST-C-013] ERR-HID-01..08 连续登记
+ok   : [TEST-C-013] 状态机含 ready 终态
+ok   : [TEST-C-013] 分帧上限 128B 且公式含 min(128)
+ok   : [TEST-C-013] 配网 token 仅内存（发现持久化语义："仅内存；不持久化、不入日志/URL/截图"）
+ok   : [TEST-C-013] Smart HID GATT UUID ≥4、形态合法、唯一
+ok   : [TEST-C-013] 受锁定镜像包含 HID 服务 UUID
+ok   : [TEST-C-013] 镜像 lock 边界可追溯
+ok   : [TEST-C-013] 13 号文档登记 HID 服务 UUID
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-01
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-02
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-03
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-04
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-05
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-06
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-07
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-08
+
+check-target-protocols: PASS（56/56）

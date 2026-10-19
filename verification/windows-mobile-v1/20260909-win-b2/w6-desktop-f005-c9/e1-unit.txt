@@ -1,0 +1,215 @@
+TAP version 13
+# Subtest: mirror: device-display-name.js 在两线间逐字节一致
+ok 1 - mirror: device-display-name.js 在两线间逐字节一致
+  ---
+  duration_ms: 6.0257
+  ...
+# Subtest: 链 1: device.name 命中（GAP 名）
+ok 2 - 链 1: device.name 命中（GAP 名）
+  ---
+  duration_ms: 1.0696
+  ...
+# Subtest: 链 2: localName 投影（noble/btleplug 主路径：name 为空时走广播名）
+ok 3 - 链 2: localName 投影（noble/btleplug 主路径：name 为空时走广播名）
+  ---
+  duration_ms: 0.6296
+  ...
+# Subtest: 链 3/4: AD 结构 0x09/0x08 解析
+ok 4 - 链 3/4: AD 结构 0x09/0x08 解析
+  ---
+  duration_ms: 2.0024
+  ...
+# Subtest: 链 5: profile 名兜底（Smart HID 接入后主路径）
+ok 5 - 链 5: profile 名兜底（Smart HID 接入后主路径）
+  ---
+  duration_ms: 0.6565
+  ...
+# Subtest: 链 7: 未命名兜底 = 「未命名 BLE · ID后四位」（不显示 Unknown/未知设备）
+ok 6 - 链 7: 未命名兜底 = 「未命名 BLE · ID后四位」（不显示 Unknown/未知设备）
+  ---
+  duration_ms: 0.6626
+  ...
+# Subtest: attachDeviceDisplayName: 不修改入参、附加投影字段
+ok 7 - attachDeviceDisplayName: 不修改入参、附加投影字段
+  ---
+  duration_ms: 0.8209
+  ...
+# Subtest: T-WIN 线 API 行为与 E-WIN 一致
+ok 8 - T-WIN 线 API 行为与 E-WIN 一致
+  ---
+  duration_ms: 1.4615
+  ...
+# Subtest: mirror: ota-contract.js 在两线间逐字节一致
+ok 9 - mirror: ota-contract.js 在两线间逐字节一致
+  ---
+  duration_ms: 6.9405
+  ...
+# Subtest: mirror: 两线 index.html 均在 OtaDialog 之前引入 ota-contract.js
+ok 10 - mirror: 两线 index.html 均在 OtaDialog 之前引入 ota-contract.js
+  ---
+  duration_ms: 3.4413
+  ...
+# Subtest: R-2: ready 帧触发 ready
+ok 11 - R-2: ready 帧触发 ready
+  ---
+  duration_ms: 1.0188
+  ...
+# Subtest: R-2: success + rebooting 触发 success
+ok 12 - R-2: success + rebooting 触发 success
+  ---
+  duration_ms: 0.8883
+  ...
+# Subtest: R-2: error 帧（code/detail）触发 error
+ok 13 - R-2: error 帧（code/detail）触发 error
+  ---
+  duration_ms: 0.8268
+  ...
+# Subtest: R-2 回归: "failed" 整值不在旧精确匹配集合 → 子串匹配必须命中
+ok 14 - R-2 回归: "failed" 整值不在旧精确匹配集合 → 子串匹配必须命中
+  ---
+  duration_ms: 0.9903
+  ...
+# Subtest: R-2 回归: "aborted"（固件 abort 通知）必须命中错误类
+ok 15 - R-2 回归: "aborted"（固件 abort 通知）必须命中错误类
+  ---
+  duration_ms: 0.661
+  ...
+# Subtest: R-2: 版本串等无关帧静默忽略（null）
+ok 16 - R-2: 版本串等无关帧静默忽略（null）
+  ---
+  duration_ms: 0.924
+  ...
+# Subtest: R-2: 文本帧直配同样子串匹配
+ok 17 - R-2: 文本帧直配同样子串匹配
+  ---
+  duration_ms: 1.2071
+  ...
+# Subtest: R-1: 完整 manifest → 六键契约帧
+ok 18 - R-1: 完整 manifest → 六键契约帧
+  ---
+  duration_ms: 3.3033
+  ...
+# Subtest: R-1: 无 manifest → 省略 target/target_version（不伪造枚举/版本）
+ok 19 - R-1: 无 manifest → 省略 target/target_version（不伪造枚举/版本）
+  ---
+  duration_ms: 0.8108
+  ...
+# Subtest: R-1: 非枚举 target 不进帧
+ok 20 - R-1: 非枚举 target 不进帧
+  ---
+  duration_ms: 0.7174
+  ...
+# Subtest: R-1: display 不泄露 sha256 全文
+ok 21 - R-1: display 不泄露 sha256 全文
+  ---
+  duration_ms: 0.9585
+  ...
+# Subtest: manifest: 契约六字段全过（firmware_version 键）
+ok 22 - manifest: 契约六字段全过（firmware_version 键）
+  ---
+  duration_ms: 1.6192
+  ...
+# Subtest: manifest: legacy "version" 键兼容
+ok 23 - manifest: legacy "version" 键兼容
+  ---
+  duration_ms: 0.8318
+  ...
+# Subtest: manifest: target 非枚举 → invalid_target
+ok 24 - manifest: target 非枚举 → invalid_target
+  ---
+  duration_ms: 0.5271
+  ...
+# Subtest: manifest: 非 SemVer → invalid_semver
+ok 25 - manifest: 非 SemVer → invalid_semver
+  ---
+  duration_ms: 0.595
+  ...
+# Subtest: manifest: size 不符 → size_mismatch；sha 不符 → hash_mismatch
+ok 26 - manifest: size 不符 → size_mismatch；sha 不符 → hash_mismatch
+  ---
+  duration_ms: 1.4112
+  ...
+# Subtest: sha256Hex: 已知向量（空串 / abc）与 Swift CryptoKit 同源事实
+ok 27 - sha256Hex: 已知向量（空串 / abc）与 Swift CryptoKit 同源事实
+  ---
+  duration_ms: 39.7405
+  ...
+# Subtest: hexToBytes/bytesToUtf8: notify 值 hex → 文本
+ok 28 - hexToBytes/bytesToUtf8: notify 值 hex → 文本
+  ---
+  duration_ms: 1.1909
+  ...
+# Subtest: T-WIN 线 API 行为与 E-WIN 一致
+ok 29 - T-WIN 线 API 行为与 E-WIN 一致
+  ---
+  duration_ms: 0.5221
+  ...
+# Subtest: mirror: version-metadata.js / product.js / generated artifact byte-identical across E-WIN & T-WIN
+ok 30 - mirror: version-metadata.js / product.js / generated artifact byte-identical across E-WIN & T-WIN
+  ---
+  duration_ms: 4.9515
+  ...
+# Subtest: mirror: 桌面生成产物值 = uniapp 正典产物值
+ok 31 - mirror: 桌面生成产物值 = uniapp 正典产物值
+  ---
+  duration_ms: 4.259
+  ...
+# Subtest: V1 缺失版本 → dev.unknown（不编造 0.0.0）
+ok 32 - V1 缺失版本 → dev.unknown（不编造 0.0.0）
+  ---
+  duration_ms: 0.4538
+  ...
+# Subtest: V2 release + sha → version+sha
+ok 33 - V2 release + sha → version+sha
+  ---
+  duration_ms: 0.6982
+  ...
+# Subtest: V3 release 无 sha → 裸版本
+ok 34 - V3 release 无 sha → 裸版本
+  ---
+  duration_ms: 0.9925
+  ...
+# Subtest: V4 preview + sha → version-dev.sha（sha 取 7 位）
+ok 35 - V4 preview + sha → version-dev.sha（sha 取 7 位）
+  ---
+  duration_ms: 0.7159
+  ...
+# Subtest: V5 preview 无 sha → version-dev.unknown
+ok 36 - V5 preview 无 sha → version-dev.unknown
+  ---
+  duration_ms: 2.6502
+  ...
+# Subtest: M1 默认元数据：platforms 四键序 / 限制非空 / preview 1 条 / release 不编造
+ok 37 - M1 默认元数据：platforms 四键序 / 限制非空 / preview 1 条 / release 不编造
+  ---
+  duration_ms: 1.8486
+  ...
+# Subtest: M2 空元数据兜底：不抛异常、字段有形
+ok 38 - M2 空元数据兜底：不抛异常、字段有形
+  ---
+  duration_ms: 1.3242
+  ...
+# Subtest: M3 注入 release 元数据 → releases 一条 VERIFIED；注入不污染全局
+ok 39 - M3 注入 release 元数据 → releases 一条 VERIFIED；注入不污染全局
+  ---
+  duration_ms: 1.422
+  ...
+# Subtest: F028 product 投影：两条推广卡，含落地页 URL 与 appId
+ok 40 - F028 product 投影：两条推广卡，含落地页 URL 与 appId
+  ---
+  duration_ms: 0.9824
+  ...
+# Subtest: T-WIN 线 API 行为与 E-WIN 一致
+ok 41 - T-WIN 线 API 行为与 E-WIN 一致
+  ---
+  duration_ms: 2.0197
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 327.1989

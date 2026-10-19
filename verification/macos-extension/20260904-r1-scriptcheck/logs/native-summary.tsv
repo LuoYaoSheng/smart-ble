@@ -1,0 +1,7 @@
+NVB-01	PASS	swift build
+NVB-02	PASS	app run, central+peripheral poweredOn
+NVC-01	PASS	env poweredOn x2
+NVC-02	PASS	scan real devices
+NVC-03	PASS	advertise API
+NVC-04	BLOCKED_FIXTURE	gatt client chain needs a connectable fixture
+NVC-05	BLOCKED_OBSERVER	advertise visibility needs a second endpoint (phone/esp32)

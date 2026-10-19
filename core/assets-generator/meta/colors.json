@@ -1,16 +1,17 @@
 {
+  "_meta": "2026-09-09 UI-PARITY-G0：值对齐 design-tokens.json 正典（docs/specs/07_design_system/TOKEN_REFERENCE.md §6）。dark = light（正典无全局深色模式，TOKEN.md §9.4）。旧 iOS 色（#007AFF/#34C759/#F2F2F7 等）禁用。",
   "theme": {
-    "primary": { "light": "#007AFF", "dark": "#0A84FF" },
-    "primary_dark": { "light": "#0051D5", "dark": "#007AFF" },
-    "primary_light": { "light": "#E8F2FF", "dark": "rgba(10, 132, 255, 0.15)" },
-    "background": { "light": "#F2F2F7", "dark": "#000000" },
-    "surface": { "light": "#FFFFFF", "dark": "#1C1C1E" },
-    "border": { "light": "#E5E5EA", "dark": "#38383A" },
-    "text_primary": { "light": "#000000", "dark": "#FFFFFF" },
-    "text_secondary": { "light": "#8E8E93", "dark": "#EBEBF5" },
-    "text_tertiary": { "light": "#C7C7CC", "dark": "rgba(235, 235, 245, 0.3)" },
-    "success": { "light": "#34C759", "dark": "#30D158" },
-    "warning": { "light": "#FF9500", "dark": "#FF9F0A" },
-    "error": { "light": "#FF3B30", "dark": "#FF453A" }
+    "primary": { "light": "#1B6DFF", "dark": "#1B6DFF" },
+    "primary_dark": { "light": "#0E4FC4", "dark": "#0E4FC4" },
+    "primary_light": { "light": "#E8F1FF", "dark": "#E8F1FF" },
+    "background": { "light": "#F8FBFF", "dark": "#F8FBFF" },
+    "surface": { "light": "#FFFFFF", "dark": "#FFFFFF" },
+    "border": { "light": "#E3EAF3", "dark": "#E3EAF3" },
+    "text_primary": { "light": "#18222E", "dark": "#18222E" },
+    "text_secondary": { "light": "#60758D", "dark": "#60758D" },
+    "text_tertiary": { "light": "#9AA8B6", "dark": "#9AA8B6" },
+    "success": { "light": "#17C7A8", "dark": "#17C7A8" },
+    "warning": { "light": "#FF9F43", "dark": "#FF9F43" },
+    "error": { "light": "#F2555F", "dark": "#F2555F" }
   }
 }

@@ -1,0 +1,4 @@
+ADV-DUMP start dur=6s filter=BLEToolkit
+EVENTS: 63  UNIQUE-ADDRESSES: 8
+10B41DCD238D n=22 rssi=-36/-39 name=[BLEToolkit-Server] conn=1 uuids=4fafc201 mfr=00E0:4C69676874424C45
+ADV-DUMP end

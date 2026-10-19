@@ -1,0 +1,65 @@
+ok   : [TEST-C-005] pages-target.json 可解析
+ok   : [TEST-C-005] 页面集合 = PAGE-001..010 + WEB-001（实际 PAGE-001,PAGE-002,PAGE-003,PAGE-004,PAGE-005,PAGE-006,PAGE-007,PAGE-008,PAGE-009,PAGE-010,WEB-001）
+ok   : [TEST-C-005] 四 Tab 恰为 PAGE-001/PAGE-007/PAGE-008/PAGE-009（实际 PAGE-001/PAGE-007/PAGE-008/PAGE-009）
+ok   : [TEST-C-005] 路由非空且唯一
+ok   : [TEST-C-005] App 页面路由必须以 pages/ 开头
+ok   : [TEST-C-005] WEB-001 路由为 /
+ok   : [TEST-C-005] PAGE-001 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-001 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-001 存在目标页面文档
+ok   : [TEST-C-005] PAGE-002 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-002 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-002 存在目标页面文档
+ok   : [TEST-C-005] PAGE-003 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-003 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-003 存在目标页面文档
+ok   : [TEST-C-005] PAGE-004 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-004 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-004 存在目标页面文档
+ok   : [TEST-C-005] PAGE-005 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-005 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-005 存在目标页面文档
+ok   : [TEST-C-005] PAGE-006 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-006 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-006 存在目标页面文档
+ok   : [TEST-C-005] PAGE-007 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-007 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-007 存在目标页面文档
+ok   : [TEST-C-005] PAGE-008 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-008 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-008 存在目标页面文档
+ok   : [TEST-C-005] PAGE-009 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-009 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-009 存在目标页面文档
+ok   : [TEST-C-005] PAGE-010 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-010 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-010 存在目标页面文档
+ok   : [TEST-C-005] WEB-001 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] WEB-001 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-001 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-002 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-003 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-004 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-005 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-006 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-007 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-008 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-009 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-010 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] WEB-001 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-001 ≥10 状态（含 5 个独立错误/空态）
+ok   : [TEST-C-005] PAGE-002 ≥12 状态（四步进度+八类错误）
+ok   : [TEST-C-005] PAGE-006 ≥14 在册操作（GATT 工作台）
+ok   : [TEST-C-005] PAGE-008 ≥12 状态
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/index/index
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/hid/add
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/hid/detail
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/hid/history
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/hid/diagnostics
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/device/detail
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/connected/index
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/broadcast/index
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/about/index
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/about/version
+
+check-target-pages: PASS（63/63）

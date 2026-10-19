@@ -32,11 +32,11 @@
         "OP-P001-10",
         "OP-P001-11",
         "OP-P001-13",
-        "OP-P001-14",
-        "OP-P001-15"
+        "OP-P001-14"
       ],
       "deprecated_operations": [
-        "OP-P001-12（历史紧凑-移除，TP-G0-R1 废弃：历史管理唯一归 PAGE-004）"
+        "OP-P001-12（历史紧凑-移除，TP-G0-R1 废弃：历史管理唯一归 PAGE-004）",
+        "OP-P001-15"
       ],
       "assertions": {
         "first_screen": "PAGE-001 首屏渲染：扫描",
@@ -318,10 +318,11 @@
         "OP-P009-07",
         "OP-P009-08",
         "OP-P009-09",
-        "OP-P009-10",
+        "OP-P009-10"
+      ],
+      "deprecated_operations": [
         "OP-P009-11"
       ],
-      "deprecated_operations": [],
       "assertions": {
         "first_screen": "PAGE-009 首屏渲染：关于",
         "empty_state": "PAGE-009 空态呈现且不与错误态混淆",
@@ -345,10 +346,11 @@
       "operations": [
         "OP-P010-01",
         "OP-P010-02",
-        "OP-P010-03",
         "OP-P010-04"
       ],
-      "deprecated_operations": [],
+      "deprecated_operations": [
+        "OP-P010-03"
+      ],
       "assertions": {
         "first_screen": "PAGE-010 首屏渲染：版本记录",
         "empty_state": "PAGE-010 空态呈现且不与错误态混淆",
@@ -375,7 +377,6 @@
         "OP-W001-01",
         "OP-W001-02",
         "OP-W001-03",
-        "OP-W001-04",
         "OP-W001-05",
         "OP-W001-06",
         "OP-W001-07",
@@ -384,7 +385,9 @@
         "OP-W001-10",
         "OP-W001-11"
       ],
-      "deprecated_operations": [],
+      "deprecated_operations": [
+        "OP-W001-04"
+      ],
       "assertions": {
         "first_screen": "WEB-001 首屏渲染：公开落地页",
         "empty_state": "WEB-001 空态呈现且不与错误态混淆",

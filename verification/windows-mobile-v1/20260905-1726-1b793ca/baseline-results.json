@@ -1,0 +1,21 @@
+{
+  "runId": "20260905-1726-1b793ca",
+  "head": "1b793ca",
+  "gates": {
+    "git-takeover": "PASS",
+    "environment-check": "PASS",
+    "toolchain-portable": "PASS",
+    "flutter-deps-clean": "PASS (shared_preferences removed, lock 0 refs)",
+    "flutter-analyze": "PASS (0 issues)",
+    "flutter-test": "PASS (59/59)",
+    "uniapp-static": "PASS_WITH_LIMITATION (whitespace gate trips only on user dirty file diag1-full-session.txt)",
+    "uniapp-mp-weixin-build": "PASS",
+    "pio-observer-s3": "PASS (RAM 8.9% Flash 34.3%)",
+    "pio-peripheral-s3": "PASS after fix (RAM 11.1% Flash 42.5%)",
+    "pio-peripheral-esp32dev-regression": "PASS"
+  },
+  "defects": [
+    { "id": "WIN-ESP32-001", "severity": "P1", "summary": "peripheral-family envs link fail: shid_sim_main.cpp multiple setup()/loop vs main.cpp", "fix": "platformio.ini src_filter -<shid_sim_main.cpp> on esp32dev/fixture_peripheral/fixture_peripheral_s3", "verified": "4 envs SUCCESS" }
+  ],
+  "next": "F001-F005 scan domain: flash fixture_peripheral_s3, F-AND real device P001 scan driver first"
+}

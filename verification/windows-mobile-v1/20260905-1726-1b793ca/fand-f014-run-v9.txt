@@ -1,0 +1,149 @@
+== 预授权 + 防三星管控 ==
+== 观察侧串口采集（COM12，全程）==
+== grant-watch（flutter test 重装 APK 会重置授权）==
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Resolving dependencies...
+Downloading packages...
+  archive 4.0.9 (4.2.0 available)
+  async 2.13.0 (2.13.1 available)
+  characters 1.4.0 (1.4.1 available)
+  cli_util 0.4.2 (0.6.0 available)
+  clock 1.1.2 (1.1.3 available)
+  cross_file 0.3.5+2 (0.3.5+5 available)
+  cupertino_icons 1.0.8 (1.0.9 available)
+  dbus 0.7.11 (0.7.15 available)
+  device_info_plus 11.5.0 (13.2.0 available)
+  device_info_plus_platform_interface 7.0.3 (8.1.0 available)
+  ffi 2.1.4 (2.2.0 available)
+  file_picker 11.0.2 (12.2.0 available)
+  flutter_ble_peripheral 2.0.1 (3.1.0 available)
+  flutter_blue_plus 1.36.8 (2.3.12 available)
+  flutter_blue_plus_android 7.0.4 (9.0.3 available)
+  flutter_blue_plus_darwin 7.0.3 (9.0.4 available)
+  flutter_blue_plus_linux 7.0.3 (9.0.3 available)
+  flutter_blue_plus_platform_interface 7.0.0 (9.0.3 available)
+  flutter_blue_plus_web 7.0.2 (9.0.3 available)
+  flutter_lints 3.0.2 (6.0.0 available)
+  flutter_native_splash 2.4.7 (2.4.8 available)
+  flutter_platform_widgets 6.1.0 (discontinued)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  google_fonts 6.3.3 (8.2.1 available)
+  html 0.15.6 (0.15.7 available)
+  image 4.8.0 (4.9.2 available)
+  intl 0.20.2 (0.20.3 available)
+  json_annotation 4.9.0 (4.12.0 available)
+  lints 3.0.0 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.1 available)
+  meta 1.17.0 (1.19.0 available)
+  mobile_scanner 5.2.3 (7.4.0 available)
+  package_info_plus 8.3.1 (10.2.1 available)
+  package_info_plus_platform_interface 3.2.1 (4.1.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_android 2.2.22 (2.3.1 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  permission_handler 11.4.0 (13.0.2 available)
+  permission_handler_android 12.1.0 (14.1.0 available)
+  permission_handler_apple 9.4.7 (9.6.1 available)
+  permission_handler_html 0.1.3+5 (0.1.4+1 available)
+  permission_handler_platform_interface 4.3.0 (4.4.1 available)
+  permission_handler_windows 0.2.1 (0.2.2 available)
+  petitparser 7.0.1 (7.0.2 available)
+  posix 6.5.0 (6.5.2 available)
+  riverpod 2.6.1 (3.4.3 available)
+  rxdart 0.27.7 (0.28.0 available)
+  share_plus 10.1.4 (13.3.0 available)
+  share_plus_platform_interface 5.0.2 (7.2.0 available)
+  source_span 1.10.1 (1.10.2 available)
+  stack_trace 1.12.1 (1.12.2 available)
+  test_api 0.7.7 (0.7.14 available)
+  url_launcher_android 6.3.29 (6.3.33 available)
+  url_launcher_ios 6.4.1 (6.4.2 available)
+  url_launcher_linux 3.2.2 (3.2.3 available)
+  url_launcher_macos 3.2.5 (3.2.6 available)
+  url_launcher_web 2.4.2 (2.4.3 available)
+  url_launcher_windows 3.1.5 (3.1.6 available)
+  vector_math 2.2.0 (2.4.2 available)
+  vm_service 15.0.2 (15.3.0 available)
+  win32 5.15.0 (6.4.0 available)
+  win32_registry 2.1.0 (3.0.3 available)
+  xml 6.6.1 (7.0.1 available)
+  yaml 3.1.3 (3.1.4 available)
+Got dependencies!
+1 package is discontinued.
+68 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p008_broadcast_test.dart
+Running Gradle task 'assembleDebug'...                          
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/11066/.gradle/wrapper/dists/gradle-8.14-all/c2qonpi39x1mddn7hk5gh9iqj/gradle-8.14/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Running Gradle task 'assembleDebug'...                             48.3s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           5.7s
+00:00 +0: P008 广播域 F015/F016/F017（F-AND E5）
+P008[E2E 09:01:41.987]: 启动应用
+[grant-watch] 安装已补授权 @09:01:42
+P008[E2E 09:01:45.318]: 已进入广播页
+P008[E2E 09:01:45.329]: F016：厂商数据输入 24 字符（预算 46/31）
+P008[E2E 09:01:47.295]: F016 超限拦截通过：46/31 红显 + 按钮禁用
+P008[E2E 09:01:50.645]: F015 负路径(1)通过：FF 非法长度拦截
+
+Warning: A call to tap() with finder "Found 1 widget with text "开始广播" (ignoring all but first): [
+  Text("开始广播", dependencies: [DefaultSelectionStyle, DefaultTextStyle, MediaQuery]),
+]" derived an Offset (Offset(137.3, 685.7)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: RenderParagraph#94ac3 relayoutBoundary=up30
+The hit test result at that offset is: HitTestResult(_RenderInkFeatures#727da@Offset(137.3, 685.7), RenderPhysicalModel#38cf5@Offset(137.3, 685.7), RenderSemanticsAnnotations#330f7@Offset(137.3, 685.7), RenderRepaintBoundary#4672f@Offset(137.3, 685.7), RenderIgnorePointer#d3bd0@Offset(137.3, 685.7), RenderAnimatedOpacity#f77cb@Offset(137.3, 685.7), RenderAnimatedOpacity#bcda0@Offset(137.3, 685.7), _RenderColoredBox#72343@Offset(137.3, 685.7), RenderAnimatedOpacity#1f580@Offset(137.3, 685.7), RenderIgnorePointer#58d46@Offset(137.3, 685.7), RenderAnimatedOpacity#3cfdb@Offset(137.3, 685.7), RenderRepaintBoundary#93bbe@Offset(137.3, 685.7), RenderSemanticsAnnotations#6efe4@Offset(137.3, 685.7), RenderOffstage#e3fa8@Offset(137.3, 685.7), RenderSemanticsAnnotations#a01d9@Offset(137.3, 685.7), _RenderTheater#2a206@Offset(137.3, 685.7), RenderAbsorbPointer#c6555@Offset(137.3, 685.7), RenderPointerListener#a6147@Offset(137.3, 685.7), RenderSemanticsAnnotations#ab218@Offset(137.3, 685.7), RenderSemanticsAnnotations#84c43@Offset(137.3, 685.7), RenderSemanticsAnnotations#d8963@Offset(137.3, 685.7), RenderTapRegionSurface#4a508@Offset(137.3, 685.7), RenderSemanticsAnnotations#0cd13@Offset(137.3, 685.7), RenderSemanticsAnnotations#17c45@Offset(137.3, 685.7), RenderSemanticsAnnotations#e898e@Offset(137.3, 685.7), HitTestEntry<HitTestTarget>#ca225(_ReusableRenderView#bd785), HitTestEntry<HitTestTarget>#950a9(<IntegrationTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2081:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1865:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1045:7)
+#3      main.<anonymous closure> (file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p008_broadcast_test.dart:162:18)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+F015 空 UUID 错误便签
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p008_broadcast_test.dart:165:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p008_broadcast_test.dart line 165
+The test description was:
+  P008 广播域 F015/F016/F017（F-AND E5）
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:16 +0 -1: P008 广播域 F015/F016/F017（F-AND E5） [E]
+  Test failed. See exception logs above.
+  The test description was: P008 广播域 F015/F016/F017（F-AND E5）
+  
+00:16 +0 -1: (tearDownAll)
+00:16 +0 -1: Some tests failed.
+== 停采集并分析观察侧证据 ==
+观察侧 advertisement 总数: 1864
+F017 services 含 fff0 的 advertisement: 0 条
+F017 厂商数据含 ASCII "BLE" (hex 424c45): 0 条
+exit=1 log=/e/project/xf/smart-ble/verification/windows-mobile-v1/20260905-1726-1b793ca/flutter-android/f014-f017-broadcast-app.log cap=/e/project/xf/smart-ble/verification/windows-mobile-v1/20260905-1726-1b793ca/flutter-android/f014-f017-broadcast-observer-serial.txt

@@ -97,9 +97,8 @@
 ### C10. ota-dialog（固件升级弹窗）
 - 头部 **P-03 warn 预警条**（端到端 BLOCKED 说明）；相位文案（确认设备/校验 sha256/传输中 N%/提交/回读）；进度条（primary）；取消（发 abort）/关闭；成功 2s 自动关闭；失败显示错误码（如 OTA_HASH_MISMATCH，mono）。
 
-### C11. promo-card（推广卡）
-- 关于页「更多小程序」：图标块+名称+说明+「前往」soft sm；微信端**点击直接发起 navigateToMiniProgram（无确认弹窗）**，无 appId→toast、失败→modal 重试（2026-09-03 对齐实证 openApp；失败分支=基准场景按钮）。
-- 非微信渠道（APP/Desktop/Web，2026-09-03）：tap → 推广详情 sheet = 小程序码（示意图形）+ 主操作「打开落地页」（APP 系统浏览器 / Web 新标签 / Desktop 浏览器）+ 次操作保存/下载（演示）；承接规则=无微信直跳能力，落地页+二维码双出口。
+### C11. promo-card（推广卡）——已移除（2026-09-10）
+- 随 F028 推广跳转整链下线：原型 `.promo` 样式、uniapp app-card 组件、flutter _PromoTile、iOS promotionCard、macOS 推广卡与伪二维码均已删除；编号 C11 退役不复用。
 
 ### C12. summary-card（汇总卡）
 - PAGE007 >1 台时：总数 + 主操作（全部断开 danger）。

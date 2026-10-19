@@ -1,0 +1,15 @@
+09-05 08:20:48.353 22180 22180 D [FBP-Android]: [FBP] onMethodCall: startScan
+09-05 08:20:48.354 22180 22180 D BluetoothLeScanner: Start Scan with callback
+09-05 08:20:48.356 22180 22260 D BluetoothLeScanner: onScannerRegistered() - status=0 scannerId=6 mScannerId=0
+09-05 08:20:53.371 22180 22180 D [FBP-Android]: [FBP] onMethodCall: stopScan
+09-05 08:20:53.371 22180 22180 D BluetoothLeScanner: Stop Scan with callback
+09-05 08:24:00.524 22180 22180 D [FBP-Android]: [FBP] onMethodCall: startScan
+09-05 08:24:00.524 22180 22180 D BluetoothLeScanner: Start Scan with callback
+09-05 08:24:00.526 22180 22260 D BluetoothLeScanner: onScannerRegistered() - status=0 scannerId=6 mScannerId=0
+09-05 08:24:05.534 22180 22180 D [FBP-Android]: [FBP] onMethodCall: stopScan
+09-05 08:24:05.534 22180 22180 D BluetoothLeScanner: Stop Scan with callback
+09-05 08:24:19.767 22180 22180 D [FBP-Android]: [FBP] onMethodCall: startScan
+09-05 08:24:19.768 22180 22180 D BluetoothLeScanner: Start Scan with callback
+09-05 08:24:19.769 22180 22260 D BluetoothLeScanner: onScannerRegistered() - status=0 scannerId=6 mScannerId=0
+09-05 08:24:24.775 22180 22180 D [FBP-Android]: [FBP] onMethodCall: stopScan
+09-05 08:24:24.776 22180 22180 D BluetoothLeScanner: Stop Scan with callback

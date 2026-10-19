@@ -1,0 +1,9 @@
+# Byte-sensitive release identity files: pin LF on every checkout so Windows
+# autocrlf cannot flip gates (check-version-consistency CR ban on VERSION,
+# generate-release-metadata --check byte compare).
+VERSION text eol=lf
+release/release-manifest.json text eol=lf
+release/release-state.json text eol=lf
+docs/public/release/latest.json text eol=lf
+apps/uniapp/config/release-metadata.generated.json text eol=lf
+apps/uniapp/config/release-metadata.generated.js text eol=lf

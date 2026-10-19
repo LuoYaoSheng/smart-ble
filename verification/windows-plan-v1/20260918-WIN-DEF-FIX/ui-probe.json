@@ -1,0 +1,60 @@
+{
+  "readyState": "complete",
+  "title": "BLE Toolkit+",
+  "tabs": [
+    {
+      "tab": "scan",
+      "visible": true
+    },
+    {
+      "tab": "connected",
+      "visible": true
+    },
+    {
+      "tab": "broadcast",
+      "visible": true
+    },
+    {
+      "tab": "about",
+      "visible": true
+    }
+  ],
+  "views": [
+    {
+      "id": "deviceListView",
+      "exists": true
+    },
+    {
+      "id": "connectedView",
+      "exists": true
+    },
+    {
+      "id": "broadcastView",
+      "exists": true
+    },
+    {
+      "id": "aboutView",
+      "exists": true
+    },
+    {
+      "id": "versionsView",
+      "exists": true
+    },
+    {
+      "id": "hidProvisionView",
+      "exists": true
+    },
+    {
+      "id": "hidDetailView",
+      "exists": true
+    },
+    {
+      "id": "hidDiagnosticsView",
+      "exists": true
+    },
+    {
+      "id": "deviceDetailView",
+      "exists": true
+    }
+  ]
+}

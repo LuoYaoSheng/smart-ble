@@ -24,7 +24,7 @@
 |---|---|---|---|
 | 1 | HTML 有按钮但 PRD 未定义 | **✓ 通过** | 逐页比对 PAGE_SPEC 各页「按钮列表与行为」。产品界面内无圈外功能按钮。页面中出现的额外可点元素均属三类合法设施：①原型评审设施（左栏评审桌面 jump/scen，不在手机画面内）；②平台系统层还原（android.js 系统权限/配对/分享/设置/浏览器弹窗、desktop 窗控 ─ ▢ ✕、wx.css 胶囊、web 浏览器选择器——各 CSS 头注均有豁免声明）；③候选能力拦截演示（web W6「试一下（将拦截）」、App「保存为日志文件（候选·未决策）」、Desktop 文件导出候选——均显式标注「候选/未决策」并拦截，符合 10_platform §2/§7「增强项逐条决策做/不做」）。无登录/会员/云类圈外按钮。 |
 | 2 | PRD 有功能但 HTML 缺失 | **△ 局部缺失（A-02/A-03/A-04/A-05/A-08）** | 无整功能缺失（29 功能页面映射完整）；缺失均为字段/子项级：F004 弹窗字段（A-01 同级的 P1）、F015 Android 三开关基准缺（A-03）、F020 扫码失败分类不可演示（A-04）、P001 计数行（A-05）、F005 兜底文案偏差（A-08）。 |
-| 3 | 平台 HTML 改变产品流程 | **✓ 通过** | diff 验证三端内核字节一致；覆写层行为全部有 10_platform 条目背书：android.js 系统配对（PAGE_SPEC P002 已定义）、desktop.js 扫码主路径+手输兜底（§2.4 2026-09-03 修正）与 P006 三栏（SOP §12 布局调整，desktop/PAGE_SPEC.md:17 预先定义）、wxhost.js devtools 拦截（§2.1 旧代码事实）。Web 子集裁剪为 D3 决策明确允许的形态，缺失域按 §7 检查 1 显式「不支持+指引发小程序/App」（W4/W5）。 |
+| 3 | 平台 HTML 改变产品流程 | **✓ 通过** | diff 验证三端内核字节一致；覆写层行为全部有 10_platform 条目背书：android.js 权限/广播/分享（P002 自 2026-09-05 起不覆写，遵循 V1 明文直连）、desktop.js 扫码主路径+手输兜底与 P006 三栏、wxhost.js devtools 拦截。Web 子集裁剪为 D3 决策明确允许的形态，缺失域按 §7 检查 1 显式「不支持+指引发小程序/App」（W4/W5）。 |
 | 4 | 特殊设备 Profile 破坏普通设备流程 | **✓ 基本通过（余 1 缝隙 A-06）** | 2026-09-03 修正①已落实：基准 devCard SHID 卡 = 「配置 Smart HID」primary + 标准「连接」soft 双入口（components.js:96-99，v1.0.1 注记）；Web W2 同口径（web.js:107-108）。普通卡渲染不受 profileMatch 影响。残余缝隙：P007 mock 把「配网会话」放进已连接列表 + 分流依据仅 profileId（A-06）。 |
 | 5 | 零本地存储禁止功能 | **✓ 通过** | grep 全原型无 `localStorage/sessionStorage/document.cookie/indexedDB`；无网络 API（fetch/XHR/axios/WebSocket）；仅有的 `http://` 字符串在 web.js:411 浏览器地址栏「不安全上下文」模拟（合法演示）。P003 P-02 会话快照说明行、P002 隐私声明、P009「零后端·零本地持久化」均到位；p002Cleanup 离开清敏感数据 ✓。 |
 | 6 | OTA 提前实现 | **✓ 通过** | OTA 仅以「演示流程」存在，且为 PATTERN §11 明确允许（「流程可演示」）。全部入口带 P-03 BLOCKED 预警：v1-new P006 页面 note（p006-gatt.js:54）+ ota-dialog 头部 warn 横幅（app.js:381）；入口仅 OTA 服务设备显示（hasOta 判定，p006-gatt.js:15,42）；Web W3 OTA 弹层同口径（web.js:444）。相位/版本回读/2s 自动关闭与 PAGE_SPEC PAGE006-OTA 一致；无任何「绕过 BLOCKED 可实际升级」的暗示。 |
@@ -62,7 +62,7 @@
 2. **零本地存储决策落地**：全链无持久化 API；P003 会话快照页带 P-02 说明；P002 离开清 token/pwd + 双档离开确认（provisioning / configure 脏表单，U-01 扩展）✓。
 3. **OTA 受限模式（P-03）**：入口条件（hasOtaService）+ 页面预警 + 弹窗头部 BLOCKED 横幅 + 相位流程（校验→传输→提交→回读→2s 自动关闭）与 PATTERN §11 一致；失败演示（OTA_HASH_MISMATCH）在场景库。
 4. **31 字节预算（F016）**：逐项核算（名称 2+len / UUID 2+len/2 / 厂商块 2+2+len）、超限红字、不静默截断、启动拦截（按钮 disabled + 启动二次校验）✓；Android 开关感知预算在 app 实例 ✓。
-5. **平台覆写层质量**：wxhost.js（宿主三维 + devtools 拦截 + P008 defaults 包修）、android.js（FINE_LOCATION 链含「二次拒绝=永久拒绝→去设置」、ADVERTISE→CONNECT 逐项、系统配对取消 2s 重试一次、二次取消【未知】登记）、desktop.js（OS 三系注册表 + 窗口 chrome 三形态 + 扫码取景器主路径/粘贴手输兜底 + 退出确认含活动会话明示）、web.js（环境门禁 + 域可用性矩阵 + W2 双入口 + 指引出口）——与 10_platform §2/§4 及各平台 PAGE_SPEC/PLATFORM_SPEC 文档逐条对得上，候选增强全部显式拦截不越权。
+5. **平台覆写层质量**：wxhost.js（宿主三维 + devtools 拦截 + P008 defaults 包修）、android.js（FINE_LOCATION 链含「二次拒绝=永久拒绝→去设置」、ADVERTISE→CONNECT 逐项；P002 零系统配对不覆写）、desktop.js（OS 三系注册表 + 窗口 chrome 三形态 + 扫码取景器主路径/粘贴手输兜底 + 退出确认含活动会话明示）、web.js（环境门禁 + 域可用性矩阵 + W2 双入口 + 指引出口）——与 10_platform §2/§4 及各平台 PAGE_SPEC/PLATFORM_SPEC 文档逐条对得上，候选增强全部显式拦截不越权。
 6. **生态矩阵注入不触碰产品**：三实例 + web 的「生态能力矩阵」卡仅渲染于评审栏/对比卡，冲突项（C1/C3/C2/C5）标「待裁决」且实证行为不翻转，符合 11_ecosystem 入库时的「应用代码零修改」约定。
 7. **F028 非微信承接（2026-09-03）**：app/desktop/web 三端推广卡均为「落地页 + 小程序码（静态资源·零后端）」双出口，微信端保持直跳无确认弹窗——与 COMPONENT C11 修订口径一致。
 8. **脱敏演示**：`token=***` 出现在日志场景与 P009 页脚 ✓。

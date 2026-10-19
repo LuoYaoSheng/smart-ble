@@ -1,0 +1,40 @@
+[14:12:37] [launch] exe=E:\project\xf\smart-ble\apps\flutter\build\windows\x64\runner\Release\smart_ble.exe exists=True
+[14:12:37] [launch] pid=25256
+[14:12:39] [launch] hwnd=29166746 frame=(25,15,1805,1355) size=1780x1340 dpr=1.50
+[14:12:40] [shot] 00-initial.png (1780, 1340)
+[14:14:05] [wclick] win(1665,195) -> screen(1690,210)
+[14:14:14] [shot] 01-scan-results.png (1780, 1340)
+[14:16:56] [wclick] win(1112,448) -> screen(1137,463)
+[14:17:16] [shot] 02-after-connect-click.png (1780, 1340)
+[14:19:48] [wclick] win(400,380) -> screen(425,395)
+[14:19:50] [shot] 03-service-expanded.png (1780, 1340)
+[14:22:32] [clipempty] 剪贴板已清空（导出前占位）
+[14:22:32] [wclick] win(872,253) -> screen(897,268)
+[14:22:34] [clip] 0 chars -> clipboard-export.txt
+[14:23:06] [shot] 04-after-export-click.png (1780, 1340)
+[14:24:14] [wclick] win(1470,253) -> screen(1495,268)
+[14:24:18] [shot] 05-back-to-list.png (1780, 1340)
+[14:24:38] [wclick] win(1665,195) -> screen(1690,210)
+[14:24:40] [wclick] win(1112,448) -> screen(1137,463)
+[14:25:06] [shot] 06-attempt2.png (1780, 1340)
+[14:26:27] [wclick] win(300,440) -> screen(325,455)
+[14:26:30] [shot] 07-service-expanded.png (1780, 1340)
+[14:28:18] [wclick] win(1640,582) -> screen(1665,597)
+[14:28:22] [shot] 08-read-info.png (1780, 1340)
+[14:28:22] [wclick] win(1688,869) -> screen(1713,884)
+[14:28:26] [shot] 09-notify-on.png (1780, 1340)
+[14:30:59] [wclick] win(1695,945) -> screen(1720,960)
+[14:31:03] [shot] 10-notify-on.png (1780, 1340)
+[14:31:21] [clipempty] 剪贴板已清空（导出前占位）
+[14:31:21] [wclick] win(872,331) -> screen(897,346)
+[14:31:24] [clip] 0 chars -> clipboard-export.txt
+[14:31:41] [shot] 11-check.png (1780, 1340)
+[14:33:17] [clipempty] 剪贴板已清空（导出前占位）
+[14:33:18] [wclick] win(872,331) -> screen(897,346)
+[14:33:20] [clip] 858 chars -> clipboard-export.txt
+[14:33:52] [wclick] win(1695,945) -> screen(1720,960)
+[14:33:55] [shot] 12-notify-off.png (1780, 1340)
+[14:33:55] [wclick] win(1470,331) -> screen(1495,346)
+[14:33:59] [shot] 13-disconnected.png (1780, 1340)
+[14:37:22] [close] WM_CLOSE 已投递
+[14:37:25] [shot] 14-exit-confirm.png (217, 39)

@@ -1,15 +1,26 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 import '../../core/ble/ble_peripheral_manager.dart';
+import '../../core/models/log_entry.dart';
+import '../../core/utils/logger.dart';
 import '../../themes/app_theme.dart';
+import '../widgets/log_panel.dart';
+import '../widgets/permission_disclosure.dart';
+import '../design/app_navbar.dart';
+import '../design/app_chip.dart';
+import '../design/app_badge.dart';
+import '../../core/design/app_icons.dart';
 
 /// 广播状态提供者
 final isAdvertisingProvider = StateProvider<bool>((ref) => false);
+final broadcastPlatformSupportedProvider =
+    Provider<bool>((ref) => BlePeripheralManager.isSupported);
 
-/// 广播页面
+/// 广播页 —— 对齐基准原型 p008：状态收进 AppBar 小徽章，主体为可操作表单
 class BroadcastPage extends ConsumerStatefulWidget {
   const BroadcastPage({super.key});
 
@@ -18,68 +29,171 @@ class BroadcastPage extends ConsumerStatefulWidget {
 }
 
 class _BroadcastPageState extends ConsumerState<BroadcastPage> {
-  final TextEditingController _uuidController = TextEditingController(text: '0000FFF0-0000-1000-8000-00805F9B34FB');
+  final TextEditingController _nameController =
+      TextEditingController(text: 'LanxiBLE');
+  final TextEditingController _uuidController =
+      TextEditingController(text: 'FFF0');
+  final TextEditingController _mfrIdController =
+      TextEditingController(text: '0001');
+  final TextEditingController _mfrDataController =
+      TextEditingController(text: 'BLE');
 
   final BlePeripheralManager _peripheralManager = BlePeripheralManager();
 
   bool _isAdvertising = false;
   PeripheralState _peripheralState = PeripheralState.unknown;
   String? _errorMessage;
+  bool _checked = false;
+  bool _runtimeSupported = false;
+  bool _hasStopped = false;
+  int _modeIndex = 1; // 0=低延迟 1=平衡 2=低功耗
+  int _powerIndex = 3; // 0=超低 1=低 2=中 3=高
   StreamSubscription<PeripheralState>? _stateSubscription;
+  StreamSubscription<LogEntry>? _logSubscription;
+
+  static const _modeOptions = ['低延迟', '平衡', '低功耗'];
+  static const _powerOptions = ['超低功率', '低功率', '中功率', '高功率'];
+
+  bool get _platformSupported => ref.read(broadcastPlatformSupportedProvider);
+  bool get _isAndroid => Platform.isAndroid;
 
   @override
   void initState() {
     super.initState();
     _initializePeripheral();
+    _logSubscription = logger.logStream.listen((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   Future<void> _initializePeripheral() async {
-    if (!BlePeripheralManager.isSupported) {
+    if (!_platformSupported) return;
+    if (Platform.isAndroid &&
+        !await hasAndroidBlePermissions(advertise: true)) {
       return;
     }
 
-    // 初始化可能返回 false，但不影响功能，不显示错误
-    await _peripheralManager.initialize();
-
-    final stateStream = _peripheralManager.stateStream;
-    if (stateStream != null) {
-      _stateSubscription = stateStream.listen((state) {
-        if (mounted) {
-          setState(() {
-            _peripheralState = state;
-            _isAdvertising = state == PeripheralState.advertising;
-            ref.read(isAdvertisingProvider.notifier).state = _isAdvertising;
-          });
-        }
+    try {
+      final supported = await _peripheralManager.isPlatformSupported();
+      if (!mounted) return;
+      setState(() {
+        _checked = true;
+        _runtimeSupported = supported;
+        _errorMessage = null;
+        if (!supported) _peripheralState = PeripheralState.unsupported;
       });
+      if (!supported) return;
+      // The event channel supplies the current radio state on subscription.
+      // Capability alone does not mean the radio is ready to publish.
+      final stateStream = _peripheralManager.stateStream;
+      if (stateStream != null && _stateSubscription == null) {
+        _stateSubscription = stateStream.listen((state) {
+          if (mounted) {
+            setState(() {
+              _peripheralState = state;
+              _isAdvertising = state == PeripheralState.advertising;
+              ref.read(isAdvertisingProvider.notifier).state = _isAdvertising;
+            });
+          }
+        }, onError: (Object error) {
+          if (mounted) {
+            setState(() {
+              _runtimeSupported = false;
+              _errorMessage = '无法读取广播状态: $error';
+            });
+          }
+        });
+      }
+
+      final advertising = await _peripheralManager.isAdvertising;
+      if (!mounted) return;
+      if (advertising) {
+        setState(() {
+          _isAdvertising = true;
+          _peripheralState = PeripheralState.advertising;
+          ref.read(isAdvertisingProvider.notifier).state = true;
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _checked = true;
+          _runtimeSupported = false;
+          _errorMessage = '无法确认广播就绪状态: $error';
+        });
+      }
     }
   }
+
+  bool get _canStartAdvertising =>
+      _platformSupported &&
+      _checked &&
+      _runtimeSupported &&
+      _peripheralState == PeripheralState.idle;
 
   @override
   void dispose() {
     _stateSubscription?.cancel();
+    _logSubscription?.cancel();
+    _nameController.dispose();
     _uuidController.dispose();
+    _mfrIdController.dispose();
+    _mfrDataController.dispose();
+    // WIN-016：切走即停广播（对齐 uniapp broadcast onHide 正典）——
+    // 原生广播不随页面销毁自停，PageView 切页 dispose 后必须显式停
+    if (_isAdvertising) {
+      final advertisingState = ref.read(isAdvertisingProvider.notifier);
+      _peripheralManager.stopAdvertising().then((_) {
+        advertisingState.state = false;
+      }).catchError((Object error) {
+        logger.error('离开页面后停止广播未获确认: $error');
+      });
+    }
     super.dispose();
   }
 
-  /// 检查当前平台是否支持广播
-  bool get _isAdvertisingSupported => BlePeripheralManager.isSupported;
-
-  /// 是否为 Android 平台
-  bool get _isAndroid => Platform.isAndroid;
-
-  /// 获取设备名称显示文本
-  String get _deviceNameText {
-    if (_isAndroid) {
-      return 'Android 设备 (显示实际蓝牙名称)';
+  /// 导航栏状态徽章口径（对齐 p008 badge：广播中 on / 失败 err / 已就绪 warn / 其余 dim；不支持无点）
+  (String, AppBadgeTone, bool) get _statusBadge {
+    if (!_platformSupported) return ('不支持', AppBadgeTone.dim, false);
+    if (_isAdvertising) return ('广播中', AppBadgeTone.on, true);
+    if (_errorMessage != null) return ('失败', AppBadgeTone.err, true);
+    if (_checked && !_runtimeSupported) {
+      return ('蓝牙不可用', AppBadgeTone.dim, true);
     }
-    if (Platform.isMacOS) {
-      return 'BLE Toolkit+ (macOS)';
+    if (_peripheralState == PeripheralState.poweredOff) {
+      return ('蓝牙未开启', AppBadgeTone.dim, true);
     }
-    return 'BLE Toolkit+';
+    if (_canStartAdvertising) {
+      return (_hasStopped ? '已停止' : '已就绪', AppBadgeTone.warn, true);
+    }
+    return ('未就绪', AppBadgeTone.dim, true);
   }
 
+  bool get _uuidInvalid {
+    final v = _uuidController.text.trim();
+    return v.isNotEmpty && BlePeripheralManager.normalizeServiceUuid(v) == null;
+  }
+
+  ({int name, int uuid, int mfr, int total}) get _bytes =>
+      BlePeripheralManager.estimateAdvBytes(
+        name: _nameController.text,
+        serviceUuid: _uuidController.text,
+        manufacturerId: _mfrIdController.text,
+        manufacturerData: _mfrDataController.text,
+        includeName: _isAndroid ? true : _nameController.text.isNotEmpty,
+      );
+
+  bool get _overBudget => _bytes.total > 31;
+
   Future<void> _toggleAdvertising() async {
+    // 不信任页面内存状态：切换前查询底层真实广播态（防御 UI/空口脱节）
+    try {
+      final actuallyAdvertising = await _peripheralManager.isAdvertising;
+      if (actuallyAdvertising != _isAdvertising) {
+        setState(() => _isAdvertising = actuallyAdvertising);
+        ref.read(isAdvertisingProvider.notifier).state = actuallyAdvertising;
+      }
+    } catch (_) {}
     if (_isAdvertising) {
       await _stopAdvertising();
     } else {
@@ -88,212 +202,196 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
   }
 
   Future<void> _startAdvertising() async {
+    if (!_canStartAdvertising) return;
     final uuid = _uuidController.text.trim();
-
     if (uuid.isEmpty) {
-      setState(() => _errorMessage = '请输入服务UUID');
+      setState(() => _errorMessage = '请输入服务 UUID');
+      return;
+    }
+    if (_uuidInvalid) {
+      setState(() => _errorMessage = 'UUID 需为 4 / 8 / 36 位十六进制');
+      return;
+    }
+    if (_overBudget) {
+      setState(
+          () => _errorMessage = '广播数据超限：当前 ${_bytes.total} 字节，BLE 最多支持 31 字节');
       return;
     }
 
-    if (!_isValidUuid(uuid)) {
-      setState(() => _errorMessage = 'UUID 格式不正确');
-      return;
-    }
-
-    // T08: 校验广播数据总长度（BLE 规范限制 31 字节）
-    final totalBytes = _calcAdvertiseBytes(uuid);
-    if (totalBytes > 31) {
-      setState(() => _errorMessage = '广播数据超限：当前 $totalBytes 字节，BLE 最多支持 31 字节');
-      return;
-    }
-
+    if (!await requestAndroidBlePermissions(context, advertise: true)) return;
+    if (!mounted) return;
     setState(() => _errorMessage = null);
+    logger.info('开始广播…');
 
     try {
       final success = await _peripheralManager.startAdvertising(
-        name: 'BLE Toolkit+', // 名称由系统处理
+        name: _nameController.text.isEmpty
+            ? 'LanxiBLE'
+            : _nameController.text,
         serviceUuid: uuid,
+        manufacturerId: _mfrIdController.text,
+        manufacturerData: _mfrDataController.text,
+        includeDeviceName: true,
+        connectable: true,
+        advertiseMode: _modeIndex,
+        txPowerIndex: _powerIndex,
       );
 
-      if (mounted) {
-        if (success) {
-          setState(() => _isAdvertising = true);
-          ref.read(isAdvertisingProvider.notifier).state = true;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(_isAndroid ? '开始广播（设备实际名称）' : '开始广播: BLE Toolkit+'),
-              backgroundColor: AppTheme.successColor,
-            ),
-          );
-        } else {
-          setState(() => _errorMessage = '启动广播失败');
-        }
+      if (!mounted) return;
+      if (success) {
+        setState(() => _isAdvertising = true);
+        ref.read(isAdvertisingProvider.notifier).state = true;
+        logger.success('广播已开始${_isAndroid ? '（名称用系统蓝牙名）' : ''}');
+      } else {
+        setState(() => _errorMessage = '启动广播失败');
+        logger.error('启动广播失败');
       }
     } catch (e) {
       if (mounted) {
         setState(() => _errorMessage = '启动广播失败: $e');
+        logger.error('启动广播失败: $e');
       }
     }
   }
-
-  /// T08: 估算广播包占用字节数（BLE ADV_IND payload 上限 31 字节）
-  int _calcAdvertiseBytes(String uuid) {
-    // 服务UUID字段: 2字节头 + UUID长度（short=2, 128-bit=16）
-    final isShort = uuid.length <= 8;
-    final uuidBytes = isShort ? 2 : 16;
-    return 2 + uuidBytes; // AD type header(2) + UUID
-  }
-
 
   Future<void> _stopAdvertising() async {
     try {
       await _peripheralManager.stopAdvertising();
       if (mounted) {
-        setState(() => _isAdvertising = false);
+        setState(() {
+          _isAdvertising = false;
+          _hasStopped = true;
+        });
         ref.read(isAdvertisingProvider.notifier).state = false;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('已停止广播')),
-        );
+        logger.info('已停止广播');
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _errorMessage = '停止广播失败: $e');
+        setState(() {
+          _isAdvertising = true;
+          _errorMessage = '停止广播失败: $e';
+        });
+        ref.read(isAdvertisingProvider.notifier).state = true;
+        logger.error('停止广播失败: $e');
       }
     }
   }
 
-  bool _isValidUuid(String uuid) {
-    final regex = RegExp(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$');
-    return regex.hasMatch(uuid);
+  Future<void> _checkSupport() async {
+    if (!await requestAndroidBlePermissions(context, advertise: true)) return;
+    if (!mounted) return;
+    logger.info('检查广播支持…');
+    await _initializePeripheral();
+    if (!mounted) return;
+    if (_canStartAdvertising) {
+      logger.success('设备支持低功耗蓝牙广播，蓝牙已就绪');
+    } else {
+      logger.error('广播尚未就绪，请确认蓝牙适配器与系统开关');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isAdvertising = ref.watch(isAdvertisingProvider);
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('BLE 广播'),
-      ),
-      body: !_isAdvertisingSupported
-          ? _buildUnsupportedView()
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 状态卡片
-                  _buildStatusCard(isAdvertising, _peripheralState),
-
-                  const SizedBox(height: 16),
-
-                  // 平台说明卡片
-                  _buildPlatformWarningCard(),
-
-                  const SizedBox(height: 16),
-
-                  // 广播设置
-                  _buildSettingsSection(isAdvertising),
-
-                  const SizedBox(height: 16),
-
-                  // 错误提示
-                  if (_errorMessage != null)
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppTheme.errorColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppTheme.errorColor.withValues(alpha: 0.3)),
+      // UI-G2：正典 AppNavbar（PERIPHERAL + 平台 chip + 状态 badge），状态收进导航栏
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppNavbar(
+              kicker: 'PERIPHERAL',
+              title: '广播',
+              status: Builder(builder: (context) {
+                final (text, tone, dot) = _statusBadge;
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppChip(
+                      '平台：${BlePeripheralManager.platformName}',
+                    ),
+                    const SizedBox(width: 6),
+                    AppBadge(text, tone: tone, dot: dot),
+                  ],
+                );
+              }),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!_platformSupported)
+                      _buildNote(
+                        color: AppTheme.warningColor,
+                        title: '当前平台不支持 BLE 广播',
+                        message:
+                            '该平台未提供外围模式实现，请使用 Android / iOS / macOS / Windows 应用。',
                       ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.error_outline, color: AppTheme.errorColor, size: 20),
-                          const SizedBox(width: 8),
-                          Expanded(child: Text(_errorMessage!, style: const TextStyle(color: AppTheme.errorColor))),
-                        ],
+                    _buildSettingsCard(),
+                    if (_errorMessage != null) ...[
+                      const SizedBox(height: 12),
+                      _buildNote(
+                        color: AppTheme.errorColor,
+                        title: '广播失败',
+                        message: _errorMessage!,
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    // LogPanel 内部是 Expanded(ListView)，必须给有界高度，
+                    // 否则放进滚动视图后日志非空即抛无界高度异常
+                    SizedBox(
+                      height: 240,
+                      child: LogPanel(
+                        entries: logger.history,
+                        onClear: () {
+                          logger.clear();
+                          if (mounted) setState(() {});
+                        },
                       ),
                     ),
-
-                  // 测试指南
-                  _buildTestGuide(),
-                ],
+                  ],
+                ),
               ),
             ),
+          ],
+        ),
+      ),
     );
   }
 
-  /// 构建平台警告卡片
-  Widget _buildPlatformWarningCard() {
-    final isAndroid = _isAndroid;
-    final isMacOS = Platform.isMacOS;
-
-    // 确定显示的图标和颜色
-    IconData platformIcon;
-    Color platformColor;
-    String platformTitle;
-    String platformMessage;
-
-    if (isAndroid) {
-      platformIcon = Icons.android;
-      platformColor = const Color(0xFFFF9800);
-      platformTitle = 'Android 平台说明';
-      platformMessage = '广播将显示设备的实际蓝牙名称';
-    } else if (isMacOS) {
-      platformIcon = Icons.laptop_mac;
-      platformColor = AppTheme.primaryColor;
-      platformTitle = 'macOS 平台说明';
-      platformMessage = '支持自定义广播名称';
-    } else {
-      platformIcon = Icons.phone_iphone;
-      platformColor = AppTheme.primaryColor;
-      platformTitle = 'iOS 平台说明';
-      platformMessage = '支持自定义广播名称';
-    }
-
+  Widget _buildNote({
+    required Color color,
+    required String title,
+    required String message,
+  }) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: isAndroid
-              ? [const Color(0xFFFF9800).withValues(alpha: 0.15), const Color(0xFFFF9800).withValues(alpha: 0.05)]
-              : [AppTheme.primaryColor.withValues(alpha: 0.1), AppTheme.primaryColor.withValues(alpha: 0.05)],
-        ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isAndroid ? const Color(0xFFFF9800).withValues(alpha: 0.3) : AppTheme.primaryColor.withValues(alpha: 0.2),
-        ),
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            platformIcon,
-            color: platformColor,
-            size: 20,
-          ),
-          const SizedBox(width: 10),
+          AppIcon('info', color: color, size: 18),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  platformTitle,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: platformColor,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  platformMessage,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppTheme.textSecondary,
-                  ),
-                ),
+                Text(title,
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: color)),
+                const SizedBox(height: 3),
+                Text(message,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        height: 1.5,
+                        color: AppTheme.textSecondary)),
               ],
             ),
           ),
@@ -302,374 +400,300 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
     );
   }
 
-  /// 构建测试指南
-  Widget _buildTestGuide() {
+  Widget _buildSettingsCard() {
+    final dis = _isAdvertising;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.blue.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
+        color: AppTheme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.borderColor),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _buildField(
+            label: '设备名称',
+            controller: _nameController,
+            enabled: !dis,
+            hint: '自定义名称',
+            suffix: _isAndroid
+                ? const Text('实际用系统蓝牙名',
+                    style:
+                        TextStyle(fontSize: 10, color: AppTheme.textSecondary))
+                : null,
+          ),
+          const SizedBox(height: 14),
+          _buildField(
+            label: '服务 UUID',
+            controller: _uuidController,
+            enabled: !dis,
+            hint: '4 / 8 / 36 位 HEX',
+            mono: true,
+            errorText: _uuidInvalid ? 'UUID 需为 4 / 8 / 36 位十六进制' : null,
+          ),
+          if (_isAndroid) ...[
+            const SizedBox(height: 14),
+            _buildPickerField(
+              label: '广播模式',
+              value: _modeOptions[_modeIndex],
+              items: _modeOptions,
+              onChanged: dis ? null : (i) => setState(() => _modeIndex = i),
+            ),
+            const SizedBox(height: 14),
+            _buildPickerField(
+              label: '发射功率',
+              value: _powerOptions[_powerIndex],
+              items: _powerOptions,
+              onChanged: dis ? null : (i) => setState(() => _powerIndex = i),
+            ),
+          ],
+          const SizedBox(height: 14),
+          _buildField(
+            label: '厂商 ID（HEX）',
+            controller: _mfrIdController,
+            enabled: !dis,
+            hint: '0001',
+            mono: true,
+          ),
+          const SizedBox(height: 14),
+          _buildField(
+            label: '厂商数据（ASCII）',
+            controller: _mfrDataController,
+            enabled: !dis,
+            hint: '广播携带的数据',
+          ),
+          const SizedBox(height: 16),
+          _buildByteBudget(),
+          const SizedBox(height: 16),
           Row(
             children: [
-              Icon(Icons.scanner, size: 18, color: Colors.blue),
-              SizedBox(width: 8),
-              Text(
-                '如何测试',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.blue,
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: _isAdvertising ||
+                          (_canStartAdvertising &&
+                              !_overBudget &&
+                              !_uuidInvalid)
+                      ? _toggleAdvertising
+                      : null,
+                  icon: AppIcon(_isAdvertising ? 'stop' : 'cast'),
+                  label: Text(_isAdvertising ? '停止广播' : '开始广播'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _isAdvertising
+                        ? AppTheme.errorColor
+                        : AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor:
+                        AppTheme.borderColor.withValues(alpha: 0.4),
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    textStyle: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              OutlinedButton.icon(
+                onPressed: dis ? null : _checkSupport,
+                icon: const AppIcon('refresh', size: 18),
+                label: const Text('检查支持'),
+                style: OutlinedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 13, horizontal: 14),
+                  foregroundColor: AppTheme.primaryColor,
+                  side: const BorderSide(color: AppTheme.borderColor),
+                  textStyle: const TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 12),
-          Text(
-            '1. 点击"开始广播"按钮\n'
-            '2. 使用另一台设备打开 BLE 扫描功能\n'
-            '3. 搜索包含 UUID "0000FFF0" 的设备\n'
-            '4. 找到本设备后即可连接测试',
-            style: TextStyle(
-              fontSize: 12,
-              height: 1.6,
-              color: AppTheme.textSecondary,
-            ),
-          ),
         ],
       ),
     );
   }
 
-  /// 构建平台不支持视图
-  Widget _buildUnsupportedView() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: AppTheme.warningColor.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.block,
-                size: 40,
-                color: AppTheme.warningColor,
-              ),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              '功能不可用',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              '当前平台暂不支持 BLE 广播功能。\n\n'
-              'flutter_ble_peripheral 库支持：Android、iOS、macOS。',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                height: 1.6,
-                color: AppTheme.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatusCard(bool isAdvertising, PeripheralState state) {
-    final statusText = _getStatusText(state);
-    final isAdvertisingState = state == PeripheralState.advertising;
-
+  /// ADV 负载预算（对齐 p008 bytebar + budget：超限红显并拦截启动）
+  Widget _buildByteBudget() {
+    final b = _bytes;
+    final over = b.total > 31;
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: isAdvertisingState
-              ? [AppTheme.successColor, const Color(0xFF30D158)]
-              : [AppTheme.backgroundColor, AppTheme.backgroundColor],
-        ),
-        borderRadius: BorderRadius.circular(16),
+        color: over
+            ? AppTheme.errorColor.withValues(alpha: 0.06)
+            : AppTheme.backgroundColor,
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: isAdvertisingState ? Colors.transparent : AppTheme.borderColor,
-        ),
-        boxShadow: isAdvertisingState
-            ? [
-                BoxShadow(
-                  color: AppTheme.successColor.withValues(alpha: 0.3),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : null,
+            color: over
+                ? AppTheme.errorColor.withValues(alpha: 0.4)
+                : AppTheme.borderColor),
       ),
       child: Column(
         children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: isAdvertisingState ? Colors.white : AppTheme.primaryColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(
-              isAdvertisingState ? Icons.broadcast_on_personal : Icons.broadcast_on_personal_outlined,
-              size: 32,
-              color: isAdvertisingState ? AppTheme.successColor : AppTheme.primaryColor,
-            ),
+          Row(
+            children: [
+              const Text('ADV 负载预算',
+                  style:
+                      TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+              const Spacer(),
+              Text(
+                '${b.total}',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: over ? AppTheme.errorColor : AppTheme.textPrimary,
+                ),
+              ),
+              const Text(' / 31 字节',
+                  style:
+                      TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+            ],
           ),
-          const SizedBox(height: 16),
-          Text(
-            statusText,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: isAdvertisingState ? Colors.white : AppTheme.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            isAdvertisingState ? '其他设备可以扫描到此设备' : '点击开始启动BLE广播',
-            style: TextStyle(
-              fontSize: 13,
-              color: isAdvertisingState ? Colors.white.withValues(alpha: 0.9) : AppTheme.textSecondary,
-            ),
-            textAlign: TextAlign.center,
+          const Divider(height: 14),
+          _budgetRow('完整名称 (0x09)', '${b.name} B'),
+          _budgetRow('服务 UUID (0x03/0x07)', '${b.uuid} B'),
+          _budgetRow('厂商块 (0xFF)', '${b.mfr} B'),
+          _budgetRow(
+            over ? '合计 · 超限，启动将被拦截' : '合计',
+            '${b.total} / 31 B',
+            bold: true,
+            over: over,
           ),
         ],
       ),
     );
   }
 
-  String _getStatusText(PeripheralState state) {
-    switch (state) {
-      case PeripheralState.advertising:
-        return '正在广播';
-      case PeripheralState.idle:
-        return '未广播';
-      case PeripheralState.unsupported:
-        return '不支持';
-      case PeripheralState.unknown:
-      default:
-        return '未广播';
-    }
-  }
-
-  Widget _buildSettingsSection(bool isAdvertising) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          '广播设置',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // 设备名称 (只读显示)
-        _buildReadOnlyField(
-          label: '设备名称',
-          value: _deviceNameText,
-          icon: Icons.bluetooth,
-          hint: _isAndroid ? '使用系统蓝牙名称' : '自定义名称',
-        ),
-
-        const SizedBox(height: 16),
-
-        // 服务UUID
-        _buildInputField(
-          label: '服务UUID',
-          controller: _uuidController,
-          hint: '输入服务UUID (128位)',
-          icon: Icons.fingerprint,
-          enabled: !isAdvertising,
-        ),
-
-        const SizedBox(height: 24),
-
-        // 开始/停止按钮
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            onPressed: _toggleAdvertising,
-            icon: Icon(isAdvertising ? Icons.stop : Icons.play_arrow),
-            label: Text(isAdvertising ? '停止广播' : '开始广播'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isAdvertising ? AppTheme.errorColor : AppTheme.primaryColor,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              textStyle: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),
-      ],
+  Widget _budgetRow(String label, String value,
+      {bool bold = false, bool over = false}) {
+    final color = over ? AppTheme.errorColor : AppTheme.textSecondary;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label,
+              style: TextStyle(
+                  fontSize: 11,
+                  fontFamily: 'monospace',
+                  color: over ? color : AppTheme.textSecondary,
+                  fontWeight: bold ? FontWeight.w700 : FontWeight.w400)),
+          Text(value,
+              style: TextStyle(
+                  fontSize: 11,
+                  fontFamily: 'monospace',
+                  color: color,
+                  fontWeight: bold ? FontWeight.w700 : FontWeight.w400)),
+        ],
+      ),
     );
   }
 
-  Widget _buildReadOnlyField({
-    required String label,
-    required String value,
-    required IconData icon,
-    required String hint,
-  }) {
-    final isAndroid = _isAndroid;
-    final isMacOS = Platform.isMacOS;
-
-    // 确定平台标签
-    String? platformLabel;
-    Color? labelColor;
-
-    if (isAndroid) {
-      platformLabel = 'Android';
-      labelColor = const Color(0xFFFF9800);
-    } else if (isMacOS) {
-      platformLabel = 'macOS';
-      labelColor = AppTheme.primaryColor;
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 18, color: AppTheme.primaryColor),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(width: 8),
-            if (platformLabel != null)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: labelColor!.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  platformLabel,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: labelColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          enabled: false,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: TextStyle(
-              color: AppTheme.textSecondary.withValues(alpha: 0.6),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            disabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: AppTheme.borderColor),
-            ),
-            filled: true,
-            fillColor: AppTheme.backgroundColor,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          ),
-          controller: TextEditingController(text: value),
-        ),
-        if (isAndroid)
-          Padding(
-            padding: const EdgeInsets.only(top: 6, left: 4),
-            child: Text(
-              hint,
-              style: const TextStyle(
-                fontSize: 11,
-                color: Color(0xFFFF9800),
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildInputField({
+  Widget _buildField({
     required String label,
     required TextEditingController controller,
-    required String hint,
-    required IconData icon,
     required bool enabled,
+    required String hint,
+    bool mono = false,
+    String? errorText,
+    Widget? suffix,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, size: 18, color: AppTheme.primaryColor),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            Text(label,
+                style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textPrimary)),
+            const Spacer(),
+            if (suffix != null) suffix,
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 7),
         TextField(
           controller: controller,
           enabled: enabled,
+          onChanged: (_) => setState(() {}),
+          style: TextStyle(
+              fontSize: 13,
+              fontFamily: mono ? 'monospace' : null,
+              color: AppTheme.textPrimary),
+          inputFormatters: mono
+              ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9a-fA-F-]'))]
+              : null,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
-              color: AppTheme.textSecondary.withValues(alpha: 0.6),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: AppTheme.borderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: AppTheme.primaryColor),
-            ),
-            disabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(
-                color: AppTheme.borderColor,
-                width: 1,
-              ),
-            ),
+                fontSize: 13,
+                color: AppTheme.textSecondary.withValues(alpha: 0.6)),
+            isDense: true,
+            errorText: errorText,
             filled: !enabled,
             fillColor: AppTheme.backgroundColor,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: AppTheme.borderColor)),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: AppTheme.borderColor)),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: AppTheme.primaryColor)),
+            disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: AppTheme.borderColor)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPickerField({
+    required String label,
+    required String value,
+    required List<String> items,
+    required ValueChanged<int>? onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textPrimary)),
+        const SizedBox(height: 7),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppTheme.borderColor),
+            color: AppTheme.backgroundColor,
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<int>(
+              value: items.indexOf(value),
+              isExpanded: true,
+              borderRadius: BorderRadius.circular(8),
+              items: items
+                  .asMap()
+                  .entries
+                  .map((e) => DropdownMenuItem(
+                      value: e.key,
+                      child:
+                          Text(e.value, style: const TextStyle(fontSize: 13))))
+                  .toList(),
+              onChanged: onChanged == null
+                  ? null
+                  : (i) {
+                      if (i != null) onChanged(i);
+                    },
+            ),
           ),
         ),
       ],

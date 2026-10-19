@@ -1,0 +1,13 @@
+== A-AND F014-F017 广播域驱动 start 08:18:20 ==
+FAIL F015-page-open | 广播页就绪：未广播徽标+开始广播按钮；texts=Android|Android 平台说明|Android 设备 (显示实际名称)|BLE 广播|关于|广播|广播设置|扫描|服务UUID|未广播|点击开始启动BLE广播|设备名称
+Traceback (most recent call last):
+  File "E:\project\xf\smart-ble\verification\windows-mobile-v1\20260905-1726-1b793ca\a-and-f014-f017-e5.py", line 293, in <module>
+    main()
+    ~~~~^^
+  File "E:\project\xf\smart-ble\verification\windows-mobile-v1\20260905-1726-1b793ca\a-and-f014-f017-e5.py", line 197, in main
+    tap(b)
+    ~~~^^^
+  File "E:\project\xf\smart-ble\verification\windows-mobile-v1\20260905-1726-1b793ca\a-and-f014-f017-e5.py", line 57, in tap
+    adb('shell', 'input', 'tap', str(p[0]), str(p[1]))
+                                     ~^^^
+TypeError: 'NoneType' object is not subscriptable

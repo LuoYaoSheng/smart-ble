@@ -303,7 +303,7 @@ const TEST_IDS = extractIds(
   `${docCorpus}\n${JSON.stringify(trace)}\n${JSON.stringify(product)}`,
   String.raw`TEST-[A-Z]+-\d{3}`,
 ).slice(0, 200);
-// Prefer canonical TEST count 103 from traceability doc
+// Prefer canonical TEST count 91 from traceability doc
 const TEST_CANON = extractIds(readDoc('docs/target-tests/02_REQUIREMENT_TO_TEST_TRACEABILITY.md'), String.raw`TEST-[A-Z]+-\d{3}`);
 
 const PAGE_IDS = pagesTarget.pages.map((p) => p.id).filter((id) => id.startsWith('PAGE-'));
@@ -315,9 +315,10 @@ const REQ_IDS = product.requirements.map((r) => r.id);
 const FEAT_IDS = product.features.map((f) => f.id);
 const CLAIM_IDS = (landing.claims || []).map((c) => c.id);
 
+// 2026-09-14 MAC-001：微信目标退役——REQ-006/FEAT-006/CLAIM-027 与 TEST-W×10/TEST-H-008/TEST-R-009 移除。
 const EXPECTED_TOTALS = {
-  REQ: 66, FEAT: 81, PAGE: 10, WEB: 1, STATE: 67, OP: 92, FLOW: 14,
-  ERR: 68, DATA: 13, PROTO: 11, SEC: 19, NFR: 24, CLAIM: 31, DEC: 17, EVID: 8, TEST: 103,
+  REQ: 65, FEAT: 80, PAGE: 10, WEB: 1, STATE: 67, OP: 88, FLOW: 14,
+  ERR: 68, DATA: 13, PROTO: 11, SEC: 19, NFR: 24, CLAIM: 30, DEC: 17, EVID: 8, TEST: 91,
 };
 
 // ---------------------------------------------------------------------------
@@ -406,7 +407,6 @@ const TASKS = [
   { task_id: 'SMART-HID-WORKFLOW-001', task_type: 'SOURCE_FIX', title: 'Smart HID Provisioning Workflow / Profile / Diagnostic', root_cause_id: 'RC-SMART-HID-WORKFLOW', severity: 'P1', deps: [], order_hint: 42, status: smartHidWorkflowReady ? 'DONE' : 'PLANNED' },
   { task_id: 'TEST-BRIDGE-TS-001', task_type: 'TESTABILITY', title: 'Node 测试桥支持 TS protocol import（Smart HID）', root_cause_id: 'RC-TEST-BRIDGE-TS', severity: 'P1', deps: [], order_hint: 50 },
   { task_id: 'VERIFY-ANDROID-001', task_type: 'VERIFY_E5', title: 'Android 真机矩阵', root_cause_id: null, severity: null, deps: ['TEST-PAGE-DRIVER-001', 'OTA-CLIENT-001'], order_hint: 90 },
-  { task_id: 'VERIFY-WECHAT-001', task_type: 'VERIFY_E5', title: '微信真机矩阵', root_cause_id: null, severity: null, deps: ['TEST-PAGE-DRIVER-001'], order_hint: 91 },
   { task_id: 'VERIFY-ESP32-001', task_type: 'VERIFY_E5', title: 'ESP32 E5 夹具矩阵', root_cause_id: null, severity: null, deps: ['ESP32-OBSERVER-001', 'ESP32-FAULT-001'], order_hint: 92 },
   { task_id: 'VERIFY-SMART-HID-001', task_type: 'VERIFY_E5', title: 'Smart HID E5 端到端', root_cause_id: null, severity: null, deps: ['SMART-HID-WORKFLOW-001', 'TEST-BRIDGE-TS-001'], order_hint: 93 },
   { task_id: 'VERIFY-E6-001', task_type: 'VERIFY_E6', title: 'Clean Machine / Release E6', root_cause_id: null, severity: null, deps: ['PUBLIC-HONESTY-001', 'RELEASE-PIPELINE-001', 'VERSION-METADATA-001'], order_hint: 94 },
@@ -1274,7 +1274,7 @@ pushCatalog(SEC_IDS.slice(0, 19), 'security', 'PRODUCT');
 pushCatalog(NFR_IDS.slice(0, 24), 'nfr', 'PRODUCT');
 pushCatalog(DEC_IDS.slice(0, 17), 'decision', 'PRODUCT');
 pushCatalog(EVID_IDS.slice(0, 8), 'evidence', 'PRODUCT');
-const testList = (TEST_CANON.length >= 100 ? TEST_CANON : TEST_IDS).slice(0, 103);
+const testList = (TEST_CANON.length >= 90 ? TEST_CANON : TEST_IDS).slice(0, 91);
 pushCatalog(testList, 'test', 'TESTABILITY');
 
 // Release pipeline: Flutter/Tauri mainline ≠ UniApp+firmware target

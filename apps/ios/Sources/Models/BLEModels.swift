@@ -20,7 +20,7 @@ struct ScanResult: Identifiable, Equatable {
     let id: String
     let name: String
     let rssi: Int
-    let peripheral: CBPeripheral
+    let peripheral: CBPeripheral?
 
     // Advertisement data
     var serviceUUIDs: [String] = []
@@ -32,6 +32,16 @@ struct ScanResult: Identifiable, Equatable {
     static func == (lhs: ScanResult, rhs: ScanResult) -> Bool {
         lhs.id == rhs.id
     }
+}
+
+// MARK: - Smart HID in-memory session snapshot (F023 remains removed)
+struct HidSessionSnapshot: Equatable {
+    let deviceId: String
+    let name: String
+    let protocolVersion: String?
+    let firmware: String?
+    let lastWifi: String
+    let lastHub: String
 }
 
 // MARK: - Service

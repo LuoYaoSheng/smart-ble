@@ -1,0 +1,61 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[UISMOKE] mode=smoke-pages app=SmartBLE-mac r3=prototype-aligned
+[BLE] 蓝牙已开启
+[BLE] 外围模式已就绪
+[UISMOKE] UIS-01 result=PASS detail="title=BLE Toolkit+ tabs=[1, 1, 1, 1] p001=true"
+[UISMOKE] UIS-02 result=PASS detail="已连接=1 广播=1 关于=1 扫描=1"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · 7E55（-49 dBm）
+[BLE] 发现设备：未命名 BLE · AEF3（-49 dBm）
+[BLE] 发现设备：midea（-88 dBm）
+[BLE] 发现设备：未命名 BLE · 1651（-60 dBm）
+[BLE] 扫描完成 · 发现 4 台设备
+[UISMOKE] UIS-03 result=PASS detail="scanning=true stopped=true found=4"
+[UISMOKE] UIS-04 result=PASS detail="preset=true slider=true switch=true th70=true reset=true collapsed=true"
+[UISMOKE] UIS-05 result=PASS detail="sheet=true fields=true missMarked=true closed=true"
+[BLE] 连接 未命名 BLE · 7E55 · 暂存路由上下文
+[UISMOKE] UIS-06 result=PASS detail="p006=true dnote=true log=true back=true conn=connecting"
+[UISMOKE] UIS-07 result=PASS detail="guard=true parse=true noToken=true hubOptional=true"
+[UISMOKE] UIS-08 result=PASS detail="platform=true note=true budgetBar=true default=21B over=46B blocked=true shown=true restored=21B reEnabled=true"
+[BLE] 桌面原生层 CoreBluetooth（macOS）· 蓝牙从机已就绪 · 支持 peripheral 广播（能力判定待 D2 spike，不预判）
+[UISMOKE] UIS-09 result=PASS detail="logged=true badge=true peripheralReady=true"
+[UISMOKE] UIS-10 result=PASS detail="brand=true menus=[1, 1, 1, 1] titles=true appInfo=true p010=true"
+[UISMOKE] UIS-11 result=PASS detail="limits=true emptyRelease=true foot=true previews=true tabHidden=true"
+[UISMOKE] UIS-12 result=PASS detail="p002Variants=true p005Base=true p005Variants=true p003Guard=true p003Variants=true"
+[BLE] 连接超时（10s）· 自动重连中（1/3）· 2s backoff · 未命名 BLE · 7E55
+[UISMOKE] UIS-13 result=PASS detail="modal=true dismissed=true alive=true"
+[BLE] 连接进行中 · 未命名 BLE · 7E55
+[BLE] 连接超时（10s）· 自动重连中（2/3）· 4s backoff · 未命名 BLE · 7E55
+[UISMOKE] UIS-15 result=PASS detail="honestState=true sawError=false retryable=true hid=connecting"
+[BLE] 断开连接中… · 未命名 BLE · 7E55
+[BLE] 已断开连接 · 未命名 BLE · 7E55
+[BLE] OTA 选包 · smartble-ota-smoke.bin（4 字节 · sha256 8d70d691c822…）
+[BLE] OTA 无 manifest → 跳过包校验（正典允许），版本验证阶段将无版本可比对
+[BLE] OTA 失败 · OTA_SESSION_LOST：设备未连接，无法开始 OTA
+[BLE] OTA 选包 · smartble-ota-smoke.bin（4 字节 · sha256 8d70d691c822…）
+[BLE] OTA 失败 · OTA_HASH_MISMATCH：manifest sha256 与实测不符
+[BLE] OTA 选包 · smartble-ota-smoke.bin（4 字节 · sha256 8d70d691c822…）
+[BLE] OTA 包校验通过（manifest：version=1.2.3 size=4）
+[UISMOKE] UIS-16 result=PASS detail="readyNoManifest=true noSession=true hashMismatch=true readyWithManifest=true"
+[UISMOKE] UIS-17 result=PASS detail="n=0 consistent=true single/empty（≥2 台并行需外设 · BLOCKED_FIXTURE）"
+[BLE] 连接 midea · 暂存路由上下文
+[BLE] 连接成功 · midea
+[BLE] ATT 协商 · 最大写入 20 字节（withResponse 512）
+[BLE] 服务发现中… · midea
+[BLE] 服务发现完成 · midea（3 服务）
+[BLE] 服务 自定义服务：2 特征 · midea
+[BLE] 服务 自定义服务：2 特征 · midea
+[BLE] 服务 自定义服务：2 特征 · midea
+[BLE] 连接已断开 · midea（The specified device has disconnected from us.）
+[BLE] 被动断线 · 1s 后自动重连 · midea（1/3）
+[BLE] 正在自动重连 · midea（1/3）
+[BLE] 自动重连成功 · midea
+[BLE] ATT 协商 · 最大写入 20 字节（withResponse 512）
+[BLE] 断开连接中… · midea
+[BLE] 已断开连接 · midea
+[UISMOKE] UIS-18 result=PASS detail="connected=["midea"] n=1 uiConsistent=true reconnect=backoff-log-ok outcome=reconnected"
+[UISMOKE] UIS-18-OTA result=SKIP detail="no OTA fixture advertising 4FAFC201 in this environment"
+[UISMOKE] UIS-19 result=SKIP detail="no SHID fixture advertising 9F1D1001 in this environment"
+[UISMOKE] SUMMARY failures=0 skips=2
+SMOKE_EXIT=0

@@ -1,0 +1,17 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[UISMOKE] mode=smoke-pages app=SmartBLE-mac
+[UISMOKE] UIS-01 result=PASS detail="windowVisible=true filterPanel=true tableView=true servicePanel=true logPanel=true"
+[BLE] Bluetooth is powered on
+[BLE] Peripheral is powered on
+[UISMOKE] UIS-02 result=FAIL detail="buttonTitle=nil status=nil managerIsScanning=false"
+[UISMOKE] UIS-03 result=PASS detail="buttonTitle=Start Scan status=Ready scannedDevices=0"
+[UISMOKE] UIS-04a result=PASS detail="filterPanelVisible=true"
+[UISMOKE] UIS-04b result=FAIL detail="managerFilterRSSI=-100"
+[UISMOKE] UIS-04c result=FAIL detail="managerHideNoName=false"
+[UISMOKE] UIS-04d result=PASS detail="filterRSSI=-100 hideNoName=false"
+[UISMOKE] UIS-05 result=SKIP reason="scan found no devices in this environment"
+[UISMOKE] UIS-06a result=FAIL detail="label=0 entries managerLogs=2 logPanelHasText=false"
+[UISMOKE] UIS-06b result=PASS detail="managerLogsEmpty=true label=0 entries panelCleared=true"
+[UISMOKE] UIS-07 result=PASS detail="identifiers=scanToggle,NSToolbarFlexibleSpaceItem,disconnect,logs logsAction=true"
+[UISMOKE] SUMMARY failures=4 skips=1

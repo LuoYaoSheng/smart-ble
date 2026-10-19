@@ -1,0 +1,15 @@
+[
+  {
+    "name": "SHID-00000001",
+    "rssi": -35,
+    "adv_type": "4",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  }
+]

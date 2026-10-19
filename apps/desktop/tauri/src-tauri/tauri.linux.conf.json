@@ -1,0 +1,15 @@
+{
+  "package": {
+    "productName": "lanxi-ble-toolkit"
+  },
+  "tauri": {
+    "bundle": {
+      "deb": {
+        "desktopTemplate": "linux/main.desktop"
+      },
+      "rpm": {
+        "desktopTemplate": "linux/main.desktop"
+      }
+    }
+  }
+}

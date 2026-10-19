@@ -1,0 +1,43 @@
+AAND-SCROLLJANK · 第一轮修复（仅 ViewModel sample(400)）装机实测
+设备：华为 TAS-AN00（FEC0220629005177） 2026-09-27 08:26
+
+场景 A：同基线（点「开始扫描」→ 5s 会话内连滚 4 次）——冷装机空列表起步
+------------------------------------------------------------------
+Total frames rendered: 64
+Janky frames: 49 (76.56%)
+50th percentile: 53ms
+90th percentile: 93ms
+Number Missed Vsync: 38
+50th gpu percentile: 3ms
+------------------------------------------------------------------
+同窗口 onScanResult：167 条 / 5.0s ≈ 33 条/秒（本轮环境广播量比基线低）
+结论：95.6% → 76.6%，下游管线（map/combine/filter/整表替换/全量 diff）已
+压到 2.5Hz，但仍有主线程负担——onScanResult 回调体本身。
+
+场景 B：不扫描纯滚动（残留列表，4 次 swipe）
+------------------------------------------------------------------
+Total frames rendered: 55
+Janky frames: 27 (49.09%)
+50th percentile: 32ms
+90th percentile: 93ms
+50th gpu percentile: 6ms
+------------------------------------------------------------------
+结论：滚动路径自身仍掉帧 ~49%——与扫描无关的第二层问题。
+
+场景 C：framestats 逐帧阶段分解（单次长惯性滚动，最慢 8 帧）
+total_ms  input  anim  travers
+ 132.7    79.9    3.0   40.1
+ 114.6    46.9    2.4   56.2
+  98.7    59.8    2.3   26.0
+  96.8     0.7    9.1   75.9
+  86.2    40.1    2.7   32.4
+  82.1    41.0    2.1   30.7
+  69.6    27.4    2.3   28.5
+  34.1    26.1    0.0    1.8
+（measure/layout 子阶段仅 0.3ms；meas 列几乎为零 → 开销集中在 traversal
+ 派发与 input 排队，即 debug 构建 Compose 遍历 + 每卡组合成本）
+
+第二层根因（代码侧）：BluetoothLeScanner.startScan(filters, settings, callback)
+不传 Handler → onScanResult 投递到主线程 Looper，每条回调的 adv hex 拼串 +
+ScanRecord/Map 重建 + 全列表 toList 全在主线程执行（57 条/秒峰值）。
+→ 第二刀：专用 HandlerThread 承接扫描回调（BleManager）。

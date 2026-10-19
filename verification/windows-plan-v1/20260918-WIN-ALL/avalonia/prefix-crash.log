@@ -1,0 +1,25 @@
+# V-WIN 修复前启动崩溃栈（2026-09-18 16:3x，直接运行 bin/Debug exe 捕获）
+
+退出码 127，启动即崩；根因为 MainWindow.axaml:351 BoxShadow 使用逗号分隔
+（Avalonia 合法语法为空格分隔，Styles/AppStyles.axaml 内均为空格写法）。
+
+```
+Unhandled exception. System.FormatException: One of the identified items was in an invalid format.
+   at Avalonia.Media.BoxShadow.Parse(String s)
+   at Avalonia.Media.BoxShadows.Parse(String s)
+   at SmartBLE.Desktop.MainWindow.!XamlIlPopulate(IServiceProvider, MainWindow) in E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\MainWindow.axaml:line 351
+   at SmartBLE.Desktop.MainWindow.!XamlIlPopulateTrampoline(MainWindow)
+   at SmartBLE.Desktop.MainWindow.InitializeComponent() in E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\MainWindow.axaml.cs:line 17
+   at SmartBLE.Desktop.MainWindow..ctor() in E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\MainWindow.axaml.cs:line 12
+   at SmartBLE.Desktop.App.OnFrameworkInitializationCompleted() in E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\App.axaml.cs:line 18
+   at Avalonia.AppBuilder.SetupUnsafe()
+   at Avalonia.AppBuilder.Setup()
+   at Avalonia.AppBuilder.SetupWithLifetime(IApplicationLifetime lifetime)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at SmartBLE.Desktop.Program.Main(String[] args) in E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\Program.cs:line 9
+```
+
+修复：`BoxShadow="0,8,32,#40000000"` → `BoxShadow="0 8 32 #40000000"`（全库唯一一处逗号写法）。
+修复后 dotnet build exit 0，exe 启动成功（窗口 SmartBLE 1215x937，见 01-ui-smoke.png）。
+
+注意：W1（2026-09-11 V-WIN Build Smoke）只验了构建未验启动，本缺陷即漏网原因。

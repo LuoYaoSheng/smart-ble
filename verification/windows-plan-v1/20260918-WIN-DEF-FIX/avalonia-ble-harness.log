@@ -1,0 +1,33 @@
+09:31:57.172 [V1 init] starting
+09:31:57.271 [state] On
+09:31:57.271 [V1 init] state=On
+09:31:57.271 [V2 scan] starting
+09:31:57.747 [V2 scan] SHID found id=10B41DCD238E name=SHID-00000001 rssi=-37
+09:31:57.955 [V3 scan] stopped; seen=2 devices; shid=yes
+09:31:57.955 [V4 connect] 10B41DCD238E
+09:31:59.018 [V4 connect] 10B41DCD238E
+09:31:59.422 [V5 services] 1 services
+09:31:59.422 [V5 service] 9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04 Unknown Service chars=3
+09:31:59.536 [svc] 读取成功: 读取成功: 7B 22 70 72 6F 64 75 63 74 22 3A 22 73 6D 61 72 74 2D 68 69 64 22 2C 22 70 72 6F 74 6F 63 6F 6C 22 3A 22 31 2E 30 22 2C 22 64 65 76 69 63 65 5F 69 64 22 3A 22 48 49 44 2D 30 30 30 30 30 30 30 31 22 2C 22 66 69 72 6D 77 61 72 65 22 3A 22 31 2E 32 2E 30 22 2C 22 73 74 61 74 65 22 3A 22 70 72 6F 76 69 73 69 6F 6E 69 6E 67 22 2C 22 70 72 6F 76 69 73 69 6F 6E 65 64 22 3A 66 61 6C 73 65 7D
+09:31:59.536 [V6 read INFO] {"product":"smart-hid","protocol":"1.0","device_id":"HID-00000001","firmware":"1.2.0","state":"provisioning","provisioned":false}
+09:31:59.650 [svc] 读取成功: 读取成功: 7B 22 73 74 61 74 65 22 3A 22 70 72 6F 76 69 73 69 6F 6E 69 6E 67 22 2C 22 73 74 65 70 22 3A 22 77 69 66 69 5F 66 61 69 6C 65 64 22 2C 22 65 72 72 6F 72 22 3A 22 77 69 66 69 5F 66 61 69 6C 65 64 22 7D
+09:31:59.650 [V7 read STATUS] {"state":"provisioning","step":"wifi_failed","error":"wifi_failed"}
+09:32:00.014 [svc] 通知已启用: 通知已启用
+09:32:00.015 [V8 notify on] ok
+09:32:00.137 [svc] 写入失败: 写入失败: status=2(ProtocolError) protocolError=13
+09:32:00.137 [V9 write TEXT] FAIL
+09:32:04.331 [svc] 写入失败: 写入失败: status=2(ProtocolError) protocolError=13
+09:32:04.331 [V10 write HEX] FAIL
+09:32:08.470 [svc] 通知已禁用: 通知已禁用
+09:32:08.470 [V11 notify off] ok
+09:32:08.475 [V-disconnect-event] 10B41DCD238E
+09:32:08.475 [V12 disconnect] done
+09:32:10.480 [V13 reconnect] 10B41DCD238E
+09:32:11.520 [V4 connect] 10B41DCD238E
+09:32:11.836 [V5 services] 1 services
+09:32:11.836 [V5 service] 9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04 Unknown Service chars=3
+09:32:14.833 [svc] 读取成功: 读取成功: 7B 22 70 72 6F 64 75 63 74 22 3A 22 73 6D 61 72 74 2D 68 69 64 22 2C 22 70 72 6F 74 6F 63 6F 6C 22 3A 22 31 2E 30 22 2C 22 64 65 76 69 63 65 5F 69 64 22 3A 22 48 49 44 2D 30 30 30 30 30 30 30 31 22 2C 22 66 69 72 6D 77 61 72 65 22 3A 22 31 2E 32 2E 30 22 2C 22 73 74 61 74 65 22 3A 22 70 72 6F 76 69 73 69 6F 6E 69 6E 67 22 2C 22 70 72 6F 76 69 73 69 6F 6E 65 64 22 3A 66 61 6C 73 65 7D
+09:32:14.833 [V15 re-read INFO] {"product":"smart-hid","protocol":"1.0","device_id":"HID-00000001","firmware":"1.2.0","state":"provisioning","provisioned":false}
+09:32:14.833 [V15 identity match] SAME
+09:32:14.835 [V-disconnect-event] 10B41DCD238E
+09:32:14.835 [V16 final disconnect] done

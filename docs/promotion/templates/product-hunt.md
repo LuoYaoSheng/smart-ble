@@ -3,7 +3,7 @@
 ## 产品名称
 
 ```
-Smart BLE
+蓝析BLE工具箱
 ```
 
 ## 一句话描述
@@ -25,7 +25,7 @@ Cross-platform BLE debugging tool, fully open-source
 ### Product Description (介绍)
 
 ```
-Smart BLE is a professional Bluetooth Low Energy debugging tool with 8+ platform implementations.
+蓝析BLE工具箱 is a professional Bluetooth Low Energy debugging tool with 8+ platform implementations.
 
 Key Features:
 - 8+ platforms: uni-app, Flutter, Electron, Tauri, macOS, Avalonia, and more

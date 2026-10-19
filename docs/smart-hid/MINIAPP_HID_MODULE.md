@@ -1,9 +1,9 @@
-# BLE Toolkit+ Smart HID 模块页面结构 v1.2
+# 蓝析BLE工具箱 Smart HID 模块页面结构 v1.2
 
 ## 1. 产品边界
 
 微信小程序仍是：
-> 开源 BLE Toolkit+ + Smart HID 配置工具
+> 开源 蓝析BLE工具箱 + Smart HID 配置工具
 
 不做：
 - 登录

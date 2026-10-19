@@ -1,0 +1,111 @@
+PASS S1.1 标题=BLE Toolkit+
+PASS S1.2 TabBar 含「扫描」
+PASS S1.2 TabBar 含「已连接」
+PASS S1.2 TabBar 含「广播」
+PASS S1.2 TabBar 含「关于」
+PASS S1.3 navbar kicker
+PASS S1.4 navbar 标题 扫描
+PASS S1.5 bt-chip 五态词
+PASS S1.6 空态 还没有扫描结果
+PASS S1.7 空态引导
+PASS S1.8 待开始扫描
+[probe S1.9 got 1053CC]
+PASS S1.9 色彩探针·主按钮=正典蓝渐变（右上=渐变深端 #0E4FC4）
+PASS S1.10 色彩探针·窗口底=正典 Bg
+[probe S1.11 got FFFFFF]
+PASS S1.11 色彩探针·TabBar=白系（半透明白/LineSoft 边线族）
+PASS S2.1 扫描中状态词
+PASS S2.2 真机 SHID-00000001 出现
+PASS S2.3 档案匹配 chip（强或弱）
+PASS S2.4 扫描完成词
+[meas] vis=1802x1396 scale=1.50
+[meas acts] w配置=563.3 w连接=562.0 左距=33.3 右距=34.7 钮距=8.0
+PASS SL1 acts 双钮等宽（flex:1）
+PASS SL2 acts 撑满卡宽（页边16+边框1+内边距16=33）
+PASS SL3 acts 钮距 8
+[meas card] 左边框@16.7 右边框@17.3
+PASS SL4 卡片页边距 16/16
+[meas gap] 卡间 bg 游程=16.0（边框组 9）
+PASS SL5 卡间距≈12（含静态阴影晕染 12~18）
+[meas ava] 44.0x44.0（中心列游程）
+PASS SL6 头像 44x44
+[meas navbar] 标题左距=18.7
+PASS SL7 navbar 标题左距 18
+[meas tabbar] 底垫=16.0
+PASS SL8 TabBar 底垫 16（正典 padding 4/8/16）
+PASS S3.1 最弱信号预设
+PASS S3.2 阈值默认 -100
+PASS S3.3 名称前缀/隐藏无名/重置过滤
+PASS S3.4 预设点击 → 阈值 -70
+PASS S3.5 重置回 -100
+PASS S3.6 面板收起后预设不可见
+PASS S4.1 进入 GATT 调试
+PASS S4.2 已连接态词
+PASS S4.3 设备名
+PASS S4.4 服务树标题
+PASS S4.5 服务计数 chip
+PASS S4.6 桌面双栏注记
+PASS S4.7 右栏深色控制台
+PASS S5.1 读取成功日志
+PASS S5.2 INFO JSON 值回填
+PASS S6.1 弹窗打开
+PASS S6.2 格式段 HEX/UTF-8
+PASS S6.3 模式段 单次/批量/循环
+[meas modal] 取消=125.3 确认=125.3 距=9.3 高=38.0
+PASS SL9 模态双钮等宽≈125.5（modal 300）
+PASS SL10 模态钮距 9 / 高 38
+PASS S6.4 非法 HEX 拒绝
+PASS S6.5 弹窗仍在（错误不吞弹窗）
+PASS S6.6 取消关闭弹窗
+PASS S7.1 通知已启用
+PASS S7.2 按钮翻转为停止监听
+PASS S8.1 回扫描页
+PASS S8.2 已连接页
+PASS S8.3 conn 卡可调试词
+PASS S8.4 TabBar 角标=1
+PASS S8.5 断开后空态
+PASS S9.1 配置 Smart HID 入口
+PASS S9.2 P002 标题
+PASS S9.3 阶段二（真实 GATT 连上）
+[meas stepln] @218,171 got 17C7A8
+PASS SL11 stepper 连线渲染（非塌 0）
+PASS S9.4 身份摘要
+PASS S9.5 必填门禁（下发禁用态存在）
+PASS S9.6 摄像头降级横幅
+PASS S9.7 下发降级横幅
+PASS S9.8 返回扫描页
+PASS S10.1 广播页
+PASS S10.2 默认预算 21/31（10+4+7）
+PASS S10.3 四行明细
+PASS S10.4 未就绪徽章
+PASS S10.5 色彩探针·bytebar 深色
+[edit @100,241 -> 'SmartBLE-XX']
+[edit @100,353 -> 'FFE0']
+[edit @100,465 -> '0001']
+[edit @100,577 -> 'BLE']
+dumped 47 elements -> diag-broadcast.txt
+PASS S10.6 预算联动（11 字符名 → 13B → 合计 24）
+PASS S10.7 降级日志
+PASS S10.8 支持检查日志
+PASS S11.1 关于页
+PASS S11.2 版本 chip
+PASS S11.3 应用信息
+PASS S11.4 功能 chips
+PASS S11.5 平台状态行
+PASS S11.6 菜单四行
+PASS S11.7 foot
+PASS S12.1 版本页
+PASS S12.2 版本号大字
+PASS S12.3 Preview chip + Release tag 未登记
+PASS S12.4 当前限制卡
+PASS S12.5 发布历史空态
+PASS S12.6 预览记录行
+PASS S12.7 复制版本信息
+PASS S12.8 回关于页
+PASS S13.1 退出确认弹出
+PASS S13.2 继续使用驻留
+PASS S13.3 继续使用不退出
+PASS S13.4 确认退出后窗口关闭
+[shot 99-final fail: Parameter is not valid.]
+
+== RESULT GREEN pass=92 fail=0 ==

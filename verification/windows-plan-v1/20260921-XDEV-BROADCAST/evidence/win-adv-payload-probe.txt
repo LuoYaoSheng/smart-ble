@@ -1,0 +1,21 @@
+# adv-probe（%TEMP%\winall\adv-probe，net8.0-windows10.0.19041.0 控制台）
+# 2026-09-21 本机实测：WinRT BluetoothLEAdvertisementPublisher 负载元素二分
+# 探针源码见本 README 附录说明（TEMP 驱动工程，不入库）；以下为逐条真实输出。
+
+empty:        THROWS COMException: 数据无效。发布者只能从非空负载启动。
+localName:    THROWS ArgumentException: Value does not fall within the expected range.
+localName+mfg:THROWS ArgumentException: Value does not fall within the expected range.
+mfgOnly:      START-OK status=Started
+localName+svc:THROWS ArgumentException: Value does not fall within the expected range.
+svcOnly:      THROWS ArgumentException: Value does not fall within the expected range.
+full:         THROWS ArgumentException: Value does not fall within the expected range.
+
+## 结论
+# 桌面（非打包）进程的 publisher 仅允许厂商数据块（0xFF）进空口：
+# LocalName 与 ServiceUuids 一律被 Start() 拒绝；空负载同样被拒。
+# 无线电本身支持发射（mfgOnly → Started）。
+
+# ─── watch 模式（Active 扫描 8s，华为 A-AND 广播中）捕获的裸 adv ───
+45D420A8CE92 rssi=-40 svc:0000fff0-0000-1000-8000-00805f9b34fb mfg:0x0001=424C45 name:Mate 30 5G
+# （与 Phase A 手机侧收到的 Windows adv「06 ff 0100 424c45」互为镜像：
+#   双向都是 CID 0x0001 + "BLE"，Windows→Android 侧无 Microsoft CID 劫持）

@@ -8,6 +8,9 @@ import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
 import android.bluetooth.le.BluetoothLeAdvertiser
 import android.content.Context
+import android.Manifest
+import android.os.Build
+import android.content.pm.PackageManager
 import android.os.ParcelUuid
 import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +31,11 @@ class BlePeripheralManager(private val context: Context) {
     private val bluetoothManager: BluetoothManager =
         context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     private val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
-    private val advertiser: BluetoothLeAdvertiser? = bluetoothAdapter?.bluetoothLeAdvertiser
+    private val advertiser: BluetoothLeAdvertiser?
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && (
+            context.checkSelfPermission(Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED ||
+            context.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED
+        )) null else bluetoothAdapter?.bluetoothLeAdvertiser
 
     private val _isAdvertising = MutableStateFlow(false)
     val isAdvertising: StateFlow<Boolean> = _isAdvertising.asStateFlow()
@@ -42,11 +49,14 @@ class BlePeripheralManager(private val context: Context) {
         get() = advertiser != null && bluetoothAdapter?.isEnabled == true
 
     /**
-     * 开始广播
+     * 开始广播（P008：支持厂商数据块与设备名开关；名称始终为系统蓝牙名）
      */
     @SuppressLint("MissingPermission")
     fun startAdvertising(
         serviceUuid: String,
+        manufacturerId: Int? = null,
+        manufacturerData: ByteArray? = null,
+        includeDeviceName: Boolean = true,
         onComplete: (Boolean) -> Unit
     ) {
         if (!isAdvertisingSupported) {
@@ -78,7 +88,10 @@ class BlePeripheralManager(private val context: Context) {
             setIncludeTxPowerLevel(false)
             addServiceUuid(ParcelUuid(uuid))
             // Android 会使用设备名称，无法自定义
-            setIncludeDeviceName(true)
+            setIncludeDeviceName(includeDeviceName)
+            if (manufacturerId != null && manufacturerData != null && manufacturerData.isNotEmpty()) {
+                addManufacturerData(manufacturerId, manufacturerData)
+            }
         }.build()
 
         advertiseCallback = object : AdvertiseCallback() {

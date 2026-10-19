@@ -1,5 +1,5 @@
 /* Auto-generated from zh-CN */
-"app_name" = "BLE Toolkit+";
+"app_name" = "蓝析BLE工具箱";
 "tab_scan" = "扫描设备";
 "tab_connected" = "已连接";
 "tab_broadcast" = "创建广播";

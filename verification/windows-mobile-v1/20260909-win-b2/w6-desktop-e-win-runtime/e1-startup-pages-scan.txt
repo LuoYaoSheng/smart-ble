@@ -1,0 +1,35 @@
+E1 启动 + UI + 扫描验证（2026-09-10，Windows 主机，E-WIN Electron 1.0.5）
+
+环境:
+- 应用: apps/desktop/electron (electron 27.3.11, @abandonware/noble)
+- 启动: npx electron . --force-renderer-accessibility --disable-gpu
+- 主机蓝牙: poweredOn (noble 加载成功)
+- 已知噪声: GPU process exit_code=-1073740791 (Electron 27 + 显卡驱动), 加 --disable-gpu 后消失,
+  软渲染兜底不影响 UI
+
+验证结果 (视觉走查 + CDP Runtime.evaluate):
+1. 启动: 主进程 OK, 窗口渲染正常, 蓝牙状态"蓝牙已开启"
+2. 关于页 (F027/F028/F029):
+   - 版本芯片: v1.0.5-dev.unknown (元数据基线 1.0.5 + dev 通道 fallback)
+   - 推广卡: 萌喵圈 / 宝宝点滴, 诚实文案"小程序码尚未发布，落地页暂无可下载码图"
+   - 相关入口: 项目主页/源码仓库/架构白皮书/问题反馈/分享应用/版本记录 全部在位
+3. 版本记录页 (P010): 当前版本 1.0.5-dev.unknown / 状态 PREVIEW / 渠道 Preview;
+   平台状态表 (UniApp Android PREVIEW, 微信小程序 PREVIEW, H5 PREVIEW, iOS UNSUPPORTED,
+   ESP32 Observer NOT_RELEASED, LightBLE ESP32 Peripheral REFERENCE, Flutter/Tauri/原生端 PREVIEW);
+   已知限制 9 条; 正式发布"暂无正式发布记录（当前为 Preview 渠道）"; 预览记录 1.0.5 Preview
+4. 扫描页: 过滤面板完整 (RSSI 滑杆/-50/-70/-90/全部, 名称过滤, 隐藏无名设备, 重置)
+5. 真蓝牙扫描 10s 发现 5 台设备:
+   - BLEToolkit-Server (-44 dBm, 10:b4:1d:cd:23:8d, 厂商数据 e0.."LightBLE", 广播服务 4fafc201-...-914b)
+     => 即 LightBLE ESP32 夹具, 空闲可连接
+   - 4 台微软 Swift Pair 信标 (厂商 0x0006)
+6. F005 显示名批准链现场生效: 无名设备显示"未命名 BLE · AC27/F6CD/81D5/C481" (ID 后四位),
+   数据层 name='' 未被污染
+
+主进程日志节选 (启动):
+  === Electron Main Process Started ===
+  Creating main window...
+  Window ready to show
+  IPC: ble:init called
+  Noble loaded, state: unknown
+  BLE State changed: poweredOn
+  IPC: ble:init result: true

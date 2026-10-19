@@ -7,12 +7,15 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "BLE Toolkit+",
-    "version": "1.0.0"
+    "productName": "蓝析BLE工具箱",
+    "version": "1.0.5"
   },
   "tauri": {
     "allowlist": {
       "all": false,
+      "app": {
+        "all": true
+      },
       "shell": {
         "all": false,
         "open": true
@@ -41,7 +44,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.smartble.desktop",
+      "identifier": "com.smartble.tauri",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -56,11 +59,14 @@
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
-        "timestampUrl": ""
+        "timestampUrl": "",
+        "wix": {
+          "language": "zh-CN"
+        }
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' ipc: http://ipc.localhost https://ipc.localhost; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'"
     },
     "updater": {
       "active": false
@@ -70,7 +76,7 @@
         "fullscreen": false,
         "height": 800,
         "resizable": true,
-        "title": "SmartBLE",
+        "title": "蓝析BLE工具箱",
         "width": 1200,
         "minWidth": 900,
         "minHeight": 600

@@ -1,8 +1,8 @@
-# BLE Toolkit+ iOS - Architecture Documentation
+# 蓝析BLE工具箱 iOS - Architecture Documentation
 
 ## Overview
 
-BLE Toolkit+ iOS is a native iOS/macOS BLE (Bluetooth Low Energy) debugging tool built with SwiftUI and CoreBluetooth.
+蓝析BLE工具箱 iOS is a native iOS/macOS BLE (Bluetooth Low Energy) debugging tool built with SwiftUI and CoreBluetooth.
 
 The canonical source tree is `apps/ios/Sources/`, which is the code path wired into `Package.swift`.
 
@@ -420,7 +420,7 @@ struct ScanView: View {
                         }
                 }
             }
-            .navigationTitle("BLE Toolkit+")
+            .navigationTitle("蓝析BLE工具箱")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(bleManager.isScanning ? "Stop" : "Scan") {

@@ -1,0 +1,46 @@
+{
+  "status": "SIGNED_EXPORTS_VERIFIED_UPLOAD_NOT_RUN",
+  "display_name": "BLE Toolkit+",
+  "team_id": "72MZZQB893",
+  "application_id": "com.i2kai.open.smartble",
+  "version": "1.0.5",
+  "build": 101,
+  "artifacts": [
+    {
+      "path": ".tmp/release/apple-native/ios-renamed-export/BLE Toolkit+.ipa",
+      "bytes": 3038702,
+      "sha256": "983c74e30681dff81796ce0bd4bb6afd026a9d7c2585456efcc02c68d8057c36"
+    },
+    {
+      "path": ".tmp/release/apple-native/macos-renamed-export/BLE Toolkit+.pkg",
+      "bytes": 3464968,
+      "sha256": "b7c83ea07f64ef5bc84ab95fd3db8e104a766354b1c86da7da61dcdbe4c2bc53"
+    }
+  ],
+  "hardware": "NOT_RUN",
+  "store_upload": "NOT_RUN",
+  "ios_verification": {
+    "display_name": "PASS",
+    "codesign": "PASS",
+    "team": "72MZZQB893",
+    "profile_type": "APP_STORE",
+    "debuggable": false,
+    "device_restricted": false
+  },
+  "macos_verification": {
+    "display_name": "PASS",
+    "application_signature": "PASS",
+    "installer_signature": "PASS",
+    "team": "72MZZQB893",
+    "architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "app_sandbox": true,
+    "bluetooth": true,
+    "camera": true,
+    "debuggable": false
+  },
+  "current_product_display_name": "蓝析BLE工具箱",
+  "branding_scope": "PRE_RENAME_EVIDENCE_REBUILD_REQUIRED"
+}

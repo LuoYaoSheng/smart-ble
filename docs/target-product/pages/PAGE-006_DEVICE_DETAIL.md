@@ -68,7 +68,7 @@ supersedes: []
 | OP-P006-08 | 关闭订阅 | 已订阅 | 无 | 无 | setNotifyEnabled(false)（远程+本地双断） | 推送停止；subscription_count −1 | 同上 | 无 | 退订+UI 摘除 | TEST-I-005 |
 | OP-P006-09 | ~~Indicate 开/关~~（已废弃，TP-G0-R1） | — | — | — | DEC-017 统一订阅语义：Notify 与 Indicate 共用 OP-07/08，无独立操作 | — | — | — | — | — |
 | OP-P006-10 | 清空日志 | 页面可见 | 无 | 无 | logger.clear(deviceId) | toast+面板清空 | 无 | 无 | 无 | TEST-P-006 |
-| OP-P006-11 | 导出日志 | 页面可见 | 无 | 无 | 脱敏→格式化→导出/复制 | 导出成功 | 空日志提示；失败 ERR-DATA-02 | 无 | 文件句柄关闭 | TEST-W-008、TEST-U-012 |
+| OP-P006-11 | 导出日志 | 页面可见 | 无 | 无 | 脱敏→格式化→导出/复制 | 导出成功 | 空日志提示；失败 ERR-DATA-02 | 无 | 文件句柄关闭 | TEST-U-012 |
 | OP-P006-12 | 选择 OTA 固件包 | 有 OTA 服务且入口达标（REQ-046/DEC-001） | OTA 进行中 | 固件包（manifest.json+firmware.bin，PROTO-011） | FEAT-081 六项校验（格式/target/hardware/version/size/SHA256） | 显示 target/硬件/目标版本/SHA 摘要 | ERR-OTA-01（读取失败）、ERR-OTA-09..13（包校验失败，不进入事务） | 无 | 无 | TEST-U-016、TEST-I-010、TEST-A-011、TEST-E-007 |
 | OP-P006-13 | 开始 OTA | 包校验通过 | 无 | 无 | OTA 事务（第 0 步后 10 步正典，`12`；start 携带 target/sha256） | 进度→success→版本一致=成功 | ERR-OTA-02..08 | 无 | 事务资源释放 | TEST-I-008、TEST-A-011、TEST-E-007 |
 | OP-P006-14 | 取消 OTA | OTA 进行中 | 无 | 无 | CTRL abort→设备回 idle | 取消完成回就绪 | ERR-OTA-07 兜底断开 | 无 | 同上 | TEST-E-007 |
@@ -150,7 +150,7 @@ TEST-P-006（页面）、TEST-U-009..014（编解码/队列/预算/日志）、T
 
 ## 19. 真机 / 发布测试映射
 
-TEST-A-006..011（Android 全操作）、TEST-W-007/008（微信）、TEST-E-002..007（夹具与故障注入）。OTA 发布门槛见 REQ-046/DEC-001。
+TEST-A-006..011（Android 全操作）/008（微信）、TEST-E-002..007（夹具与故障注入）。OTA 发布门槛见 REQ-046/DEC-001。
 
 ## 20. 公开声明与证据要求
 

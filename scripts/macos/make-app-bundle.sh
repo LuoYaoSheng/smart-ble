@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+# make-app-bundle.sh — r5 上架就绪：产出两种交付形态
+#
+# 用法： scripts/macos/make-app-bundle.sh [--omit-bt-usage] [--config debug|release] [--arch universal|arm64|x86_64]
+#   dist/direct/蓝析BLE工具箱.app      → 运行形态（Release、AppIcon.icns、hardened runtime、ad-hoc、非沙盒）
+#                                   r4 链路保持可复现（ad-hoc 非沙盒下 BLE 可用，见 r4 证据）
+#   dist/mas/蓝析BLE工具箱.app  → MAS 形态（同上 + App Sandbox entitlements；Mac App Store 就绪形态）
+#                                   BLE 需要 device.bluetooth entitlement + 系统授权；真实分发签名单独验证。
+#   --omit-bt-usage → 追加 dist/negative/蓝析BLE工具箱.app（删除两个蓝牙用途键，负向对照，非沙盒）
+#   --config X     → 构建配置（默认 release）
+#
+# 约束：仅 ad-hoc 签名（codesign -s -），全程不涉及证书私钥 / Apple 账号 / 公证 / 上传。
+# 设计约束：同 verify-native-macos.sh（无绝对路径、失败码上抛）。
+
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+APP_DIR="$REPO_ROOT/apps/desktop/macos/SmartBLE-mac"
+DIST="$REPO_ROOT/apps/desktop/macos/dist"
+CONFIG=release
+OMIT_BT=0
+ARCH=universal
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --omit-bt-usage) OMIT_BT=1; shift ;;
+    --config) CONFIG="${2:?--config needs a value}"; shift 2 ;;
+    --arch) ARCH="${2:?--arch needs a value}"; shift 2 ;;
+    *) echo "unknown option: $1" >&2; exit 2 ;;
+  esac
+done
+CONFIG_CAP="$(printf '%s' "$CONFIG" | cut -c1 | tr '[:lower:]' '[:upper:]')$(printf '%s' "$CONFIG" | cut -c2-)"
+BUNDLE="$DIST/direct/蓝析BLE工具箱.app"
+MAS="$DIST/mas/蓝析BLE工具箱.app"
+NOBT="$DIST/negative/蓝析BLE工具箱.app"
+PLIST_SRC="$APP_DIR/Info.plist"
+ICON_SRC="$APP_DIR/Resources/AppIcon.icns"
+ENT_SRC="$APP_DIR/Entitlements.plist"
+
+step() { printf '\n===== %s =====\n' "$1"; }
+
+step "1. swift build (${CONFIG}，${ARCH})"
+cd "$APP_DIR"
+BIN=""
+if [ "$ARCH" = universal ]; then
+  swift build --configuration "$CONFIG" --arch arm64 --arch x86_64
+  BIN="$APP_DIR/.build/apple/Products/$CONFIG_CAP/SmartBLE-mac"
+  echo "NVD build: 通用二进制（arm64 + x86_64）"
+else
+  case "$ARCH" in arm64|x86_64) ;; *) echo "invalid arch: $ARCH" >&2; exit 2 ;; esac
+  swift build --configuration "$CONFIG" --arch "$ARCH"
+  BIN="$(swift build --configuration "$CONFIG" --arch "$ARCH" --show-bin-path)/SmartBLE-mac"
+fi
+[ -x "$BIN" ] || { echo "binary missing: $BIN"; exit 1; }
+lipo -info "$BIN"
+
+step "2. 组装 bundle（清单：${PLIST_SRC}；图标：${ICON_SRC}）"
+[ -f "$ICON_SRC" ] || { echo "icon missing (先跑 scripts/macos/make-app-icon.sh): $ICON_SRC"; exit 1; }
+rm -rf "$DIST"
+# SwiftPM 资源 bundle（Sources/Resources 经 .process 生成）必须随包分发：
+# resource_bundle_accessor 会在 Bundle.main.resourceURL 查找，缺失即启动崩溃
+# （MAC-007：NVP-03 曾以 "unable to find bundle named SmartBLE-mac_SmartBLE-mac" 崩）。
+SPM_RES_BUNDLE="$(dirname "$BIN")/SmartBLE-mac_SmartBLE-mac.bundle"
+[ -d "$SPM_RES_BUNDLE" ] || { echo "SPM resource bundle missing: $SPM_RES_BUNDLE"; exit 1; }
+
+for app in "$BUNDLE" "$MAS"; do
+  mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
+  cp "$BIN" "$app/Contents/MacOS/SmartBLE-mac"
+  cp "$PLIST_SRC" "$app/Contents/Info.plist"
+  /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable SmartBLE-mac" "$app/Contents/Info.plist"
+  cp "$ICON_SRC" "$app/Contents/Resources/AppIcon.icns"
+  rm -rf "$app/Contents/Resources/SmartBLE-mac_SmartBLE-mac.bundle"
+  cp -R "$SPM_RES_BUNDLE" "$app/Contents/Resources/SmartBLE-mac_SmartBLE-mac.bundle"
+done
+
+# NVD plist：MAS 必填/关键字段完整性（r6 增相机用途：配对码扫码）
+for key in CFBundleShortVersionString CFBundleVersion CFBundleIconFile \
+           LSApplicationCategoryType ITSAppUsesNonExemptEncryption \
+           NSBluetoothAlwaysUsageDescription NSCameraUsageDescription; do
+  /usr/libexec/PlistBuddy -c "Print :$key" "$MAS/Contents/Info.plist" > /dev/null \
+    || { echo "NVD plist FAIL: 缺 $key"; exit 1; }
+done
+echo "NVD plist: 版本/分类/图标/出口合规/蓝牙+相机用途 全部在位"
+
+if [ "$OMIT_BT" = "1" ]; then
+  mkdir -p "$NOBT/Contents/MacOS" "$NOBT/Contents/Resources"
+  cp "$BIN" "$NOBT/Contents/MacOS/SmartBLE-mac"
+  cp "$PLIST_SRC" "$NOBT/Contents/Info.plist"
+  /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable SmartBLE-mac" "$NOBT/Contents/Info.plist"
+  cp "$ICON_SRC" "$NOBT/Contents/Resources/AppIcon.icns"
+  cp -R "$SPM_RES_BUNDLE" "$NOBT/Contents/Resources/SmartBLE-mac_SmartBLE-mac.bundle"
+  /usr/libexec/PlistBuddy -c 'Delete :NSBluetoothAlwaysUsageDescription' \
+                          -c 'Delete :NSBluetoothPeripheralUsageDescription' \
+                          "$NOBT/Contents/Info.plist"
+  echo "NVP plist: NoBT 变体已生成（故意缺失蓝牙用途声明，供负向观察）"
+fi
+
+step "3. ad-hoc 签名（无证书私钥参与；MAS 形态带 App Sandbox + hardened runtime）"
+codesign --force --sign - --options runtime "$BUNDLE"
+codesign --verify --strict "$BUNDLE" && echo "NVP sign: direct/蓝析BLE工具箱.app（运行形态）ad-hoc 签名校验通过"
+codesign --force --sign - --entitlements "$ENT_SRC" --options runtime "$MAS"
+codesign --verify --strict "$MAS" && echo "NVD sign: mas/蓝析BLE工具箱.app（MAS 形态）ad-hoc 签名校验通过"
+codesign -d --entitlements :- "$MAS" 2>/dev/null | grep 'app-sandbox' > /dev/null \
+  && echo "NVD entitlements: app-sandbox 已嵌入"
+codesign -dv "$MAS" 2>&1 | grep -i 'runtime' > /dev/null \
+  && echo "NVD runtime: hardened runtime 标志在位"
+if [ "$OMIT_BT" = "1" ]; then
+  codesign --force --sign - --options runtime "$NOBT"
+  codesign --verify --strict "$NOBT" && echo "NVP sign: NoBT 变体 ad-hoc 签名校验通过"
+fi
+
+step "4. Gatekeeper 评估（ad-hoc 未公证，预期拒绝）"
+if spctl --assess --type execute "$MAS" 2>/dev/null; then
+  echo "NVD spctl: accepted（意外：ad-hoc 通常被拒）"
+else
+  echo "NVD spctl: rejected（预期：未公证；正式分发链见 store-readiness.md，账号环节 NOT_RUN）"
+fi
+
+step "5. 可移植性事实（Swift 运行库来源）"
+if otool -L "$BUNDLE/Contents/MacOS/SmartBLE-mac" | grep -q '/usr/lib/swift/libswiftCore.dylib'; then
+  echo "NVD portability: Swift 链接系统 ABI 稳定运行库（/usr/lib/swift/*），无工具链 rpath 依赖"
+else
+  echo "NVD portability: 注意——二进制引用了非系统 Swift 运行库路径"
+fi
+
+echo "BUNDLE_OK $BUNDLE"
+echo "MAS_OK $MAS"

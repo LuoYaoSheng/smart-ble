@@ -1,0 +1,207 @@
+name: All implementation candidates
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: '1'
+
+concurrency:
+  group: platform-candidates-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mobile:
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [android, flutter-android]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 scripts/release/build.py ${{ matrix.target }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}-unsigned-candidate
+          path: |
+            .tmp/release/**/report.json
+            apps/android/app/build/outputs/apk/release/*.apk
+            apps/android/app/build/outputs/bundle/release/*.aab
+            apps/flutter/build/app/outputs/flutter-apk/app-release.apk
+            apps/flutter/build/app/outputs/bundle/release/*.aab
+          if-no-files-found: error
+
+  apple:
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [ios, flutter-ios, macos, flutter-macos]
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 scripts/release/build.py ${{ matrix.target }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}-apple-candidate
+          path: |
+            .tmp/release/
+            apps/desktop/macos/dist/
+            apps/flutter/build/ios/archive/
+            apps/flutter/build/macos/Build/Products/Release/
+          if-no-files-found: error
+
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, windows-11-arm, macos-latest, ubuntu-22.04, ubuntu-22.04-arm]
+        target: [electron, tauri]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: dtolnay/rust-toolchain@1.92.0
+      - if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang libdbus-1-dev libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf libfuse2 libudev-dev
+      - if: matrix.target == 'tauri'
+        run: cargo install tauri-cli --version 1.6.3 --locked
+      - name: Build actual native package
+        if: runner.os != 'Linux' || matrix.target != 'electron'
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: '1'
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: python3 scripts/release/build.py ${{ matrix.target }}
+      - name: Build Electron Linux with Clang
+        if: runner.os == 'Linux' && matrix.target == 'electron'
+        env:
+          CC: clang
+          CXX: clang++
+          APPIMAGE_EXTRACT_AND_RUN: '1'
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: python3 scripts/release/build.py electron
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}-${{ matrix.os }}-candidate
+          path: |
+            .tmp/release/**/report.json
+            apps/desktop/electron/dist/
+            apps/desktop/tauri/src-tauri/target/**/release/bundle/
+          if-no-files-found: error
+
+  windows-implementations:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, windows-11-arm]
+        target: [avalonia, qt, wails]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.os == 'windows-11-arm' && '3.14' || '3.12' }}
+          architecture: ${{ matrix.os == 'windows-11-arm' && 'arm64' || 'x64' }}
+      - name: Verify native ARM64 Python and install native Qt wheels
+        if: matrix.target == 'qt' && matrix.os == 'windows-11-arm'
+        shell: pwsh
+        run: |
+          python apps/desktop/qt/tools/verify_native_python.py --interpreter-only
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m pip install --only-binary=:all: -r apps/desktop/qt/requirements-windows-arm64.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python apps/desktop/qt/tools/verify_native_python.py
+      - if: matrix.target == 'avalonia'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - if: matrix.target == 'wails'
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: apps/desktop/wails/go.mod
+      - if: matrix.target == 'wails'
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0
+      - run: python scripts/release/build.py ${{ matrix.target }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}-${{ matrix.os }}-candidate
+          path: |
+            .tmp/release/
+            apps/desktop/wails/build/bin/
+          if-no-files-found: error
+
+  flutter-windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, windows-11-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        if: matrix.os != 'windows-11-arm'
+        with:
+          channel: stable
+          cache: true
+          architecture: x64
+      - name: Bootstrap native Windows ARM64 Flutter SDK
+        if: matrix.os == 'windows-11-arm'
+        shell: pwsh
+        run: |
+          $smartBleFlutterSdkPath = Join-Path $env:RUNNER_TEMP 'smartble-flutter-native-arm64'
+          git clone --depth 1 --branch 3.47.7 https://github.com/flutter/flutter.git $smartBleFlutterSdkPath
+          if ($LASTEXITCODE -ne 0) { throw 'Flutter source checkout failed' }
+          & "$smartBleFlutterSdkPath\bin\flutter.bat" --version
+          if ($LASTEXITCODE -ne 0) { throw 'Native Flutter bootstrap failed' }
+          $smartBleDartInfo = (& "$smartBleFlutterSdkPath\bin\cache\dart-sdk\bin\dart.exe" --version 2>&1 | Out-String)
+          Write-Output $smartBleDartInfo
+          if ($smartBleDartInfo -notmatch 'windows_arm64') { throw 'Dart SDK must use the real ARM64 ABI' }
+          & "$smartBleFlutterSdkPath\bin\flutter.bat" precache --windows
+          if ($LASTEXITCODE -ne 0) { throw 'Native Flutter engine download failed' }
+          "$smartBleFlutterSdkPath\bin" | Out-File $env:GITHUB_PATH -Append -Encoding utf8
+          "FLUTTER_ROOT=$smartBleFlutterSdkPath" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+      - working-directory: apps/flutter
+        run: |
+          flutter analyze
+          flutter test
+          flutter build windows --release
+      - name: Verify actual Windows native architecture
+        shell: pwsh
+        run: |
+          $smartBleTargetArchitecture = '${{ matrix.os == 'windows-11-arm' && 'arm64' || 'x64' }}'
+          python scripts/release/verify_windows_architecture.py "apps/flutter/build/windows/$smartBleTargetArchitecture/runner/Release" --architecture $smartBleTargetArchitecture
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flutter-${{ matrix.os }}-candidate
+          path: apps/flutter/build/windows/*/runner/Release/
+          if-no-files-found: error

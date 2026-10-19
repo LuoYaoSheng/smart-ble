@@ -1,0 +1,17 @@
+06:43:04.694 noble loaded, initial state: unknown
+06:43:04.718 stateChange -> poweredOn
+06:43:04.742 startScanning() called
+06:43:04.742 scanStart event
+06:43:04.830 DISCOVER 10:b4:1d:cd:23:8d BL rssi=-39
+06:43:04.833 DISCOVER 7e:f6:eb:53:e2:27  rssi=-58
+06:43:04.940 DISCOVER 73:29:f0:c8:c1:94  rssi=-71
+06:43:04.954 DISCOVER 1e:3f:1e:8b:61:5f  rssi=-61
+06:43:05.180 DISCOVER 19:e6:be:3a:08:c8  rssi=-61
+06:43:05.524 DISCOVER 7d:75:e8:00:ee:dd  rssi=-87
+06:43:05.664 DISCOVER 33:b4:c2:47:50:98  rssi=-72
+06:43:06.250 DISCOVER 7d:60:26:68:e4:b5  rssi=-93
+06:43:07.900 DISCOVER 06:31:23:e6:ff:86  rssi=-89
+06:43:12.638 DISCOVER 0a:fc:e4:13:7d:a0  rssi=-88
+06:43:15.451 DISCOVER 0c:d8:1b:16:6f:5d  rssi=-93
+06:43:22.314 DISCOVER 24:06:af:12:cb:8c  rssi=-92
+06:43:29.710 TIMEOUT-25s, no target found

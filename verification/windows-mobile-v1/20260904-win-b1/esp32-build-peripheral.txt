@@ -1,0 +1,320 @@
+Processing fixture_peripheral (platform: espressif32; framework: arduino; board: esp32dev)
+--------------------------------------------------------------------------------
+Library Manager: Installing h2zero/NimBLE-Arduino @ ^1.4.0
+Unpacking 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+Library Manager: NimBLE-Arduino@1.4.3 has been installed!
+Library Manager: Installing bblanchon/ArduinoJson @ ^6.21.3
+Unpacking 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+Library Manager: ArduinoJson@6.21.6 has been installed!
+Library Manager: Installing adafruit/Adafruit BusIO @ ^1.14.1
+Downloading 0% 10% 20% 30%
+Unpacking 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+Library Manager: Adafruit BusIO@1.17.4 has been installed!
+Library Manager: Installing adafruit/Adafruit GFX Library @ ^1.11.5
+Downloading 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+Unpacking 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+Library Manager: Adafruit GFX Library@1.12.6 has been installed!
+Library Manager: Resolving dependencies...
+Library Manager: Installing adafruit/Adafruit SSD1306 @ ^2.5.7
+Downloading 0% 10% 20% 30%
+Unpacking 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+Library Manager: Adafruit SSD1306@2.5.17 has been installed!
+Library Manager: Resolving dependencies...
+Library Manager: Installing adafruit/Adafruit NeoPixel @ ^1.12.0
+Downloading 0% 10% 20% 30% 40% 50% 60% 70% 80%
+Unpacking 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+Library Manager: Adafruit NeoPixel@1.15.5 has been installed!
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32dev.html
+PLATFORM: Espressif 32 (6.10.0) > Espressif ESP32 Dev Module
+HARDWARE: ESP32 240MHz, 320KB RAM, 4MB Flash
+DEBUG: Current (cmsis-dap) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES: 
+ - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b 
+ - tool-esptoolpy @ 1.40501.0 (4.5.1) 
+ - toolchain-xtensa-esp32 @ 8.4.0+2021r2-patch5
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 39 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- NimBLE-Arduino @ 1.4.3
+|-- ArduinoJson @ 6.21.6
+|-- Adafruit BusIO @ 1.17.4
+|-- Adafruit GFX Library @ 1.12.6
+|-- Adafruit SSD1306 @ 2.5.17
+|-- Adafruit NeoPixel @ 1.15.5
+|-- Preferences @ 2.0.0
+|-- Update @ 2.0.0
+Building in release mode
+Compiling .pio\build\fixture_peripheral\src\ble_peripheral.cpp.o
+Compiling .pio\build\fixture_peripheral\src\device_info.cpp.o
+Compiling .pio\build\fixture_peripheral\src\main.cpp.o
+Compiling .pio\build\fixture_peripheral\src\ota_server.cpp.o
+Compiling .pio\build\fixture_peripheral\src\permissions_demo.cpp.o
+Compiling .pio\build\fixture_peripheral\src\serial_events.cpp.o
+Compiling .pio\build\fixture_peripheral\src\test_control.cpp.o
+Building .pio\build\fixture_peripheral\bootloader.bin
+Generating partitions .pio\build\fixture_peripheral\partitions.bin
+esptool.py v4.5.1
+Creating esp32 image...
+Merged 1 ELF section
+Successfully created esp32 image.
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLE2904.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEAddress.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEAdvertisedDevice.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEAdvertising.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEBeacon.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLECharacteristic.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEClient.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEDescriptor.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEDevice.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEEddystoneTLM.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEEddystoneURL.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEExtAdvertising.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEHIDDevice.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLERemoteCharacteristic.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLERemoteDescriptor.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLERemoteService.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEScan.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLESecurity.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEServer.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEService.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEUUID.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\NimBLEUtils.cpp.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\esp_port\esp-hci\src\esp_nimble_hci.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\esp_port\port\src\esp_nimble_mem.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\aes_decrypt.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\aes_encrypt.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\cbc_mode.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\ccm_mode.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\cmac_mode.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\ctr_mode.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\ctr_prng.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\ecc.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\ecc_dh.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\ecc_dsa.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\ecc_platform_specific.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\hmac.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\hmac_prng.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\sha256.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\ext\tinycrypt\src\utils.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_adv.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_conn.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_conn_hci.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_ctrl.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_dtm.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_hci.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_hci_ev.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_iso.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_rand.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_resolv.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_rfmgmt.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_scan.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_sched.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_supp_cmd.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_sync.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_trace.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_utils.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\controller\src\ble_ll_whitelist.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\drivers\nrf51\src\ble_hw.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\drivers\nrf51\src\ble_phy.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\drivers\nrf52\src\ble_hw.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\drivers\nrf52\src\ble_phy.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\drivers\nrf52\src\ble_phy_trace.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\access.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\adv.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\aes-ccm.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\app_keys.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\beacon.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\cdb.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\cfg.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\cfg_cli.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\cfg_srv.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\crypto.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\friend.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\glue.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\health_cli.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\health_srv.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\heartbeat.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\light_model.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\lpn.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\mesh.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\model_cli.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\model_srv.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\net.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\nodes.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\pb_adv.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\pb_gatt.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\prov.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\prov_device.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\provisioner.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\proxy.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\rpl.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\settings.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\shell.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\subnet.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\mesh\src\transport.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\services\ans\src\ble_svc_ans.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\services\bas\src\ble_svc_bas.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\services\dis\src\ble_svc_dis.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\services\gap\src\ble_svc_gap.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\services\gatt\src\ble_svc_gatt.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\services\ias\src\ble_svc_ias.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\services\ipss\src\ble_svc_ipss.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\services\lls\src\ble_svc_lls.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_att.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_att_clt.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_att_cmd.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_att_svr.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_eddystone.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_gap.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_gattc.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_gatts.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_gatts_lcl.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_adv.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_atomic.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_cfg.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_conn.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_flow.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_hci.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_hci_cmd.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_hci_evt.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_hci_util.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_id.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_log.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_mbuf.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_misc.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_mqueue.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_periodic_sync.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_pvcy.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_resolv.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_shutdown.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_startup.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_hs_stop.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_ibeacon.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_l2cap.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_l2cap_coc.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_l2cap_sig.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_l2cap_sig_cmd.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_monitor.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_sm.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_sm_alg.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_sm_cmd.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_sm_lgcy.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_sm_sc.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_store.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_store_util.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\src\ble_uuid.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\store\config\src\ble_store_config.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\store\config\src\ble_store_config_conf.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\store\config\src\ble_store_nvs.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\host\util\src\addr.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\nimble\transport\ram\src\ble_hci_ram.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\nimble\src\endian.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\nimble\src\hal_timer.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\nimble\src\hal_uart.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\nimble\src\mem.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\nimble\src\nimble_port.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\nimble\src\os_cputime.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\nimble\src\os_cputime_pwr2.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\nimble\src\os_mbuf.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\nimble\src\os_mempool.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\nimble\src\os_msys_init.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\npl\freertos\src\nimble_port_freertos.c.o
+Compiling .pio\build\fixture_peripheral\lib617\NimBLE-Arduino\nimble\porting\npl\freertos\src\npl_os_freertos.c.o
+Compiling .pio\build\fixture_peripheral\lib485\Wire\Wire.cpp.o
+Compiling .pio\build\fixture_peripheral\lib178\SPI\SPI.cpp.o
+Compiling .pio\build\fixture_peripheral\lib286\Adafruit BusIO\Adafruit_BusIO_Register.cpp.o
+Compiling .pio\build\fixture_peripheral\lib286\Adafruit BusIO\Adafruit_GenericDevice.cpp.o
+Compiling .pio\build\fixture_peripheral\lib286\Adafruit BusIO\Adafruit_I2CDevice.cpp.o
+Compiling .pio\build\fixture_peripheral\lib286\Adafruit BusIO\Adafruit_SPIDevice.cpp.o
+Compiling .pio\build\fixture_peripheral\libec7\Adafruit GFX Library\Adafruit_GFX.cpp.o
+Archiving .pio\build\fixture_peripheral\lib617\libNimBLE-Arduino.a
+Compiling .pio\build\fixture_peripheral\libec7\Adafruit GFX Library\Adafruit_GrayOLED.cpp.o
+Compiling .pio\build\fixture_peripheral\libec7\Adafruit GFX Library\Adafruit_SPITFT.cpp.o
+Compiling .pio\build\fixture_peripheral\libec7\Adafruit GFX Library\glcdfont.c.o
+Compiling .pio\build\fixture_peripheral\lib028\Adafruit SSD1306\Adafruit_SSD1306.cpp.o
+Compiling .pio\build\fixture_peripheral\lib6e1\Adafruit NeoPixel\Adafruit_NeoPixel.cpp.o
+Compiling .pio\build\fixture_peripheral\lib6e1\Adafruit NeoPixel\Adafruit_Neopixel_RP2.cpp.o
+Compiling .pio\build\fixture_peripheral\lib6e1\Adafruit NeoPixel\esp.c.o
+Compiling .pio\build\fixture_peripheral\lib6e1\Adafruit NeoPixel\esp8266.c.o
+Compiling .pio\build\fixture_peripheral\lib6e1\Adafruit NeoPixel\kendyte_k210.c.o
+Compiling .pio\build\fixture_peripheral\lib6e1\Adafruit NeoPixel\psoc6.c.o
+Compiling .pio\build\fixture_peripheral\lib94f\Preferences\Preferences.cpp.o
+Compiling .pio\build\fixture_peripheral\lib1a8\Update\HttpsOTAUpdate.cpp.o
+Compiling .pio\build\fixture_peripheral\lib1a8\Update\Updater.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\Esp.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\FirmwareMSC.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\FunctionalInterrupt.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\HWCDC.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\HardwareSerial.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\IPAddress.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\IPv6Address.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\MD5Builder.cpp.o
+Archiving .pio\build\fixture_peripheral\lib485\libWire.a
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\Print.cpp.o
+Archiving .pio\build\fixture_peripheral\lib178\libSPI.a
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\Stream.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\StreamString.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\Tone.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\USB.cpp.o
+Archiving .pio\build\fixture_peripheral\lib286\libAdafruit BusIO.a
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\USBCDC.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\USBMSC.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\WMath.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\WString.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\base64.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\cbuf.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-adc.c.o
+Archiving .pio\build\fixture_peripheral\libec7\libAdafruit GFX Library.a
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-bt.c.o
+Archiving .pio\build\fixture_peripheral\lib028\libAdafruit SSD1306.a
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-cpu.c.o
+Archiving .pio\build\fixture_peripheral\lib6e1\libAdafruit NeoPixel.a
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-dac.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-gpio.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-i2c-slave.c.o
+Archiving .pio\build\fixture_peripheral\lib94f\libPreferences.a
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-i2c.c.o
+Archiving .pio\build\fixture_peripheral\lib1a8\libUpdate.a
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-ledc.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-matrix.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-misc.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-psram.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-rgb-led.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-rmt.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-sigmadelta.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-spi.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-time.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-timer.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-tinyusb.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-touch.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\esp32-hal-uart.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\firmware_msc_fat.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\libb64\cdecode.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\libb64\cencode.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\main.cpp.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\stdlib_noniso.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\wiring_pulse.c.o
+Compiling .pio\build\fixture_peripheral\FrameworkArduino\wiring_shift.c.o
+Archiving .pio\build\fixture_peripheral\libFrameworkArduino.a
+Linking .pio\build\fixture_peripheral\firmware.elf
+Retrieving maximum program size .pio\build\fixture_peripheral\firmware.elf
+Checking size .pio\build\fixture_peripheral\firmware.elf
+Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
+RAM:   [=         ]  11.1% (used 36300 bytes from 327680 bytes)
+Flash: [====      ]  42.5% (used 668361 bytes from 1572864 bytes)
+Building .pio\build\fixture_peripheral\firmware.bin
+esptool.py v4.5.1
+Creating esp32 image...
+Merged 27 ELF sections
+Successfully created esp32 image.
+======================== [SUCCESS] Took 137.88 seconds ========================
+
+Environment         Status    Duration
+------------------  --------  ------------
+fixture_peripheral  SUCCESS   00:02:17.882
+========================= 1 succeeded in 00:02:17.882 =========================

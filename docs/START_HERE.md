@@ -1,15 +1,15 @@
-# Smart BLE Start Here
+# 蓝析BLE工具箱 Start Here
 
-> 给第一次体验 `BLE Toolkit+` 和第一次进入 `Smart BLE` 仓库的人。
+> 给第一次体验 `蓝析BLE工具箱` 和第一次进入 `蓝析BLE工具箱` 仓库的人。
 
-> 当前产品开发正典：[`specs/README.md`](./specs/README.md)（产品基准规范，全平台公共）——功能、页面、流程、交互、设计系统与平台差异边界均以该目录为准；`apps/*` 所有平台按其「平台开发总纲」开发。前代 UniApp 主线契约 [`product-contract/`](./product-contract/README.md) 转为历史参考。
+> 当前产品开发正典：[`specs/README.md`](./specs/README.md)（产品基准规范，全平台公共）——功能、页面、流程、交互、设计系统与平台差异边界均以该目录为准；`apps/*` 所有平台按其「平台开发总纲」开发。整体产品规范：[`product-contract/`](./product-contract/)（产品应有行为——范围/功能/流程/页面/平台适配/发布门禁，站点「文档」入口即此目录）。
 
 ---
 
 ## 先记住这三个名字
 
-- `Smart BLE`：总项目名，也是当前唯一主入口名
-- `BLE Toolkit+`：微信小程序当前对外名称
+- `蓝析BLE工具箱`：仓库名与项目代号（GitHub 仓库、内部工程语境用）
+- `蓝析BLE工具箱`：对外统一产品名，所有平台对外都用这个名字（不只微信小程序）
 - `LightBLE`：历史命名和旧仓库线
 
 如果你第一次进入这个项目，先把这三个名字记住，再继续往下看。
@@ -18,7 +18,7 @@
 
 ## 最推荐的进入顺序
 
-1. 先体验 `BLE Toolkit+`
+1. 先体验 `蓝析BLE工具箱`
 2. 再看 [快速入门教程](./tutorials/01_introduction_and_setup.md)
 3. 再看 [平台选择指南](./PLATFORM_SELECTION.md)
 4. 再看 [BLE FAQ](./BLE_FAQ.md)
@@ -33,7 +33,7 @@
 ### 我只想最快体验一下
 
 - 先去项目站：`https://lightble.i2kai.com/`
-- 或直接回到站点首页继续看：[Smart BLE 首页](/)
+- 或直接回到站点首页继续看：[蓝析BLE工具箱 官网首页](/)
 
 ### 我想先学 BLE 的四个基本动作
 

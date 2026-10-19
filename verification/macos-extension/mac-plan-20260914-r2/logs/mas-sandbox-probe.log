@@ -1,0 +1,5 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[SANDBOX-PROBE] home=/Users/luoyaosheng/Library/Containers/com.smartble.macos/Data
+[SANDBOX-PROBE] write-outside-container=blocked
+[SANDBOX-PROBE] sandbox=ON (entitlement 已被内核执行)

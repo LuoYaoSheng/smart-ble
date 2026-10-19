@@ -1,4 +1,6 @@
-# Smart BLE 产品基准规范（specs）
+# 蓝析BLE工具箱 产品基准规范（specs）
+
+> **2026-10-10 用户范围修订**：单一 smart-ble 工程，所有现有技术实现和对应支持平台都必须正确并完成发布准备。旧文档的 REFERENCE/Experimental 投入分级不免除验收；发布渠道为 App Store、国内 Android 商店和桌面正式分发。旧阶段记录保留作历史，本轮状态统一见根 `release/platform-matrix.json` 与 `docs/plans/2026-10-10-unified-project-release.md`。微信目标仍退役。实现/构建/真机/签名/商店各门分别取证。
 
 > **全平台公共文件 · 单一事实源。** 本项目是 `apps/uniapp` 旧工程**改版**（in-place refactor），不是平行创建第二套 App——**docs/specs 是产品事实源**，旧代码是实现证据与复用候选，不是产品需求事实源；改版落位与基线保存（Git commit `2b25725`）规则见 [08_development/IMPLEMENTATION_TARGET](08_development/IMPLEMENTATION_TARGET.md) v1.2。
 > 组织依据：《旧 App AI 重构 SOP v2.0》+《旧产品原型跨平台扩展 SOP v1.0》+《产品基准原型 Base Prototype 规范 v1.0》+《AI 产品重构逻辑评审规范 v1.0》+《AI-Native 应用生成平台架构规范 v1.0》（平台级上位框架，本目录为其在 smart-ble 的单项目实例化，定位说明见下）+《产品模型 Product Model 规范 v2.0》+《多平台 HTML 原型生成规范 v1.0》+《平台设计说明规范 v1.0》（2026-09-03 并入：产品模型五件套 / 每平台 low-fi+high-fi / 每平台四份说明文档）。
@@ -45,12 +47,12 @@
 | 06_review/ | Phase 8 产品优化 + 评审规范 §15 收口 | PRODUCT_REVIEW / UX_REVIEW / IA_REVIEW + DATA_STORAGE_REVIEW / STATE_REVIEW / PERMISSION_REVIEW（评审规范 §15 六文件齐备，USER_FLOW 维度由 UX_REVIEW §3 旅程评估承担；含 F023 残留 5 处修正；待决策 P-04 F017 / P-05 F030） | ✅ 2026-09-02 |
 | 07_design_system/ | Design System（跨平台 SOP §12，全平台共享） | TOKEN / COMPONENT / PATTERN | ✅ 2026-09-02 冻结 v1.0 |
 | 08_development/ | 开发准备（开发前冻结抽取 + 工程契约，不新增功能不改逻辑） | 当前实际文件（**十五件**）：**API_SPEC** v1.1（方法与事件契约：SmartBleRuntimeApi 两级 API + Platform Ports ×9 + 事件目录 + CommandResult + 并发与所有权冻结；落位口径已切 apps/uniapp）/ **DATA_MODEL** v1.1（运行时类型与字段契约：值对象 ×9 + 事件信封 + 实体 ×26 + 技术字段标记 + 不变式 ×8；与 02_product/DATA_MODEL 双层不互相替代）/ **ERROR_CODE** v1.0（AppError 统一错误对象 + 四层分层 + 三级映射 + 业务码全集 + 恢复动作与取消语义）/ **PERMISSION** v1.0（四概念区分 + PermissionState ×7 + 按动作最小权限矩阵 ×4 环境 + 请求原则）/ **API_ACTION_MATRIX** v1.1（页面动作映射：用户动作×功能×验收×BLE.* 映射 + 错误码两层并行；**API 引用已切到 API_SPEC，保留页面动作职责**）/ **DEVICE_PROFILE_SPEC**（Profile 契约 + Smart HID 规格 + 扩展原则红线）/ **DEVICE_PROFILE_RULE**（Device 基座 × Profile 扩展四条开发铁律 DR-1～DR-4）/ **STORAGE_POLICY**（零本地持久化口径 + 敏感数据规则 + 生态负面清单）/ **DEVELOPMENT_SCOPE**（D1–D3 平台范围 + 29 功能范围 + 不做清单 + OTA 受限 + 待验证登记）/ **PLATFORM_ADAPTER_SPEC** v1.3（Base Core × 平台 Adapter 分层契约；Adapter implements PlatformPortBundle ×9；重构目标口径）/ **FEATURE_IMPLEMENTATION_MATRIX** v2.3（F001–F030 十二字段映射 + §0.4 目标模块职责映射——逐模块处置引 LEGACY_REUSE_MATRIX）/ **RUNTIME_ARCHITECTURE** v1.3（Ports & Adapters 运行时分层：事件模型、命令流结果四值、运行隔离五元组、平台端口拆分、依赖禁令；原工程内重构目标）/ **IMPLEMENTATION_TARGET** v1.2（工程实现目标冻结：BASELINE_COMMIT=2b25725、PRODUCT_SOURCE=docs/specs、TARGET_APP_ROOT=apps/uniapp 原工程内重构、PROTOTYPE_SOURCE、SHARED_CORE_ROOT=core 复用须契约测试；不创建平行新工程）/ **PLATFORM_CAPABILITY_DECISION**（C1/C3 裁决冻结：supported_limited / supported_foreground，真机证据待补）/ **LEGACY_REUSE_MATRIX**（08-G0.1 新增：旧代码逐模块复用矩阵——保留/包装/重构/重写/删除/待验证，无证据标【待验证】）。**口径（08-G0/G1）**：API_ACTION_MATRIX = **页面动作映射**；API_SPEC = **方法与事件契约**——两者不得互相替代。 | ✅ 契约文档齐备（08-G1，2026-09-03）· **08-G0.1 方向纠偏后工程契约侧 = CONDITIONAL PASS**（待 LEGACY_REUSE_MATRIX 逐项裁定深化 + 四件套按原工程内重构口径完善；改版编码另等待 09_test 真实点击基线固化，见 [DEVELOPMENT_READINESS_FINAL](06_review/DEVELOPMENT_READINESS_FINAL.md) §0） |
-| 09_test/ | 验收与测试 | COVERAGE_CHECKLIST.md / HTML_V0_ACCEPTANCE.md / HTML_QA_REPORT.md（标准 v1.0 质量门禁 · Level 3） | ✅ V0 验收完成 |
-| 10_platform/ | 平台扩展分析（跨平台 SOP §8–§11） | PLATFORM_EXTENSION.md（四平台能力矩阵/差异设计/优先级建议 D1–D3） | ✅ 2026-09-02 |
+| 09_test/ | 验收与测试 | COVERAGE_CHECKLIST / HTML_V0_ACCEPTANCE / HTML_QA_REPORT（标准 v1.0 质量门禁 · Level 3）/ **WINDOWS_MOBILE_V1_MASTER_MATRIX**（Windows 机执行日志：run-id/缺陷编号）/ **PAGE_FULL_COVERAGE_MATRIX**（20 项/页深查）/ REAL_INTERACTION_SMOKE / MULTI_END_{PAGE,COMPONENT,STATE,VISUAL}_PARITY_MATRIX / **CROSS_IMPLEMENTATION_PARITY_MATRIX**（跨线一致性正典：§3 记分卡含 K-AND/W-WIN 列，2026-09-27 回填 Windows 六壳+AAND 轮，§6 六壳明细） | ✅ V0 验收完成 · 跨线矩阵随 Gate/轮次滚动回填 |
+| 10_platform/ | 平台扩展分析（跨平台 SOP §8–§11） | PLATFORM_EXTENSION.md（四平台能力矩阵/差异设计/优先级建议 D1–D3；§2.4 含 Windows WinRT 实测能力事实 2026-09-27）/ BUNDLE_IDS.md | ✅ 2026-09-02 · Windows 实测回填 2026-09-27 |
 | 11_ecosystem/ | 生态级规范（Smart BLE 多语言家族，2026-09-03 用户三份入库） | API_UNIFIED_SPEC_v1.0（BLE.* 统一接口）/ PLATFORM_CAPABILITY_MATRIX_v1.0（12 平台能力分级）/ FEATURE_CHECKLIST_v1.0（BLE-001～013 全集）——**原文逐字入库**；README 定位 + ALIGNMENT_NOTES 对齐分析（平台映射 / 冲突清单 C1–C7 / 功能与 API 映射） | ✅ 2026-09-03 |
 | （Phase 7 HTML V0） | prototype/v0-old/app-prototype.html | 旧产品镜像原型（已验收，冻结不改） | ✅ |
 | （基准原型 V1） | prototype/v1-new/ | 高保真基准原型（按 Base Prototype 规范 v1.0；吸收 06_review B 类 + QA Q1/Q2/Q3；Playwright 26/26 + 视觉复核通过） | ✅ 2026-09-02 |
-| （平台扩展原型） | prototype/platform/{app,wechat,web,desktop}/ | **四平台齐备（2026-09-03 按三规范重构；同日走查修正三项）**，每平台 = `low-fi/`（线框：页面×状态×流程）+ `high-fi/`（正式实例）+ 四份说明文档（PLATFORM_SPEC / PAGE_SPEC / FLOW / COMPONENT_RULE）+ README（含三查与验证记录）。实现形态：`wechat/` = 基准内核（v1.0.1）+ wxhost.js 覆写层（宿主系统维度）+ 客户端胶囊示意；`app/` = 基准内核 + android.js 覆写层（权限链/系统配对/广播增强/系统分享，基线零改动）；`desktop/` = 基准内核 + desktop.js 覆写层（配对码扫码为主+粘贴兜底/P006 三栏/退出确认）+ 窗口 chrome；`web/` = 独立「GATT 调试器」子集内核（6 屏，缺失域显式 ✗+指引；W2 设备卡同基准 C1 口径）。**原型齐备 ≠ 开发排期**：D1 开发首批（微信+Android）不变，D2/D3 见 10_platform §6 | ✅ 2026-09-03（修正轮） |
+| （平台扩展原型） | prototype/platform/{app,wechat,web,desktop}/ | **四平台齐备（2026-09-03 按三规范重构；2026-09-05 同步 V1 明文直连）**，每平台 = `low-fi/`（线框：页面×状态×流程）+ `high-fi/`（正式实例）+ 四份说明文档（PLATFORM_SPEC / PAGE_SPEC / FLOW / COMPONENT_RULE）+ README（含三查与验证记录）。实现形态：`wechat/` = 基准内核（v1.0.1）+ wxhost.js 覆写层（宿主系统维度）+ 客户端胶囊示意；`app/` = 基准内核 + android.js 覆写层（权限链/广播增强/系统分享，P002 不覆写且零系统配对）；`desktop/` = 基准内核 + desktop.js 覆写层（配对码扫码为主+粘贴兜底/P006 三栏/退出确认）+ 窗口 chrome；`web/` = 独立「GATT 调试器」子集内核（6 屏，缺失域显式 ✗+指引；W2 设备卡同基准 C1 口径）。**原型齐备 ≠ 开发排期**：D1 开发首批（微信+Android）不变，D2/D3 见 10_platform §6 | ✅ 2026-09-05（V1 简化同步） |
 
 ## 公共 vs 平台职责
 
@@ -86,7 +88,7 @@
 
 ## 历史文档关系
 
-- `docs/product-contract/`：前代「UniApp 主线契约」正典，2026-09-02 起权威移交本目录，降为历史参考（其平台矩阵/测试门禁内容后续择要并入 10_platform 与 08_development）。
+- `docs/product-contract/`：**整体产品规范**（2026-09-11 用户决策：不是「UniApp 产品规范」，覆盖整个产品族的范围/功能/流程/页面/平台适配/发布门禁；站点「文档」入口即此目录）。与本目录并存、不降级：product-contract 答「产品应该是什么」，specs（产品开发正典）答「怎么开发与如何证明」；其 2026-09-02 前的 UniApp 单端表述已被整体化改写取代。
 - `docs/product-reconstruction/`：更早的产品重构系列，历史参考。
 - 与仓库内其他 legacy 文档冲突时，一律以本目录为准。
 
