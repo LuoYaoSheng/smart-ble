@@ -34,16 +34,21 @@ function surfaceStatus(surface) {
       <div class="smartble-status-pill smartble-status-pill--preview">{{ overall }}</div>
     </div>
     <p>
-      蓝析BLE工具箱 是多平台多框架的 BLE 工具家族：首个正式发布目标（主线）是 <strong>UniApp Android</strong>、
-      <strong>Apple 原生 iOS</strong>、<strong>ESP32 固件</strong> 与
-      <strong>Smart HID 第一方 Profile</strong>；Android 原生（Kotlin）、Apple 原生（iOS / macOS）、Flutter
-      与桌面多框架为并行在研实现线，均可从源码构建。
-      正式产物尚未发布（<strong>NOT_RELEASED</strong>）。
+      蓝析BLE工具箱的所有客户端归入同一个 <strong>smart-ble</strong> 工程。
+      Apple 商店采用原生 <strong>SwiftUI iOS</strong> 与 <strong>AppKit macOS</strong>；
+      Android 面向国内应用商店，桌面端准备正式分发。其他技术实现也纳入构建与验证范围。
+      当前仍为开发预览，正式产物尚未发布（<strong>NOT_RELEASED</strong>）。
     </p>
     <p>
       <a href="/release/latest.json">查看 PREVIEW Release Metadata</a>
       （机器可读 JSON，不是下载产物）
     </p>
+  </section>
+
+  <section class="smartble-status-band" aria-label="最新软件验证">
+    <h2>2026-10-19 软件验证进度</h2>
+    <p>新名称「蓝析BLE工具箱」对应提交 <code>5c76683</code> 的<a href="https://github.com/LuoYaoSheng/smart-ble/actions/runs/39181886685">24 项平台候选构建</a>与<a href="https://github.com/LuoYaoSheng/smart-ble/actions/runs/39181886689">8 项基础 CI</a>均已通过。改动已合入主分支。</p>
+    <p>以上是构建和软件检查结果。新名称的分发签名、商店提交、真实蓝牙设备配网与 OTA 验收仍需分别完成。完整记录见<a href="/product-name-sync-2026-10-19">名称同步记录</a>。</p>
   </section>
 
   <section class="smartble-platform-matrix">

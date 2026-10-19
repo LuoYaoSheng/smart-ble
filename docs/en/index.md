@@ -1,78 +1,75 @@
 ---
 layout: home
+title: "蓝析BLE工具箱 | Open-source BLE debugging tools"
+titleTemplate: false
+description: "Scan BLE devices, inspect GATT services, read and write data, and subscribe to notifications. Explore mobile and desktop clients, hardware examples and an interactive prototype."
 
 hero:
   name: "蓝析BLE工具箱"
-  text: "An open-source BLE tool family for every BLE device"
-  tagline: "Debug · Learn · Multi-platform multi-framework comparison · Hardware-in-the-loop — one product spec, covering Android, iOS / macOS, desktop, Web, ESP32 firmware and the Smart HID profile."
+  text: "BLE debugging, from discovery to data"
+  tagline: "Scan nearby devices, inspect services, exchange data and subscribe to notifications. Open-source tools for BLE development, device testing and learning."
   image:
     src: /brand/hero-duo.webp
     alt: 蓝析BLE工具箱 app screenshots (Android preview, captured from device)
   actions:
     - theme: brand
-      text: Get 蓝析BLE工具箱
+      text: Try the prototype
+      link: /prototype/app/high-fi/
+    - theme: alt
+      text: Platforms and downloads
       link: /en/#get
     - theme: alt
-      text: Docs (Chinese)
-      link: /product-contract/
-    - theme: alt
-      text: GitHub
-      link: https://github.com/luoyaosheng/smart-ble
+      text: Read the docs
+      link: /tutorials/01_introduction_and_setup
 ---
 
 <div class="sb-home">
 
   <section id="get" class="sb-section">
     <div class="sb-section-head">
-      <div class="sb-kicker">Get</div>
-      <h2>Get 蓝析BLE工具箱</h2>
-      <p>Current version v1.0.5 · PREVIEW (development preview). Every framework × platform has its own download slot — shown as "in preparation" until real packages ship, all buildable from source today.</p>
+      <div class="sb-kicker">Get started</div>
+      <h2>Choose how to get started</h2>
+      <p>Version v1.0.5 · PREVIEW. Explore the interactive prototype or build from source. Official installers and store listings are in preparation.</p>
     </div>
     <div class="sb-get-grid">
       <div class="sb-get-qr-card">
-        <h3>GitHub source</h3>
-        <p>Clone the repository to build any platform — every line shares the same product spec and BLE protocol core.</p>
-        <span class="sb-get-hint"><a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener">github.com/luoyaosheng/smart-ble</a></span>
+        <h3>Explore the workflow</h3>
+        <p>Try scanning, connection and data inspection screens in your browser. The prototype uses simulated data and does not connect to Bluetooth devices.</p>
+        <span class="sb-get-hint"><a href="/prototype/app/high-fi/">Open the prototype →</a></span>
       </div>
       <div class="sb-get-qr-card">
-        <h3>Download matrix</h3>
-        <p>One slot per framework × platform: each becomes a real download entry (with SHA256) once its package ships; until then every slot reads "in preparation".</p>
-        <span class="sb-get-hint">Reserved row by row in the table below</span>
+        <h3>Get the source</h3>
+        <p>Mobile clients, desktop clients and hardware examples live in one smart-ble repository under the product name 蓝析BLE工具箱.</p>
+        <span class="sb-get-hint"><a href="https://github.com/LuoYaoSheng/smart-ble" target="_blank" rel="noopener">GitHub</a> · <a href="https://gitee.com/luoyaosheng/lys-smart-ble" target="_blank" rel="noopener">Gitee</a></span>
       </div>
     </div>
     <div class="sb-dl-wrap"><table class="sb-dl-table">
-      <thead>
-        <tr><th>Version</th><th>Framework / tech</th><th>Download</th><th>Get it today</th></tr>
-      </thead>
+      <thead><tr><th>Platform</th><th>Devices</th><th>Distribution</th><th>Get it today</th></tr></thead>
       <tbody>
-        <tr><td>Android App</td><td>uni-app line</td><td><span class="sb-dl-wait">APK in preparation</span></td><td><a href="/tutorials/platforms/uniapp">Build from source (HBuilderX)</a></td></tr>
-        <tr><td>Android native</td><td>Kotlin + Jetpack Compose</td><td><span class="sb-dl-wait">APK in preparation</span></td><td><a href="/tutorials/platforms/native_mobile">Build from source (gradlew)</a></td></tr>
-        <tr><td>iOS</td><td>Swift Package + SwiftUI</td><td><span class="sb-dl-wait">TestFlight slot reserved</span></td><td><a href="/tutorials/platforms/native_mobile">Build from source (swift run)</a></td></tr>
-        <tr><td>macOS native</td><td>SwiftUI (apps/ios)</td><td><span class="sb-dl-wait">Installer in preparation</span></td><td><a href="/tutorials/platforms/native_mobile">Build from source</a></td></tr>
-        <tr><td>Windows desktop</td><td>Tauri (Rust + btleplug)</td><td><span class="sb-dl-wait">Installer in preparation</span></td><td><a href="/tutorials/platforms/desktop">Build from source (cargo tauri)</a></td></tr>
-        <tr><td>Windows / Linux desktop</td><td>Electron (Node.js + noble)</td><td><span class="sb-dl-wait">Installer in preparation</span></td><td><a href="/tutorials/platforms/desktop">Build from source (npm start)</a></td></tr>
-        <tr><td>macOS desktop native</td><td>Swift + AppKit</td><td><span class="sb-dl-wait">Installer in preparation</span></td><td><a href="/tutorials/platforms/desktop">Build from source</a></td></tr>
-        <tr><td>Flutter</td><td>Flutter + Dart (Android / macOS)</td><td><span class="sb-dl-wait">Installer in preparation</span></td><td><a href="/tutorials/platforms/flutter">Build from source (flutter run)</a></td></tr>
-        <tr><td>ESP32 firmware</td><td>PlatformIO / ESP-IDF</td><td><span class="sb-dl-wait">Firmware bundle in preparation</span></td><td><a href="/tutorials/hardware/01_Hardware_Philosophy">Firmware build guide</a></td></tr>
+        <tr><td>Android</td><td>Phones and tablets</td><td><span class="sb-dl-wait">Store listings in preparation</span></td><td><a href="/tutorials/platforms/native_mobile">Source and build guide</a></td></tr>
+        <tr><td>iOS</td><td>iPhone / iPad · Native SwiftUI</td><td><span class="sb-dl-wait">App Store in preparation</span></td><td><a href="/native-apple-publishing">Native Apple project</a></td></tr>
+        <tr><td>macOS</td><td>Apple silicon / Intel · Native AppKit</td><td><span class="sb-dl-wait">Mac distribution in preparation</span></td><td><a href="/native-apple-publishing">Native Apple project</a></td></tr>
+        <tr><td>Windows</td><td>x64 / ARM64</td><td><span class="sb-dl-wait">Installers in preparation</span></td><td><a href="/tutorials/platforms/desktop">Desktop build guide</a></td></tr>
+        <tr><td>Linux</td><td>x64 / ARM64</td><td><span class="sb-dl-wait">Installers in preparation</span></td><td><a href="/tutorials/platforms/desktop">Desktop build guide</a></td></tr>
       </tbody>
     </table></div>
-    <p class="sb-platform-footnote">Download slots are reserved per framework × platform: no entry becomes clickable before a real package exists (no fake downloads); releases ship with SHA256 and release notes. Source and status: <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener">GitHub repository</a> and the <a href="/status/">status page</a> (Chinese).</p>
+    <p class="sb-platform-footnote">Official downloads will include release notes and SHA256 checksums. See <a href="/status/">release progress and limitations</a>. Broadcasting, provisioning and OTA depend on the platform, adapter and target device. ESP32 examples are covered in the <a href="/tutorials/hardware/01_Hardware_Philosophy">hardware guide</a>.</p>
   </section>
 
   <section id="why" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Why</div>
-      <h2>More than another debug tool</h2>
-      <p>BLE tools are scattered, learning material is fragmented, and platform implementations are hard to compare — this open-source family answers all three at once.</p>
+      <h2>Understand devices and their data</h2>
+      <p>Inspect advertisements, explore services and follow the data exchanged with a device. Source code and hardware examples help you learn and extend the workflow.</p>
     </div>
     <div class="sb-feature-grid">
       <article class="sb-feature-card">
         <h3>A usable debug tool</h3>
-        <p>Scan, connect, read/write, subscribe, broadcast and OTA in one workflow; every line runs from source.</p>
+        <p>Scanning, connection, service discovery, data exchange and notifications, organized around a typical debugging session.</p>
       </article>
       <article class="sb-feature-card">
         <h3>Multi-platform comparison samples</h3>
-        <p>uni-app (Vue 3), Flutter, Kotlin, SwiftUI, AppKit, Tauri, Electron and Avalonia implement the same product spec — side-by-side comparison is the learning path.</p>
+        <p>uni-app (Vue 3), Flutter, Kotlin, SwiftUI, AppKit, Tauri, Electron, Avalonia, Qt and Wails implement the same product spec — side-by-side comparison is the learning path.</p>
       </article>
       <article class="sb-feature-card">
         <h3>Software + hardware learning loop</h3>
@@ -146,7 +143,7 @@ hero:
       <article class="sb-flow-card">
         <span class="sb-flow-index">04 · Broadcast</span>
         <h3>Broadcast</h3>
-        <p>Phone broadcasting vs. ESP32, closed loop.</p>
+        <p>Send advertisements on supported platforms and test against a reference device.</p>
       </article>
     </div>
   </section>
@@ -166,17 +163,17 @@ hero:
       <a href="/tutorials/platforms/native_mobile" class="sb-platform-card">
         <span class="sb-platform-status">Native line · Build from source</span>
         <h3>iOS / macOS</h3>
-        <p>Swift Package + SwiftUI + CoreBluetooth — native exploration sharing the SmartHidCore kernel.</p>
+        <p>Native SwiftUI on iOS and native AppKit on Mac, with a shared Apple workspace and BLE protocol code.</p>
       </a>
       <a href="/tutorials/platforms/flutter" class="sb-platform-card">
         <span class="sb-platform-status">Cross-framework · Build from source</span>
         <h3>Flutter</h3>
-        <p>Flutter + Dart mobile implementation, cross-checked against the uni-app and native lines.</p>
+        <p>Flutter clients for Android, iOS, macOS and Windows, with shared page flows adapted to each system.</p>
       </a>
       <a href="/tutorials/platforms/desktop" class="sb-platform-card">
         <span class="sb-platform-status">Desktop line · Build from source</span>
         <h3>Windows / macOS / Linux</h3>
-        <p>Tauri (Rust + btleplug), Electron (Node.js + noble), macOS Native (AppKit) and Avalonia (.NET) routes side by side.</p>
+        <p>Tauri and Electron cover multiple desktop systems. Windows also has Avalonia, Qt and Wails implementations; Mac has a native AppKit client.</p>
       </a>
       <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">Degraded · No real BLE</span>
@@ -191,7 +188,7 @@ hero:
       <a href="/tutorials/hardware/01_Hardware_Philosophy" class="sb-platform-card">
         <span class="sb-platform-status">Hardware fixture · In development</span>
         <h3>ESP32 Firmware</h3>
-        <p>PlatformIO / ESP-IDF reference firmware for hardware linkage and protocol demos; STM32 planned.</p>
+        <p>PlatformIO / Arduino (NimBLE) reference firmware for BLE testing and protocol examples. STM32 code remains a protocol sample, without a distributed build.</p>
       </a>
     </div>
     <p class="sb-platform-footnote">All implementations share one product spec and protocol core; no official artifacts are released yet — everything builds from source. Capability and release status: <a href="/status/">status page</a> and <a href="/product-contract/05_PLATFORM_MATRIX">platform matrix</a> (Chinese).</p>
@@ -200,14 +197,14 @@ hero:
   <section id="prototype" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Interactive Prototype</div>
-      <h2>One product, four platform form factors — clickable now</h2>
+      <h2>Explore the interface before building</h2>
       <p>High-fidelity interactive prototypes on a shared base kernel with one override layer per platform: the full scan → connect → debug → provisioning flow, with normal, empty, failed, disconnected and unsupported states all switchable.</p>
     </div>
     <div class="sb-platform-grid">
       <a href="/prototype/wechat/high-fi/" class="sb-platform-card">
-        <span class="sb-platform-status">Base platform · High-fi</span>
-        <h3>WeChat Mini Program</h3>
-        <p>Base kernel + wxhost override layer; switch between Android / iOS hosts and the devtools view.</p>
+        <span class="sb-platform-status">Archived design prototype</span>
+        <h3>WeChat Mini Program (historical)</h3>
+        <p>Preserved as a design reference. There is currently no public Mini Program access link.</p>
       </a>
       <a href="/prototype/app/high-fi/" class="sb-platform-card">
         <span class="sb-platform-status">Android instance · High-fi</span>
@@ -256,6 +253,7 @@ hero:
       <div class="sb-kicker">Gallery</div>
       <h2>Gallery: mobile and desktop</h2>
       <p>Android screenshots are captured from a real device running the development preview; the mini program / App form factors and desktop shots come from the interactive high-fidelity prototype (mock data).</p>
+      <p>Some screenshots predate the product rename. Open the interactive prototype above to see the current name and interface.</p>
     </div>
     <h3 class="sb-gallery-h3">Mobile · Android real device (development preview)</h3>
     <div class="sb-gallery-grid">
@@ -328,8 +326,8 @@ hero:
         <p>Platform matrix, workflow status, limits and release conditions — all public.</p>
       </a>
       <div class="sb-oss-card sb-oss-card--static" role="note">
-        <h3>Security</h3>
-        <p>Disclosure channel pending (no SECURITY.md in the repo yet — no fake links).</p>
+        <h3>Contact</h3>
+        <p>Questions and feedback: <a href="mailto:121912336@qq.com">121912336@qq.com</a>. <a href="/privacy">Privacy information</a> (Chinese).</p>
       </div>
     </div>
   </section>

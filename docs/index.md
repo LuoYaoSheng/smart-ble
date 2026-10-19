@@ -1,78 +1,75 @@
 ---
 layout: home
+title: "蓝析BLE工具箱｜开源蓝牙调试工具"
+titleTemplate: false
+description: "蓝析BLE工具箱是一款开源蓝牙调试工具，提供 BLE 设备扫描、连接、GATT 服务查看、数据读写和通知订阅。了解移动端、桌面端与硬件示例，在线体验交互原型。"
 
 hero:
   name: "蓝析BLE工具箱"
-  text: "开源 BLE 工具家族，调通每一台 BLE 设备"
-  tagline: "调试 · 学习 · 多平台多框架对照 · 硬件联动——同一套产品规范，覆盖 Android、iOS / macOS、桌面、Web 到 ESP32 固件与 Smart HID Profile。"
+  text: "蓝牙调试，<br>从发现到读写"
+  tagline: "扫描附近设备，查看服务与特征，发送数据、订阅通知。为 BLE 开发、设备联调与学习提供一套开源工具。"
   image:
     src: /brand/hero-duo.webp
     alt: 蓝析BLE工具箱 界面截图（Android 开发预览，automator 实拍）
   actions:
     - theme: brand
-      text: 获取与下载
+      text: 体验交互原型
+      link: /prototype/app/high-fi/
+    - theme: alt
+      text: 查看平台与下载
       link: /#get
     - theme: alt
-      text: 查看文档
-      link: /product-contract/
-    - theme: alt
-      text: GitHub
-      link: https://github.com/luoyaosheng/smart-ble
+      text: 使用文档
+      link: /tutorials/01_introduction_and_setup
 ---
 
 <div class="sb-home">
 
   <section id="get" class="sb-section">
     <div class="sb-section-head">
-      <div class="sb-kicker">Get</div>
-      <h2>获取 蓝析BLE工具箱</h2>
-      <p>当前版本 v1.0.5 · PREVIEW 开发预览。每个框架 × 平台都有独立下载位——正式包发布前显示筹备中，当前均可从源码构建。</p>
+      <div class="sb-kicker">Get started</div>
+      <h2>选择你的使用方式</h2>
+      <p>当前版本 v1.0.5 · PREVIEW 开发预览。可以先体验交互原型，或获取源码自行构建；正式安装包和商店入口正在准备。</p>
     </div>
     <div class="sb-get-grid">
       <div class="sb-get-qr-card">
-        <h3>GitHub 源码</h3>
-        <p>克隆仓库即可构建任意平台版本，所有端共用同一套产品规范与 BLE 协议内核。</p>
-        <span class="sb-get-hint"><a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener">github.com/luoyaosheng/smart-ble</a></span>
+        <h3>先看看怎么用</h3>
+        <p>在浏览器中体验扫描、连接和数据调试流程。原型使用模拟数据，不会连接真实蓝牙设备。</p>
+        <span class="sb-get-hint"><a href="/prototype/app/high-fi/">打开交互原型 →</a></span>
       </div>
       <div class="sb-get-qr-card">
-        <h3>下载矩阵</h3>
-        <p>每个框架 × 平台各占一个下载位：有真实安装包时此处变为下载入口（附 SHA256），发布前一律显示筹备中。</p>
-        <span class="sb-get-hint">下方表格按版本逐行预留</span>
+        <h3>获取开源项目</h3>
+        <p>移动端、桌面端和硬件示例都在同一个 smart-ble 工程中，使用统一名称「蓝析BLE工具箱」。</p>
+        <span class="sb-get-hint"><a href="https://github.com/LuoYaoSheng/smart-ble" target="_blank" rel="noopener">GitHub</a> · <a href="https://gitee.com/luoyaosheng/lys-smart-ble" target="_blank" rel="noopener">Gitee</a></span>
       </div>
     </div>
     <div class="sb-dl-wrap"><table class="sb-dl-table">
-      <thead>
-        <tr><th>版本</th><th>框架 / 技术</th><th>下载</th><th>当前获取方式</th></tr>
-      </thead>
+      <thead><tr><th>平台</th><th>适用设备</th><th>正式分发</th><th>当前获取方式</th></tr></thead>
       <tbody>
-        <tr><td>Android App</td><td>uni-app 一线</td><td><span class="sb-dl-wait">APK 筹备中</span></td><td><a href="/tutorials/platforms/uniapp">源码构建（HBuilderX）</a></td></tr>
-        <tr><td>Android 原生</td><td>Kotlin + Jetpack Compose</td><td><span class="sb-dl-wait">APK 筹备中</span></td><td><a href="/tutorials/platforms/native_mobile">源码构建（gradlew）</a></td></tr>
-        <tr><td>iOS</td><td>Swift Package + SwiftUI</td><td><span class="sb-dl-wait">TestFlight 预留</span></td><td><a href="/tutorials/platforms/native_mobile">源码构建（swift run）</a></td></tr>
-        <tr><td>macOS 原生</td><td>SwiftUI（apps/ios 同仓）</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/native_mobile">源码构建</a></td></tr>
-        <tr><td>Windows 桌面</td><td>Tauri（Rust + btleplug）</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/desktop">源码构建（cargo tauri）</a></td></tr>
-        <tr><td>Windows / Linux 桌面</td><td>Electron（Node.js + noble）</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/desktop">源码构建（npm start）</a></td></tr>
-        <tr><td>macOS 桌面原生</td><td>Swift + AppKit</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/desktop">源码构建</a></td></tr>
-        <tr><td>Flutter</td><td>Flutter + Dart（Android / macOS）</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/flutter">源码构建（flutter run）</a></td></tr>
-        <tr><td>ESP32 固件</td><td>PlatformIO / Arduino</td><td><span class="sb-dl-wait">固件包筹备中</span></td><td><a href="/tutorials/hardware/01_Hardware_Philosophy">固件构建教程</a></td></tr>
+        <tr><td>Android</td><td>手机与平板</td><td><span class="sb-dl-wait">国内应用商店准备中</span></td><td><a href="/tutorials/platforms/native_mobile">源码与构建指引</a></td></tr>
+        <tr><td>iOS</td><td>iPhone / iPad · 原生 SwiftUI</td><td><span class="sb-dl-wait">App Store 准备中</span></td><td><a href="/native-apple-publishing">原生 Apple 工程</a></td></tr>
+        <tr><td>macOS</td><td>Apple 芯片 / Intel · 原生 AppKit</td><td><span class="sb-dl-wait">Mac 分发准备中</span></td><td><a href="/native-apple-publishing">原生 Apple 工程</a></td></tr>
+        <tr><td>Windows</td><td>x64 / ARM64</td><td><span class="sb-dl-wait">正式安装包准备中</span></td><td><a href="/tutorials/platforms/desktop">桌面构建指引</a></td></tr>
+        <tr><td>Linux</td><td>x64 / ARM64</td><td><span class="sb-dl-wait">正式安装包准备中</span></td><td><a href="/tutorials/platforms/desktop">桌面构建指引</a></td></tr>
       </tbody>
     </table></div>
-    <p class="sb-platform-footnote">下载位按框架 × 平台逐一预留：放上真实安装包之前，任何下载入口都不会可点（无产物不放假下载）；发布时将附 SHA256 与版本说明。源码与发布状态见 <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener">GitHub 仓库</a>与<a href="/status/">项目状态页</a>。</p>
+    <p class="sb-platform-footnote">正式发布后会在这里提供安装入口、版本说明与 SHA256。当前可查看<a href="/status/">发布进度与平台限制</a>；广播、配网与 OTA 能力取决于系统、蓝牙适配器和目标设备。ESP32 示例见<a href="/tutorials/hardware/01_Hardware_Philosophy">硬件入门</a>。</p>
   </section>
 
   <section id="why" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Why</div>
-      <h2>不只是又一个调试工具</h2>
-      <p>BLE 工具分散、体验不统一，学习资料零散、软硬件脱节，不同平台实现难以横向对比——这个开源产品家族用三件事同时回应。</p>
+      <h2>看清设备，也看懂通信</h2>
+      <p>从查看设备广播到分析收发数据，把日常 BLE 联调需要的操作放在一起，也为学习和扩展提供源码与硬件示例。</p>
     </div>
     <div class="sb-feature-grid">
       <article class="sb-feature-card">
         <h3>可直接使用的调试工具</h3>
-        <p>扫描、连接、读写、订阅、广播、OTA 收进同一条工作流；各端从源码直接跑起。</p>
+        <p>扫描、连接、服务发现、数据读写与通知订阅，按一次设备调试的顺序组织。</p>
       </article>
       <article class="sb-feature-card">
         <h3>多平台多框架对照样例</h3>
-        <p>uni-app（Vue 3）、Flutter、Kotlin、SwiftUI、AppKit、Tauri、Electron、Avalonia 实现同一套产品规范——横向对比本身就是学习路径。</p>
+        <p>uni-app（Vue 3）、Flutter、Kotlin、SwiftUI、AppKit、Tauri、Electron、Avalonia、Qt、Wails 实现同一套产品规范——横向对比本身就是学习路径。</p>
       </article>
       <article class="sb-feature-card">
         <h3>软硬件一体的学习与联动</h3>
@@ -146,37 +143,37 @@ hero:
       <article class="sb-flow-card">
         <span class="sb-flow-index">04 · Broadcast</span>
         <h3>广播</h3>
-        <p>手机广播与 ESP32 对称验证，闭环收尾。</p>
+        <p>在支持外设模式的平台发送广播，与测试设备配合联调。</p>
       </article>
     </div>
   </section>
 
-  <section class="sb-section">
+  <section id="platforms" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Platforms</div>
-      <h2>多平台多框架，一个工具家族</h2>
-      <p>所有实现共用同一套产品规范与 BLE 协议内核，按平台差异各自落地——每条实现线都是一个可运行、可对照、可学习的样例。</p>
+      <h2>同一个工程，覆盖不同设备</h2>
+      <p>手机、平板和桌面各有对应实现；开发者可以在同一个仓库中查看平台适配与协议代码。</p>
     </div>
     <div class="sb-platform-grid">
       <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">客户端主线 · 开发预览</span>
         <h3>Android</h3>
-        <p>uni-app 一线 + Kotlin / Jetpack Compose 原生增强，承载完整功能目录。</p>
+        <p>Kotlin / Jetpack Compose 原生实现，以及 Flutter、uni-app 客户端，适合手机端设备调试。</p>
       </a>
       <a href="/tutorials/platforms/native_mobile" class="sb-platform-card">
         <span class="sb-platform-status">原生线 · 源码可构建</span>
         <h3>iOS / macOS</h3>
-        <p>Swift Package + SwiftUI + CoreBluetooth，原生探索与增强，共享 SmartHidCore。</p>
+        <p>iOS 使用原生 SwiftUI，Mac 使用原生 AppKit；两端共享 Apple 工程入口与 BLE 协议代码。</p>
       </a>
       <a href="/tutorials/platforms/flutter" class="sb-platform-card">
         <span class="sb-platform-status">跨框架 · 源码可构建</span>
         <h3>Flutter</h3>
-        <p>Flutter + Dart 跨平台移动实现，与 uni-app 线、原生线互为对照。</p>
+        <p>覆盖 Android、iOS、macOS 和 Windows，可对照同一套页面与状态在不同系统中的表现。</p>
       </a>
       <a href="/tutorials/platforms/desktop" class="sb-platform-card">
         <span class="sb-platform-status">桌面线 · 源码可构建</span>
         <h3>Windows / macOS / Linux</h3>
-        <p>Tauri（Rust + btleplug）、Electron（Node.js + noble）、macOS Native（AppKit）、Avalonia（.NET）多路线对照。</p>
+        <p>Tauri、Electron 覆盖多个桌面系统；Windows 另有 Avalonia、Qt、Wails 实现，Mac 提供原生 AppKit 客户端。</p>
       </a>
       <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">降级体验 · 无真实 BLE</span>
@@ -200,8 +197,8 @@ hero:
   <section id="prototype" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Interactive Prototype</div>
-      <h2>一个产品，四种平台形态，现在就能点</h2>
-      <p>同一基准内核 + 各平台单一覆写层的高保真可交互原型：扫描、连接、调试、配网全流程，正常、空、失败、断线与不支持状态全部可切换。</p>
+      <h2>先在浏览器里熟悉操作</h2>
+      <p>打开移动端或桌面原型，查看扫描、连接、调试和配网页面；也可以切换空列表、断线、失败等状态。原型使用模拟数据。</p>
     </div>
     <div class="sb-platform-grid">
       <a href="/prototype/wechat/high-fi/" class="sb-platform-card">
@@ -225,14 +222,14 @@ hero:
         <p>独立子集内核：环境门禁、requestDevice 选择器与缺失能力显式标注。</p>
       </a>
     </div>
-    <p class="sb-platform-footnote">每平台另配有低保真线框（页面 × 状态 × 流程）与 PLATFORM_SPEC / PAGE_SPEC / FLOW / COMPONENT_RULE 四份说明文档；基准内核经 Playwright 26/26 验证。原型使用模拟数据，是产品与交互母版，不代表平台发布状态。微信小程序运行目标已于 2026-09-11 退役（原型保留为冻结历史快照）。</p>
+    <p class="sb-platform-footnote">这些页面用于体验交互，不连接真实设备，也不代表应用已上架。微信实例保留为历史设计参考，当前没有公开的小程序访问入口。</p>
   </section>
 
   <section id="profile" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Smart HID &amp; Profiles</div>
-      <h2>第一方 Profile 与契约锁生态</h2>
-      <p>通用 BLE 之上是一套可扩展的设备 Profile 体系：移除任一 Profile，它依然是完整的通用 BLE 工具。</p>
+      <h2>为特定设备提供专属操作</h2>
+      <p>识别支持的设备后，可以进入对应的配网与诊断页面。通用扫描和 GATT 调试仍可独立使用。</p>
     </div>
     <div class="sb-feature-grid">
       <a href="/smart-hid/README" class="sb-feature-card sb-feature-card--link">
@@ -241,8 +238,8 @@ hero:
         <p class="sb-feature-note">开发预览</p>
       </a>
       <a href="https://github.com/LuoYaoSheng/Smart-HID-Workspace" target="_blank" rel="noopener" class="sb-feature-card sb-feature-card--link">
-        <h3>契约锁对齐固件正典</h3>
-        <p>配网协议与命令 Schema 以 SHA-256 契约锁与 Smart-HID-Workspace（固件 / ControlHub / 协议正典）跨仓对齐，不漂移。</p>
+        <h3>设备协议与固件源码</h3>
+        <p>Smart HID 的设备协议、参考固件和配套代码可公开查阅，便于理解配网过程并开展联调。</p>
       </a>
       <a href="/profiles/README" class="sb-feature-card sb-feature-card--link">
         <h3>开放 Profile 扩展</h3>
@@ -255,7 +252,7 @@ hero:
     <div class="sb-section-head">
       <div class="sb-kicker">Gallery</div>
       <h2>界面一览：移动端与桌面端</h2>
-      <p>Android 截图来自开发预览版真机实拍；App 形态与桌面端截图来自可交互高保真原型（模拟数据）；微信形态为退役平台的冻结历史实拍。</p>
+      <p>Android 图片来自开发预览版真机实拍；App 与桌面形态图片来自交互原型。部分截图拍摄于更名前，最新名称与页面可在上方交互原型中查看。</p>
     </div>
     <h3 class="sb-gallery-h3">移动端 · Android 真机（开发预览版）</h3>
     <div class="sb-gallery-grid">
@@ -304,7 +301,7 @@ hero:
   <section class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Open Source</div>
-      <h2>开源、诚实、可持续</h2>
+      <h2>源码、文档与反馈</h2>
     </div>
     <div class="sb-oss-grid">
       <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener" class="sb-oss-card">
@@ -328,8 +325,8 @@ hero:
         <p>平台矩阵、流程状态、已知限制与发布条件，全部如实公开。</p>
       </a>
       <div class="sb-oss-card sb-oss-card--static" role="note">
-        <h3>Security</h3>
-        <p>安全披露入口待补充（仓库尚无 SECURITY.md，不提供假链接）。</p>
+        <h3>联系开发者</h3>
+        <p>使用问题与建议：<a href="mailto:121912336@qq.com">121912336@qq.com</a>。<a href="/privacy">查看隐私说明</a>。</p>
       </div>
     </div>
   </section>
