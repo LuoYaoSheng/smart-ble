@@ -1,5 +1,28 @@
 # 平台适配矩阵
 
+## 当前验证与发布范围
+
+2026-10-10 起，所有现有实现均纳入完整验证与发布范围，不再以“对照实现”或历史优先级免除验收。统一产品名称为 **蓝析BLE工具箱**，所有客户端位于同一个 `smart-ble` 工程。
+
+| 实现 | 平台 | 当前定位 |
+|---|---|---|
+| Kotlin / Jetpack Compose | Android | 原生 Android 客户端，面向国内应用商店 |
+| SwiftUI | iOS | 原生 iOS 上架实现 |
+| AppKit | macOS | 原生 Mac 上架实现，覆盖 Apple 芯片与 Intel |
+| Flutter | Android、iOS、macOS、Windows | 完整验证范围内的跨平台客户端 |
+| UniApp | Android、iOS、H5 | 移动端原生打包仍需 HBuilderX 验证；H5 不提供真实 BLE |
+| Electron / Tauri | Windows、macOS、Linux | 桌面客户端，按系统和 CPU 架构分别验收 |
+| Avalonia / Qt / Wails | Windows | Windows 客户端，分别验证 x64 与 ARM64 |
+| ESP32 | 参考硬件 | BLE、配网与 OTA 联调示例，硬件验收单独记录 |
+
+新名称对应的软件检查和候选构建已完成，详情见[项目状态页](../status/index.md)与[发布矩阵](https://github.com/LuoYaoSheng/smart-ble/blob/main/release/platform-matrix.json)。候选构建通过不等于正式签名、真实 BLE 或商店审核通过；当前正式安装包与商店入口仍在准备。
+
+Apple 正式分发使用 SwiftUI iOS 与 AppKit macOS。Flutter、UniApp 等是同一产品的其他实现，不能把不同实现当作多个同名产品重复上架。
+
+<details>
+<summary>历史第一阶段规划（当前验证范围以上表为准）</summary>
+
+
 ## 支持等级
 
 - `Full`：第一阶段正式发布并要求真机证据。
@@ -59,6 +82,8 @@
 | 分享 | 系统分享 | Later | Web Share/复制链接 |
 | 外部链接 | 系统浏览器 | Later | 新标签页 |
 
+</details>
+
 ## 平台差异规则
 
 ### Android App
@@ -68,7 +93,7 @@
 - 文件 OTA、后台连接和 Peripheral 广播需要单独真机验收。
 - 原生插件不存在或版本不匹配时，PAGE-008 必须进入 Unsupported/Error，而不是无响应。
 
-### iOS App（后续）
+### iOS App
 
 - 遵循 iOS 蓝牙权限和后台模式；不复制 Android 设置入口。
 - Peripheral 本地名称、广播字节和系统缓存行为按 CoreBluetooth 记录差异。

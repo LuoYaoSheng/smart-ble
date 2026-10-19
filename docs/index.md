@@ -64,7 +64,7 @@ hero:
     </div>
     <div class="sb-feature-grid">
       <article class="sb-feature-card">
-        <h3>可直接使用的调试工具</h3>
+        <h3>面向设备联调的工具</h3>
         <p>扫描、连接、服务发现、数据读写与通知订阅，按一次设备调试的顺序组织。</p>
       </article>
       <article class="sb-feature-card">
@@ -295,7 +295,7 @@ hero:
         <figcaption>桌面工作台 · mac 窗形（窗口 chrome 可切 win / linux）</figcaption>
       </figure>
     </div>
-    <p class="sb-platform-footnote">三张形态截图来自<a href="/prototype/desktop/high-fi/">线上可交互原型</a>——同一基准内核 + 各平台单一覆写层，页面、场景与宿主维度均可在线切换；桌面端正式安装包见上方下载矩阵。</p>
+    <p class="sb-platform-footnote">三张形态截图来自<a href="/prototype/desktop/high-fi/">线上可交互原型</a>——同一基准内核 + 各平台单一覆写层，页面、场景与宿主维度均可在线切换；桌面端正式安装包仍在准备，可在上方平台列表查看源码与构建指引。</p>
   </section>
 
   <section class="sb-section">
