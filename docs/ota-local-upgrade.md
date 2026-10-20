@@ -6,6 +6,8 @@
 
 用户明确选择 `firmware.bin` 和 `manifest.json` 两个文件。iOS/macOS 沙盒下必须对两个文件分别取得文件选择器授权，不假定能读取所选 `.bin` 旁边的文件。
 
+原生 Mac 与 Flutter Mac 的沙盒签名包含 `com.apple.security.files.user-selected.read-only`，仅允许读取用户明确选择的文件；发布配置检查要求此权限。依据 [Apple 用户选择文件只读授权](https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.security.files.user-selected.read-only)。
+
 manifest 必须恰好包含以下六字段，沿用 `contracts/target/ota-package.schema.json`：
 
 ```json
