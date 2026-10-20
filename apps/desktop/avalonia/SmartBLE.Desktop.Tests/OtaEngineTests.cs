@@ -27,6 +27,18 @@ public class OtaEngineTests
         public List<byte[]> Data = new();
         public List<bool> Subscriptions = new();
         public bool Ready = true, Success = true, SubscribeSuccess = true;
+        public bool Reboot = true, Reconnected;
+        public bool HangInfo;
+        public Action? InfoEffect;
+        public string CurrentVersion = "1.0.0", RebootVersion = "1.2.3", Hardware = "esp32c3";
+        public Task<byte[]?> ReadInfoAsync(CancellationToken token)
+        {
+            InfoEffect?.Invoke();
+            return HangInfo ? new TaskCompletionSource<byte[]?>().Task : Task.FromResult<byte[]?>(JsonSerializer.SerializeToUtf8Bytes(new {
+                type = "system_info", target = "lightble-peripheral", hardware = Hardware,
+                firmware_version = Reconnected ? RebootVersion : CurrentVersion }));
+        }
+        public Task<bool> ReconnectAsync(CancellationToken token) { token.ThrowIfCancellationRequested(); Reconnected = true; return Task.FromResult(true); }
         public Action? DataEffect, CommitEffect;
         public void Emit(string status, string detail = "") => StatusReceived?.Invoke(JsonSerializer.SerializeToUtf8Bytes(new { type = "ota", status, detail, max_chunk = 20 }));
         public void LoseConnection() => Disconnected?.Invoke();
@@ -37,7 +49,7 @@ public class OtaEngineTests
             var text = Encoding.UTF8.GetString(bytes); Commands.Add(text);
             using var doc = JsonDocument.Parse(text); var op = doc.RootElement.GetProperty("op").GetString();
             if (op == "start" && Ready) Emit("ready");
-            if (op == "commit" && Success) Emit("success");
+            if (op == "commit" && Success) { Emit("success"); if (Reboot) LoseConnection(); }
             if (op == "commit") CommitEffect?.Invoke();
             return Task.FromResult(true);
         }
@@ -55,6 +67,7 @@ public class OtaEngineTests
         }
         Assert.Equal("lightble-peripheral", OtaEngine.Validate(Firmware, Manifest).Target);
     }
+#if !PORTABLE_OTA_TESTS
     [Fact]
     public void OtaEntryRequiresControlDataAndNotificationCapabilities()
     {
@@ -68,6 +81,7 @@ public class OtaEngineTests
         Assert.False(MainWindowViewModel.OtaCapable(Tree("write", "read", "notify")));
         Assert.False(MainWindowViewModel.OtaCapable(Tree("write", "writeWithoutResponse", "read")));
     }
+#endif
     [Theory]
     [InlineData("target", "wrong")]
     [InlineData("hardware", "")]
@@ -93,7 +107,8 @@ public class OtaEngineTests
         var result = await OtaEngine.RunAsync(transport, Firmware, Manifest, progress.Add, CancellationToken.None, delay: Delay);
         Assert.Equal(new[] { "start", "commit" }, transport.Ops);
         using var start = JsonDocument.Parse(transport.Commands[0]);
-        Assert.Equal(6, start.RootElement.EnumerateObject().Count());
+        Assert.Equal(7, start.RootElement.EnumerateObject().Count());
+        Assert.Equal(result.Hardware, start.RootElement.GetProperty("hardware").GetString());
         Assert.Equal(result.Version, start.RootElement.GetProperty("target_version").GetString());
         Assert.Equal(Firmware, transport.Data.SelectMany(b => b).ToArray());
         Assert.Equal(100, progress.Last()); Assert.Equal(new[] { true, false }, transport.Subscriptions);
@@ -133,7 +148,7 @@ public class OtaEngineTests
         var transport = new Transport(); using var cts = new CancellationTokenSource(); transport.DataEffect = cts.Cancel;
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => OtaEngine.RunAsync(transport, Firmware, Manifest, _ => { }, cts.Token, delay: Delay));
         Assert.Equal("abort", transport.Ops.Last()); Assert.Equal(new[] { true, false }, transport.Subscriptions);
-        Assert.Equal(cts.Token, transport.DataTokens[0]);
+        Assert.True(transport.DataTokens[0].CanBeCanceled);
         Assert.NotEqual(cts.Token, transport.ControlTokens.Last());
         Assert.True(transport.ControlTokens.Last().CanBeCanceled);
     }
@@ -152,5 +167,43 @@ public class OtaEngineTests
         var transport = new Transport(); transport.DataEffect = transport.LoseConnection;
         await Assert.ThrowsAsync<InvalidOperationException>(() => OtaEngine.RunAsync(transport, Firmware, Manifest, _ => { }, CancellationToken.None, delay: Delay));
         Assert.DoesNotContain("commit", transport.Ops);
+    }
+    [Fact]
+    public async Task CommitWithoutObservedRebootCannotClaimSuccess()
+    {
+        var transport = new Transport { Reboot = false }; var progress = new List<int>();
+        await Assert.ThrowsAsync<TimeoutException>(() => OtaEngine.RunAsync(transport, Firmware, Manifest, progress.Add, CancellationToken.None, TimeSpan.FromMilliseconds(10), Delay));
+        Assert.DoesNotContain(100, progress); Assert.False(transport.Reconnected);
+    }
+    [Fact]
+    public async Task RebootMustReturnActualNewVersion()
+    {
+        var transport = new Transport { RebootVersion = "1.0.0" }; var progress = new List<int>();
+        var error = await Assert.ThrowsAsync<InvalidOperationException>(() => OtaEngine.RunAsync(transport, Firmware, Manifest, progress.Add, CancellationToken.None, delay: Delay));
+        Assert.Contains("OTA_VERSION_MISMATCH", error.Message); Assert.DoesNotContain(100, progress);
+    }
+    [Theory]
+    [InlineData("1.2.3", "esp32c3")]
+    [InlineData("1.0.0", "other-board")]
+    public async Task SameVersionAndWrongHardwareNeverStart(string version, string hardware)
+    {
+        var transport = new Transport { CurrentVersion = version, Hardware = hardware };
+        await Assert.ThrowsAsync<InvalidOperationException>(() => OtaEngine.RunAsync(transport, Firmware, Manifest, _ => { }, CancellationToken.None));
+        Assert.Empty(transport.Commands);
+    }
+    [Fact]
+    public async Task StuckInfoOperationHasDeadlineWithoutExternalCancellation()
+    {
+        var transport = new Transport { HangInfo = true };
+        await Assert.ThrowsAsync<TimeoutException>(() => OtaEngine.RunAsync(transport, Firmware, Manifest, _ => { }, CancellationToken.None, operationTimeout: TimeSpan.FromMilliseconds(10)));
+        Assert.Empty(transport.Commands);
+    }
+    [Fact]
+    public async Task CancellationDuringFinalInfoCannotTurnGreen()
+    {
+        var transport = new Transport(); using var cts = new CancellationTokenSource(); var progress = new List<int>();
+        transport.InfoEffect = () => { if (transport.Reconnected) cts.Cancel(); };
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => OtaEngine.RunAsync(transport, Firmware, Manifest, progress.Add, cts.Token, delay: Delay));
+        Assert.DoesNotContain(100, progress);
     }
 }

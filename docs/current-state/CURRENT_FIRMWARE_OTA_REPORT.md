@@ -1,89 +1,31 @@
-# CURRENT_FIRMWARE_REPORT（OTA-FIRMWARE-001 盘点）
+# 当前固件 OTA 状态（2026-10-20）
 
-> 生成阶段：Firmware Implementation（禁止先改后的静态盘点快照）
+本轮补齐本地 BLE OTA，不建设管理后台。完整协议、包生成命令与错误处理见 [本地升级说明](../ota-local-upgrade.md)。本报告替代此前“NVS 写入请求版本即读回”的旧实现描述；历史证据保留在 Git 和 verification 目录。
 
-## PlatformIO
+## 已落实
 
-| 项 | 值 |
-|---|---|
-| env | `esp32dev` |
-| platform | `espressif32` |
-| board | `esp32dev` |
-| framework | `arduino` |
-| monitor_speed | `115200` |
-| upload_speed | `921600` |
-| partitions | `partitions_ota.csv` |
+- CTRL 使用 `op=start/commit/abort`；start 必须包含 target、hardware、target_version、size、chunk_size、sha256。
+- ESP32 Peripheral 身份为 `lightble-peripheral / esp32-wroom-32`；S3 为 `lightble-peripheral / esp32-s3`。Observer 当前是扫描固件，不提供 OTA。
+- BLE 回调仅向有界 FreeRTOS FIFO 投递数据，loop 独占 Flash/SHA/状态。commit 时继续排空暂存，不再因停止 drain 卡住。
+- SHA 缺失、错误长度、错误摘要、镜像芯片或实际版本不符、队列溢出、断线和超时均失败关闭；取消清理，不承诺断点续传。
+- 版本来自当前编译镜像；构建后核对实际应用描述符，禁止从 NVS/请求字段伪造“已升级”。
+- 客户端成功必须完成真实断开、重连和 INFO 实际版本校验；设备 `success` 回执仅代表 Flash 提交。
+- `scripts/ota/package-firmware.py` 只生成来自实际应用镜像的本地六字段包，检查芯片、版本、段边界、checksum、附加 SHA256 和分区上限。
 
-## Chip / Board
+## 分区与入口
 
-| 项 | 值 |
-|---|---|
-| mcu | `esp32` |
-| cpu | `240MHz` |
-| flash_mode | `qio` |
-| psram | enabled (`BOARD_HAS_PSRAM`) |
+`hardware/esp32/LightBLE/partitions_ota.csv` 保留 app0/app1 双分区，每个 0x180000；不更改已有设备的分区布局。失败传输不切换启动分区；断电和启动回滚必须另做真实板卡验证。
 
-## BLE Services（fixture_peripheral）
+| 入口 | 内容 |
+| --- | --- |
+| `ota_server.cpp/.h` | 实际固件事务和有界命令队列 |
+| `device_info.cpp` | target/hardware/当前运行版本 |
+| `scripts/ota/test-firmware-host.py` | 用宿主 API stub 编译执行实际 ota_server.cpp |
+| `scripts/ota/package-firmware.py` | 本地真实固件包生成与校验 |
+| `platformio.ini` | ESP32/S3 baseline 与 1.0.1 OTA target 环境 |
 
-| Service | UUID |
-|---|---|
-| SVC-01 主服务 | `4fafc201-1fb5-459e-8fcc-c5c9c331914b` |
-| SVC-02 权限演示 | `4fafc201-1fb5-459e-8fcc-c5c9c331914c` |
-| SVC-03 OTA | `4fafc201-1fb5-459e-8fcc-c5c9c331914d` |
+## 验证边界
 
-## OTA Characteristics（精确 UUID）
+宿主状态机、单元测试、模拟器和构建是软件证据，均不能替代真实 Flash/BLE。当前进展见 `release/ota-verification-2026-10-20.json`。用户表示有可重刷开发板，等待接入；尚未完成的实机项目保留 NOT_RUN，OTA 不提升为 VERIFIED，商店不提交。
 
-| 角色 | UUID |
-|---|---|
-| CTRL | `beb5483e-36e1-4688-b7f5-ea07361b26c0` |
-| DATA | `beb5483e-36e1-4688-b7f5-ea07361b26c1` |
-| STATUS | `beb5483e-36e1-4688-b7f5-ea07361b26c2` |
-
-## OTA 源码文件
-
-| 文件 | 职责 |
-|---|---|
-| `include/ota_server.h` | OTA 状态机 / UUID / fault flags |
-| `src/ota_server.cpp` | CTRL/DATA/STATUS handler、SHA256、NVS 版本 |
-| `src/main.cpp` | BLE 服务装配、Device Info、串口 JSON |
-
-## Flash Partition（`partitions_ota.csv`）
-
-| 分区 | 类型 | 大小 |
-|---|---|---|
-| nvs | data/nvs | 0x5000 |
-| otadata | data/ota | 0x2000 |
-| app0 | app/ota_0 | 0x180000 |
-| app1 | app/ota_1 | 0x180000 |
-| spiffs | data/spiffs | 0x0F0000 |
-
-## Storage 评估
-
-- **OTA 写入**：ESP32 `Update` API → 非活动 OTA 分区（双分区安全切换）
-- **版本读回**：NVS `smart_ble/fw_version`（commit success 后写入；boot 后 `activeFirmwareVersion()` 读取）
-- **失败保护**：abort/validation fail → `Update.abort()`，不切换 boot 分区；旧固件继续运行
-- **结论**：当前双分区架构支持安全 OTA staging；本轮不执行真实 flash/E5
-
-## OTA Chain（任务完成后）
-
-| 环节 | 状态 |
-|---|---|
-| OTA Package | DONE |
-| OTA Client | DONE |
-| OTA Firmware | DONE |
-| OTA E5 | OPEN（等待批准，禁止自动执行） |
-
-## 实现摘要（OTA-FIRMWARE-001）
-
-- CTRL：`op` = `start` / `commit` / `abort`（JSON payload 对齐 Client Contract）
-- DATA：顺序写入 + overflow 保护 + progress notify
-- commit：size 校验 + SHA256 比对 → `OTA_HASH_MISMATCH` / `OTA_SIZE_MISMATCH`
-- Device Info：`firmware_version` 来自 NVS（commit success 后更新）
-- 串口：`{"type":"ota","state":...,"received":...,"total":...}`
-- Fault injection：`OTA_FAULT_INJECTION=1` 编译开关
-
-## 变更前 First Breakpoint
-
-- 固件 CTRL 使用 `action` + `firmware_version`（非 Client Contract 的 `op` + `target_version` + `sha256`）
-- commit 无 SHA256 复核
-- Device Info 非 `system_info` schema
+Kotlin Android 的活跃旧 OTA 页面已接入新事务引擎，双文件授权、逐帧回执与重启版本回读已通过 113 个单测（含新增 13 个 OTA 用例）及 debug 构建；仍待真机验证。原生 SwiftUI iOS、AppKit macOS 为 Apple 后续上架实现；修复后的源码需重新打包，10 月 19 日的 1.0.5/101 包不包含这些修复。

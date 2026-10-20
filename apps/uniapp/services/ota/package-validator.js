@@ -3,6 +3,8 @@
  * DEC-016 / PROTO-011：manifest + binary SHA256；错误包不得进入 BLE OTA Transaction。
  */
 
+import { sha256SoftwareHex } from './sha256-software.js';
+
 export const SUPPORTED_TARGETS = Object.freeze([
   'lightble-peripheral',
   'lightble-observer',
@@ -45,16 +47,12 @@ function toUint8Array(value) {
 
 async function sha256Hex(bytes) {
   const data = toUint8Array(bytes);
-  // 浏览器/App Web 容器恒有 Web Crypto；Node 兜底仅在纯 Node 单测环境走到。
-  // 动态说明符 + @vite-ignore 避免 vite 把 node:crypto 静态打进浏览器包
-  // （MAC-003：H5 构建不再产生 module externalized 告警）。
+  // Prefer Web Crypto; App WebViews may lack secure-context crypto.subtle.
   if (typeof globalThis !== 'undefined' && globalThis.crypto?.subtle) {
     const digest = await globalThis.crypto.subtle.digest('SHA-256', data);
     return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
   }
-  const nodeCryptoSpec = 'node:crypto';
-  const { createHash } = await import(/* @vite-ignore */ nodeCryptoSpec);
-  return createHash('sha256').update(data).digest('hex');
+  return sha256SoftwareHex(data);
 }
 
 /**
@@ -128,7 +126,7 @@ export function validateFirmwareManifest(manifest, options = {}) {
     ));
   }
 
-  if (!SEMVER_RE.test(String(manifest.firmware_version ?? ''))) {
+  if (typeof manifest.firmware_version !== 'string' || !SEMVER_RE.test(manifest.firmware_version)) {
     errors.push(structuredError(
       ERROR_CODES.OTA_VERSION_INVALID,
       'firmware_version must be valid SemVer',
@@ -145,7 +143,7 @@ export function validateFirmwareManifest(manifest, options = {}) {
   }
 
   const sha = String(manifest.sha256 ?? '');
-  if (!SHA256_RE.test(sha)) {
+  if (typeof manifest.sha256 !== 'string' || !SHA256_RE.test(sha)) {
     errors.push(structuredError(
       ERROR_CODES.OTA_PACKAGE_INVALID,
       'sha256 must be 64 lowercase hex characters',

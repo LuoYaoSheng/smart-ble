@@ -38,7 +38,7 @@ class OtaUpgradeDialog extends ConsumerWidget {
                   SizedBox(width: 7),
                   Expanded(
                     child: Text(
-                      '端到端升级链路当前 BLOCKED（固件侧暂未开放），流程可演示，正式使用前需固件配合。',
+                      '仅适用于支持本项目 OTA 协议的设备。请使用匹配硬件的 .bin 和 manifest，升级期间保持连接和供电。',
                       style: TextStyle(
                         fontSize: 11,
                         height: 1.5,
@@ -56,7 +56,8 @@ class OtaUpgradeDialog extends ConsumerWidget {
                 color: AppTokens.cDangerWeak,
                 child: Text(
                   state.errorMessage!,
-                  style: const TextStyle(color: AppTokens.cDanger, fontSize: 13),
+                  style:
+                      const TextStyle(color: AppTokens.cDanger, fontSize: 13),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -112,6 +113,20 @@ class OtaUpgradeDialog extends ConsumerWidget {
               ),
             ),
 
+            TextButton(
+              onPressed: state.isInProgress
+                  ? null
+                  : () async {
+                      final result =
+                          await FilePicker.pickFiles(type: FileType.any);
+                      final selected = result?.files.single;
+                      if (selected?.path != null) {
+                        notifier.selectManifest(
+                            File(selected!.path!), selected.name);
+                      }
+                    },
+              child: Text(state.manifestName ?? '选择对应 manifest'),
+            ),
             const SizedBox(height: 24),
 
             // Progress Bar
@@ -127,7 +142,9 @@ class OtaUpgradeDialog extends ConsumerWidget {
                         : 0,
                     strokeWidth: 8,
                     backgroundColor: AppTokens.cPrimaryWeak,
-                    color: state.isCompleted ? AppTokens.cSuccess : AppTokens.cPrimary,
+                    color: state.isCompleted
+                        ? AppTokens.cSuccess
+                        : AppTokens.cPrimary,
                   ),
                 ),
                 Column(
@@ -172,13 +189,15 @@ class OtaUpgradeDialog extends ConsumerWidget {
         if (state.isCompleted)
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(backgroundColor: AppTokens.cPrimary),
+            style:
+                ElevatedButton.styleFrom(backgroundColor: AppTokens.cPrimary),
             child: const Text('完成', style: TextStyle(color: Colors.white)),
           ),
         if (!state.isInProgress && !state.isCompleted)
           ElevatedButton(
-            onPressed:
-                state.selectedFile == null ? null : () => notifier.startOta(),
+            onPressed: state.selectedFile == null || state.manifestName == null
+                ? null
+                : () => notifier.startOta(),
             child: const Text('开始刷入'),
           ),
       ],

@@ -631,7 +631,7 @@ enum PageSmoke {
         // UIS-11 P010 内容（限制清单/发布空态/预览记录/页脚声明）
         do {
             let v = views()
-            let limits = anyLabel(contains: "OTA 端到端链路 BLOCKED", in: v)
+            let limits = anyLabel(contains: "OTA 尚未完成真实设备验证", in: v)
                 && anyLabel(contains: "H5 平台不支持 BLE 外围模式", in: v)
             let emptyRel = anyLabel(contains: "暂无正式发布版本", in: v)
             let foot = anyLabel(contains: "本页数据来自 Release Metadata 投影", in: v)
@@ -774,43 +774,32 @@ enum PageSmoke {
             skip("UIS-14", "no scan results in this environment")
         }
 
-        // UIS-15 OTA 相位机（r6-M4 真实文件驱动 + 诚实守卫：无 manifest→ready；无会话 start→
-        // OTA_SESSION_LOST；manifest sha 不符→OTA_HASH_MISMATCH；正确 manifest→ready）
+        // Local package guard: manifest must be selected and all six fields validated.
         do {
             let ota = controller.ble.ota
-            let bin = URL(fileURLWithPath: "/tmp/smartble-ota-smoke.bin")
-            let manifest = URL(fileURLWithPath: "/tmp/smartble-ota-smoke.manifest.json")
-            try? Data([0xAA, 0xBB, 0xCC, 0xDD]).write(to: bin)
-            try? FileManager.default.removeItem(at: manifest)
-
-            ota.selectFile(url: bin)
-            let readyNoManifest = ota.phase == OtaManager.Phase.ready
-
-            ota.start(deviceId: "smoke-no-session")
-            let noSession: Bool = {
-                if case .failed(let c, _) = ota.phase { return c == "OTA_SESSION_LOST" }
-                return false
-            }()
-
-            let wrongSha = #"{"version":"1.2.3","size":4,"sha256":"deadbeef"}"#
-            try? wrongSha.data(using: .utf8)!.write(to: manifest)
-            ota.selectFile(url: bin)
-            let hashMismatch: Bool = {
-                if case .failed(let c, _) = ota.phase { return c == "OTA_HASH_MISMATCH" }
-                return false
-            }()
-
-            let realSha = SHA256.hash(data: Data([0xAA, 0xBB, 0xCC, 0xDD]))
-                .map { String(format: "%02x", $0) }.joined()
-            let goodManifest = #"{"version":"1.2.3","size":4,"sha256":"\#(realSha)"}"#
-            try? goodManifest.data(using: .utf8)!.write(to: manifest)
-            ota.selectFile(url: bin)
+            let directory = FileManager.default.temporaryDirectory.appendingPathComponent("ota-smoke-\(UUID().uuidString)")
+            try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            defer { try? FileManager.default.removeItem(at: directory) }
+            let bin = directory.appendingPathComponent("firmware.bin")
+            let manifest = directory.appendingPathComponent("manifest.json")
+            let payload = Data([0xAA, 0xBB, 0xCC, 0xDD])
+            try? payload.write(to: bin)
+            ota.selectFiles(urls: [bin])
+            let missingManifest: Bool = { if case .failed = ota.phase { return true }; return false }()
+            let realSha = SHA256.hash(data: payload).map { String(format: "%02x", $0) }.joined()
+            let fields: [String: Any] = ["format_version": 1, "target": "lightble-peripheral", "hardware": "esp32c3",
+                                         "firmware_version": "1.2.3", "size": payload.count, "sha256": realSha]
+            try? JSONSerialization.data(withJSONObject: fields).write(to: manifest)
+            ota.selectFiles(urls: [bin, manifest])
             let readyWithManifest = ota.phase == OtaManager.Phase.ready
-
-            try? FileManager.default.removeItem(at: bin)
-            try? FileManager.default.removeItem(at: manifest)
-            check("UIS-16", readyNoManifest && noSession && hashMismatch && readyWithManifest,
-                  "readyNoManifest=\(readyNoManifest) noSession=\(noSession) hashMismatch=\(hashMismatch) readyWithManifest=\(readyWithManifest)")
+            ota.start(deviceId: "smoke-no-session")
+            let noSession: Bool = { if case .failed(let code, _) = ota.phase { return code == "OTA_SESSION_BUSY" }; return false }()
+            var wrong = fields; wrong["sha256"] = String(repeating: "0", count: 64)
+            try? JSONSerialization.data(withJSONObject: wrong).write(to: manifest)
+            ota.selectFiles(urls: [bin, manifest])
+            let hashMismatch: Bool = { if case .failed = ota.phase { return true }; return false }()
+            check("UIS-16", missingManifest && noSession && hashMismatch && readyWithManifest,
+                  "missingManifest=\(missingManifest) noSession=\(noSession) hashMismatch=\(hashMismatch) readyWithManifest=\(readyWithManifest)")
         }
 
         // UIS-16 P007 会话列表一致性（r6-M1 多设备渲染需 ≥2 台可连外设 · BLOCKED_FIXTURE；
@@ -904,6 +893,11 @@ enum PageSmoke {
         // UIS-18 OTA 真实链（phase-2 R6）：需广播 4FAFC201 的 OTA 设备
         // （ESP32 真固件 / tests/macos/ble-fixture --mode ota；本机夹具同机不可见时 SKIP）
         uis18ota: do {
+            guard let binPath = ProcessInfo.processInfo.environment["SMART_BLE_OTA_FIRMWARE"],
+                  let manifestPath = ProcessInfo.processInfo.environment["SMART_BLE_OTA_MANIFEST"] else {
+                skip("UIS-18-OTA", "requires a real versioned firmware image and its manifest via SMART_BLE_OTA_FIRMWARE / SMART_BLE_OTA_MANIFEST")
+                break uis18ota
+            }
             let ble = controller.ble
             guard let target = ble.discoveredDevices.first(where: {
                 ($0.adv?.serviceUUIDs ?? []).contains { $0.uppercased().hasPrefix("4FAFC201") }
@@ -926,20 +920,14 @@ enum PageSmoke {
                 check("UIS-18-OTA", false, "fixture found but connect/service-discovery failed（如实 FAIL）")
                 break uis18ota
             }
-            let bin = URL(fileURLWithPath: "/tmp/smartble-ota-realchain.bin")
-            let manifest = URL(fileURLWithPath: "/tmp/smartble-ota-realchain.manifest.json")
-            let payload = Data((0..<2048).map { UInt8(truncatingIfNeeded: $0 &* 31 &+ 7) })
-            try? payload.write(to: bin)
-            let sha = SHA256.hash(data: payload).map { String(format: "%02x", $0) }.joined()
-            let manifestJson = #"{"target":"lightble-peripheral","firmware_version":"9.9.9","size":\#(payload.count),"sha256":"\#(sha)"}"#
-            try? manifestJson.data(using: .utf8)!.write(to: manifest)
-
+            let bin = URL(fileURLWithPath: binPath)
+            let manifest = URL(fileURLWithPath: manifestPath)
             let ota = ble.ota
-            ota.selectFile(url: bin)
+            ota.selectFiles(urls: [bin, manifest])
             let ready = ota.phase == OtaManager.Phase.ready
             ota.start(deviceId: target.id)
             var finalPhase = "n/a"
-            for _ in 0..<180 {   // ≤90s：ready→传输→commit→2A26 回读
+            for _ in 0..<1200 {   // ≤10min：真实镜像传输→提交→真实重启→INFO 运行版本核验
                 await settle(500)
                 switch ota.phase {
                 case .success: finalPhase = "success"; case .failed: finalPhase = "failed"
@@ -948,8 +936,6 @@ enum PageSmoke {
                 }
                 break
             }
-            try? FileManager.default.removeItem(at: bin)
-            try? FileManager.default.removeItem(at: manifest)
             ble.disconnect(deviceId: target.id)
             await settle(400)
             check("UIS-18-OTA", ready && finalPhase == "success",

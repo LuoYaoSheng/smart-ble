@@ -1,5 +1,5 @@
 // tests/target/firmware/lib/ota-firmware-simulator.mjs
-// Fake OTA client — 模拟 App 正典事务，验证固件状态机语义（无真实 BLE）。
+// 纯 JS 契约模型（不执行真实 C++、Flash 或 BLE）；生产状态机另由 scripts/ota/test-firmware-host.py 执行。
 
 import { createHash } from 'node:crypto';
 
@@ -51,8 +51,8 @@ export class OtaFirmwareSimulator {
       return { ok: false };
     }
     this.state = STATES.STARTING;
-    const { target, size, chunk_size, target_version, sha256 } = payload;
-    if (target !== 'lightble-peripheral' && target !== 'lightble-observer') {
+    const { target, hardware, size, chunk_size, target_version, sha256 } = payload;
+    if (target !== 'lightble-peripheral' || hardware !== 'esp32-s3') {
       this.state = STATES.FAILED;
       this.#emit('error', { code: 'OTA_ERR_STATE', detail: 'invalid_target' });
       return { ok: false };
@@ -123,11 +123,17 @@ export class OtaFirmwareSimulator {
       this.#emit('error', { code: 'OTA_HASH_MISMATCH' });
       return { ok: false };
     }
-    this.firmwareVersion = this.targetVersion;
+    this.rebootPending = true;
     this.state = STATES.SUCCESS;
     this.#emit('success', { rebooting: true });
     this.state = STATES.IDLE;
     return { ok: true };
+  }
+
+  reboot(actualImageVersion) {
+    if (!this.rebootPending) throw new Error('no committed image');
+    this.firmwareVersion = actualImageVersion;
+    this.rebootPending = false;
   }
 
   ctrlAbort() {
@@ -146,6 +152,7 @@ export class OtaFirmwareSimulator {
     const start = this.ctrlStart({
       op: 'start',
       target: manifest.target,
+      hardware: manifest.hardware,
       size: firmwareBytes.length,
       chunk_size: 180,
       target_version: manifest.firmware_version,

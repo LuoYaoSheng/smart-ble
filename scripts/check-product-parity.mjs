@@ -4,7 +4,7 @@
 // 单源向量：core/protocols/ble-product-v1-vectors.json
 //   logRedaction  js（uniapp 正典）/ dart（锁定镜像）/ kotlin（锁定镜像）/ desktop（tauri+electron 字节一致锁定镜像）
 //   otaTargets    js / swift（交集）
-//   otaSemVer     js / swift（交集；含两条已登记分歧 D-SEMVER-1/2，per-platform expect）
+//   otaSemVer     js / swift（统一冻结 schema；历史 D-SEMVER-1/2 已于 2026-10-20 收敛）
 // 与 canon-locked 的 smart-hid-v1-vectors.json（check-platform-parity.mjs）互不干扰。
 //
 // Usage:
@@ -219,8 +219,12 @@ function runSwiftLane() {
     return { status: 'FAIL', pass: 0, failures: [{ suite: 'swift', case: 'SmartHidCoreTests', detail: (last || out.slice(-400)) }] };
   }
   const count = parseInt(last.match(/Executed (\d+)/)[1], 10);
-  // 既有 32 例 + 产品向量 13 例（5 targets + 8 semver）
-  return { status: count >= 45 ? 'PASS' : 'BLOCKED', pass: count, failures: count >= 45 ? [] : [{ suite: 'swift', case: 'count', detail: `executed ${count} < 45（ProductContractVectorTests 未接入？）` }] };
+  // Assert the vector suite actually ran; unrelated test refactors may change
+  // the package's total without changing protocol coverage.
+  const vectorRun = out.match(/Test Suite '[^']*ProductContractVectorTests' passed[^\n]*\n\s*Executed (\d+) tests?, with (\d+) failures?/);
+  const expectedVectors = vectors.suites.otaTargets.cases.length + vectors.suites.otaSemVer.cases.length;
+  const complete = vectorRun && Number(vectorRun[1]) === expectedVectors && Number(vectorRun[2]) === 0;
+  return { status: complete ? 'PASS' : 'FAIL', pass: count, failures: complete ? [] : [{ suite: 'swift', case: 'vectors', detail: `ProductContractVectorTests must execute all ${expectedVectors} vector cases` }] };
 }
 
 // ---------------------------------------------------------------------------

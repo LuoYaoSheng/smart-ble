@@ -1,118 +1,161 @@
-//
-//  OtaContractTests.swift — OTA 契约共享逻辑测试（R-1/R-2）
-//  事实源：contracts/target/ota-package.schema.json + ota_server.cpp notifyStatus/handleStart。
-//
-
 import XCTest
 @testable import SmartHidCore
 
 final class OtaContractTests: XCTestCase {
-    private func data(_ s: String) -> Data { Data(s.utf8) }
-
-    // MARK: R-2 状态帧分类（固件真实 status 帧）
-
-    func testClassifierReadyFrame() {
-        if case .ready = OtaStatusClassifier.classify(data(#"{"type":"ota","status":"ready","max_chunk":180}"#)) {} else {
-            XCTFail("ready 帧应判 .ready")
+    private let firmware = Data("firmware".utf8)
+    private func json() -> [String: Any] {
+        ["format_version": 1, "target": "lightble-peripheral", "hardware": "esp32c3",
+         "firmware_version": "1.2.3", "size": firmware.count, "sha256": OtaManifest.sha256Hex(firmware)]
+    }
+    private func parse(_ json: [String: Any]) -> Result<OtaManifestInfo, OtaManifestError> {
+        OtaManifest.parse(json, fileSize: firmware.count, actualSha256: OtaManifest.sha256Hex(firmware))
+    }
+    func testRequiresEveryManifestFieldAndRejectsLegacyAndExtras() {
+        for key in json().keys {
+            var missing = json(); missing.removeValue(forKey: key)
+            XCTAssertEqual(parse(missing), .failure(.invalidFields), key)
         }
+        var extra = json(); extra["version"] = "1.2.3"
+        XCTAssertEqual(parse(extra), .failure(.invalidFields))
     }
-
-    func testClassifierSuccessFrame() {
-        if case .success = OtaStatusClassifier.classify(data(#"{"type":"ota","status":"success","rebooting":true}"#)) {} else {
-            XCTFail("success 帧应判 .success")
-        }
+    func testStrictFieldTypesAndActualContent() {
+        var invalid = json(); invalid["format_version"] = true
+        XCTAssertEqual(parse(invalid), .failure(.invalidFormatVersion))
+        invalid = json(); invalid["size"] = true
+        XCTAssertEqual(parse(invalid), .failure(.invalidSize))
+        invalid = json(); invalid["size"] = 1.5
+        XCTAssertEqual(parse(invalid), .failure(.invalidSize))
+        invalid = json(); invalid["size"] = firmware.count + 1
+        XCTAssertEqual(parse(invalid), .failure(.sizeMismatch(manifest: firmware.count + 1, actual: firmware.count)))
+        invalid = json(); invalid["sha256"] = String(repeating: "0", count: 64)
+        XCTAssertEqual(parse(invalid), .failure(.hashMismatch))
+        invalid = json(); invalid["sha256"] = String(repeating: "A", count: 64)
+        XCTAssertEqual(parse(invalid), .failure(.invalidHash))
+        invalid = json(); invalid["hardware"] = " "
+        XCTAssertEqual(parse(invalid), .failure(.invalidHardware))
+        invalid = json(); invalid["target"] = "other"
+        XCTAssertEqual(parse(invalid), .failure(.invalidTarget("other")))
     }
-
-    func testClassifierFailedFrame() {
-        // R-2 核心：旧实现整值精确匹配漏检 "failed"
-        if case .error = OtaStatusClassifier.classify(data(#"{"type":"ota","status":"failed","code":"OTA_ERR_STATE"}"#)) {} else {
-            XCTFail("failed 帧应判 .error（R-2）")
-        }
+    func testValidatedStartContainsHardwareAndRealVersion() throws {
+        let manifest = try parse(json()).get()
+        let frame = OtaStartPayload.build(manifest: manifest, chunkSize: 180)
+        XCTAssertEqual(frame.count, 7)
+        XCTAssertEqual(frame["hardware"] as? String, "esp32c3")
+        XCTAssertEqual(frame["target_version"] as? String, "1.2.3")
+        XCTAssertEqual(frame["sha256"] as? String, OtaManifest.sha256Hex(firmware))
     }
-
-    func testClassifierAbortedFrame() {
-        // 固件 abort 通知（ota_server.cpp:280 notifyStatus("aborted")）
-        if case .error = OtaStatusClassifier.classify(data(#"{"type":"ota","status":"aborted"}"#)) {} else {
-            XCTFail("aborted 帧应判 .error")
-        }
+    func testStatusUsesExactTypedStatusAndErrorPriority() {
+        func classify(_ text: String) -> OtaDeviceEvent? { OtaStatusClassifier.classify(Data(text.utf8)) }
+        XCTAssertEqual(classify(#"{"type":"ota","status":"ready","max_chunk":180}"#), .ready)
+        XCTAssertEqual(classify(#"{"type":"ota","status":"success"}"#), .success)
+        guard case .error = classify(#"{"type":"ota","status":"error","detail":"already ready success ok"}"#) else { return XCTFail("error details must not cause ready/success") }
+        XCTAssertNil(classify(#"{"type":"system_info","status":"success"}"#))
+        XCTAssertNil(classify("ok")); XCTAssertNil(classify("1.2.3"))
+        XCTAssertNil(classify(#"{"type":"ota","status":"not_ready"}"#))
     }
-
-    func testClassifierTextFallbackAndVersionString() {
-        if case .ok = OtaStatusClassifier.classify(data("ok")) {} else { XCTFail("文本 ok") }
-        if case .error = OtaStatusClassifier.classify(data("FAILED")) {} else { XCTFail("大写文本 FAILED") }
-        XCTAssertNil(OtaStatusClassifier.classify(data("1.0.5")), "版本串不误判")
-    }
-
-    // MARK: R-1 start 帧（契约六键）
-
-    func testStartPayloadContractKeys() {
-        let sha = String(repeating: "a", count: 64)
-        let p = OtaStartPayload.build(manifestTarget: "lightble-observer", manifestVersion: "2.0.1",
-                                      fileSize: 2048, chunkSize: 180, sha256: sha)
-        XCTAssertEqual(p["op"] as? String, "start")
-        XCTAssertEqual(p["target"] as? String, "lightble-observer")
-        XCTAssertEqual(p["target_version"] as? String, "2.0.1")
-        XCTAssertEqual(p["size"] as? Int, 2048)
-        XCTAssertEqual(p["chunk_size"] as? Int, 180)
-        XCTAssertEqual(p["sha256"] as? String, sha)
-        XCTAssertEqual(p.count, 6, "manifest 齐备时六键齐全")
-    }
-
-    func testStartPayloadOmitsUnknownContractFields() {
-        let bare = OtaStartPayload.build(manifestTarget: nil, manifestVersion: nil,
-                                         fileSize: 10, chunkSize: 20, sha256: "x")
-        XCTAssertNil(bare["target"], "无 manifest 不伪造枚举")
-        XCTAssertNil(bare["target_version"])
-        XCTAssertEqual(bare["op"] as? String, "start")
-    }
-
-    func testTargetEnumValidation() {
-        XCTAssertTrue(OtaStartPayload.isValidTarget("lightble-peripheral"))
-        XCTAssertTrue(OtaStartPayload.isValidTarget("lightble-observer"))
-        XCTAssertFalse(OtaStartPayload.isValidTarget("1.2.3"))
-        XCTAssertFalse(OtaStartPayload.isValidTarget("lightble"))
-        XCTAssertFalse(OtaStartPayload.isValidTarget(""))
-    }
-
-    // MARK: manifest 解析
-
-    func testManifestParseContractFields() {
-        let sha = String(repeating: "b", count: 64)
-        let json: [String: Any] = ["format_version": 1, "target": "lightble-peripheral",
-                                   "hardware": "esp32c3", "firmware_version": "1.2.3",
-                                   "size": 100, "sha256": sha, "extra_key": "x"]
-        let info = try! OtaManifest.parse(json, fileSize: 100, actualSha256: sha).get()
-        XCTAssertEqual(info.target, "lightble-peripheral")
-        XCTAssertEqual(info.version, "1.2.3")
-        XCTAssertEqual(info.ignoredKeys, ["extra_key"])
-    }
-
-    func testManifestParseLegacyVersionKey() {
-        let json: [String: Any] = ["version": "0.9.9"]
-        let info = try! OtaManifest.parse(json, fileSize: 1, actualSha256: "z").get()
-        XCTAssertEqual(info.version, "0.9.9")
-    }
-
-    func testManifestParseFailures() {
-        XCTAssertEqual(OtaManifest.parse(["target": "1.2.3"], fileSize: 1, actualSha256: "z"),
-                       .failure(.invalidTarget("1.2.3")))
-        XCTAssertEqual(OtaManifest.parse(["firmware_version": "v1.2"], fileSize: 1, actualSha256: "z"),
-                       .failure(.invalidSemVer(key: "firmware_version", value: "v1.2")))
-        XCTAssertEqual(OtaManifest.parse(["size": 5], fileSize: 6, actualSha256: "z"),
-                       .failure(.sizeMismatch(manifest: 5, actual: 6)))
-        XCTAssertEqual(OtaManifest.parse(["sha256": String(repeating: "c", count: 64)], fileSize: 1, actualSha256: String(repeating: "d", count: 64)),
-                       .failure(.hashMismatch))
-    }
-
-    func testSha256Hex() {
-        XCTAssertEqual(OtaManifest.sha256Hex(Data("abc".utf8)),
-                       "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")
-    }
-
-    func testSemVer() {
-        XCTAssertTrue(OtaManifest.isSemVer("1.2.3"))
-        XCTAssertTrue(OtaManifest.isSemVer("1.2.3-rc.1"))
-        XCTAssertFalse(OtaManifest.isSemVer("1.2"))
+    func testSemVerMatchesFrozenManifestSchema() {
+        XCTAssertTrue(OtaManifest.isSemVer("1.2.3-rc.1+build.7"))
+        XCTAssertFalse(OtaManifest.isSemVer("01.2.3"))
         XCTAssertFalse(OtaManifest.isSemVer("v1.2.3"))
+        XCTAssertFalse(OtaManifest.isSemVer("1.2.3\n"))
+    }
+    func testLocalPackageRequiresExplicitlySelectedSameFolderManifest() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let bin = root.appendingPathComponent("firmware.bin")
+        let manifest = root.appendingPathComponent("manifest.json")
+        try firmware.write(to: bin)
+        try JSONSerialization.data(withJSONObject: json()).write(to: manifest)
+        XCTAssertThrowsError(try OtaLocalPackage.load(urls: [bin]))
+        let package = try OtaLocalPackage.load(urls: [manifest, bin])
+        XCTAssertEqual(package.firmware, firmware)
+        XCTAssertEqual(package.manifest.version, "1.2.3")
+        let alternate = root.appendingPathComponent("firmware.manifest.json")
+        try JSONSerialization.data(withJSONObject: json()).write(to: alternate)
+        XCTAssertThrowsError(try OtaLocalPackage.load(urls: [bin, alternate]))
+        let subdir = root.appendingPathComponent("other")
+        try FileManager.default.createDirectory(at: subdir, withIntermediateDirectories: true)
+        let otherManifest = subdir.appendingPathComponent("manifest.json")
+        try JSONSerialization.data(withJSONObject: json()).write(to: otherManifest)
+        XCTAssertThrowsError(try OtaLocalPackage.load(urls: [bin, otherManifest]))
+        let handle = try FileHandle(forWritingTo: bin)
+        try handle.truncate(atOffset: UInt64(OtaLocalPackage.maximumFirmwareSize + 1))
+        try handle.close()
+        XCTAssertThrowsError(try OtaLocalPackage.load(urls: [bin, manifest])) { error in
+            XCTAssertEqual(error as? OtaManifestError, .fileTooLarge)
+        }
+    }
+}
+
+final class OtaTransactionTests: XCTestCase {
+    private func transaction() throws -> OtaTransaction {
+        let data = Data("test".utf8)
+        let manifest = try OtaManifest.parse(["format_version": 1, "target": "lightble-peripheral", "hardware": "esp32c3",
+            "firmware_version": "1.2.3", "size": data.count, "sha256": OtaManifest.sha256Hex(data)],
+            fileSize: data.count, actualSha256: OtaManifest.sha256Hex(data)).get()
+        return OtaTransaction(manifest: manifest)
+    }
+    private func info(_ version: String, hardware: String = "esp32c3", target: String = "lightble-peripheral") -> Data {
+        try! JSONSerialization.data(withJSONObject: ["type": "system_info", "target": target, "hardware": hardware, "firmware_version": version])
+    }
+    private let ready = Data(#"{"type":"ota","status":"ready","max_chunk":180}"#.utf8)
+    private let success = Data(#"{"type":"ota","status":"success","rebooting":true}"#.utf8)
+    private func transferring() throws -> OtaTransaction {
+        var transaction = try transaction(); transaction.begin(); transaction.receiveInfo(info("1.2.2"))
+        transaction.notificationConfirmed(); transaction.sentStart(); transaction.receiveStatus(ready)
+        return transaction
+    }
+    func testFullTransactionRequiresRealRebootThenActualRunningVersion() throws {
+        var transaction = try transferring()
+        transaction.receiveStatus(success)
+        XCTAssertEqual(transaction.phase, .transferring)
+        transaction.wroteChunk(4)
+        XCTAssertEqual(transaction.phase, .committing)
+        transaction.receiveStatus(success)
+        XCTAssertEqual(transaction.phase, .committing, "stale success before commit write must be ignored")
+        transaction.sentCommit()
+        transaction.receiveStatus(success)
+        XCTAssertEqual(transaction.phase, .waitingReboot)
+        transaction.receiveInfo(info("1.2.3"))
+        XCTAssertEqual(transaction.phase, .waitingReboot, "pre-reboot info cannot prove the image started")
+        transaction.disconnected()
+        XCTAssertEqual(transaction.phase, .verifying)
+        transaction.receiveInfo(info("1.2.3"))
+        XCTAssertEqual(transaction.phase, .success)
+    }
+    func testMismatchAndRevertedFirmwareFailAfterReboot() throws {
+        var transaction = try transferring(); transaction.wroteChunk(4); transaction.sentCommit(); transaction.receiveStatus(success); transaction.disconnected()
+        transaction.receiveInfo(info("1.2.2"))
+        XCTAssertEqual(transaction.phase, .failed)
+        var wrongHardware = try self.transaction(); wrongHardware.begin(); wrongHardware.receiveInfo(info("1.2.2", hardware: "esp32"))
+        XCTAssertEqual(wrongHardware.phase, .failed)
+        var wrongTarget = try self.transaction(); wrongTarget.begin(); wrongTarget.receiveInfo(info("1.2.2", target: "lightble-observer"))
+        XCTAssertEqual(wrongTarget.phase, .failed)
+    }
+    func testAlreadyInstalledVersionCannotBeReportedAsUpgrade() throws {
+        var transaction = try self.transaction(); transaction.begin(); transaction.receiveInfo(info("1.2.3"))
+        XCTAssertEqual(transaction.phase, .failed)
+    }
+    func testUnexpectedDisconnectAbortAndCancellationAreTerminal() throws {
+        var transaction = try transferring(); transaction.disconnected()
+        XCTAssertEqual(transaction.phase, .failed)
+        transaction.receiveStatus(success); XCTAssertEqual(transaction.phase, .failed)
+        transaction = try transferring(); transaction.receiveStatus(Data(#"{"type":"ota","status":"aborted"}"#.utf8))
+        XCTAssertEqual(transaction.phase, .failed)
+        transaction = try transferring(); transaction.cancel(); transaction.wroteChunk(4); transaction.receiveStatus(success)
+        XCTAssertEqual(transaction.phase, .cancelled)
+        XCTAssertEqual(transaction.sentBytes, 0)
+    }
+    func testNoDataBeforeDeviceReadyAndNoCommitBeforeAllBytes() throws {
+        var transaction = try self.transaction(); transaction.begin(); transaction.wroteChunk(4)
+        XCTAssertEqual(transaction.sentBytes, 0)
+        transaction.receiveStatus(ready); XCTAssertEqual(transaction.phase, .checkingDevice)
+        transaction.receiveInfo(info("1.2.2")); transaction.notificationConfirmed()
+        transaction.receiveStatus(ready); XCTAssertEqual(transaction.phase, .waitingReady, "stale ready before start write")
+        transaction.sentStart(); transaction.receiveStatus(ready)
+        transaction.wroteChunk(2); XCTAssertEqual(transaction.phase, .transferring)
+        transaction.receiveStatus(success); XCTAssertEqual(transaction.phase, .transferring)
+        transaction.wroteChunk(2); XCTAssertEqual(transaction.phase, .committing)
     }
 }

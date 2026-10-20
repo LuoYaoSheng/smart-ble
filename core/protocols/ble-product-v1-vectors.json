@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-09-14",
+  "updated": "2026-10-20",
   "source": "MAC-008 跨语言向量扩展（产品级契约，独立于 canon-locked smart-hid-v1-vectors.json）：日志脱敏（F026 锁定镜像 js/dart/kotlin）与 OTA 目标枚举/SemVer（js/swift 交集）",
   "note": "expect 为对象时是【已登记分歧】（per-platform 期望），不算失败但必须在 DIVERGENCE-REGISTER 登记，未经用户/契约裁决不得改写任一实现",
   "suites": {
@@ -156,20 +156,12 @@
         {
           "id": "sv_build_meta",
           "value": "1.2.3+build.5",
-          "expect": {
-            "js": true,
-            "swift": false
-          },
-          "divergence": "build-meta：JS 完整 SemVer 接受，Swift 正则不接受（DIVERGENCE-REGISTER D-SEMVER-1）"
+          "expect": true
         },
         {
           "id": "sv_leading_zero",
           "value": "01.0.0",
-          "expect": {
-            "js": false,
-            "swift": true
-          },
-          "divergence": "前导零：JS 严格 SemVer 拒绝，Swift \\\\d+ 接受（DIVERGENCE-REGISTER D-SEMVER-2）"
+          "expect": false
         }
       ]
     }
@@ -177,9 +169,14 @@
   "meta": {
     "frozenAt": "2026-09-15",
     "note": "logRedaction.desktop = apps/desktop/tauri/src 与 apps/desktop/electron/public 的字节一致锁定镜像（无构建传统脚本，挂 globalThis.SmartBLELogRedaction），由 check-product-parity.mjs 桌面车道经 vm 沙箱求值消费；双副本字节相等本身是门禁。",
-    "divergenceRegister": [
-      "D-SEMVER-1",
-      "D-SEMVER-2"
-    ]
+    "divergenceRegister": [],
+    "resolvedDivergences": {
+      "date": "2026-10-20",
+      "ids": [
+        "D-SEMVER-1",
+        "D-SEMVER-2"
+      ],
+      "decision": "用户授权补齐本地 OTA；Swift 与已冻结 ota-package.schema.json 的 SemVer 约束对齐，接受 build metadata、拒绝主版本前导零。"
+    }
   }
 }

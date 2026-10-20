@@ -7,6 +7,7 @@
 void fillDeviceInfoDocument(JsonDocument& doc) {
     doc["firmware_version"] = otaServerInstance().activeFirmwareVersion();
     doc["hardware"] = DEVICE_HARDWARE;
+    doc["target"] = OTA_TARGET_PERIPHERAL;
     doc["uptime"] = millis() / 1000;
     doc["uptime_s"] = millis() / 1000;
     doc["fixture_role"] = FIXTURE_ROLE_PERIPHERAL;

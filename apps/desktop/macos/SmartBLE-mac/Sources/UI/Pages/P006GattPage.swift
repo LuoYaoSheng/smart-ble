@@ -104,7 +104,7 @@ final class P006GattPage: NSViewController, PageProtocol {
         left.append(devhead)
 
         if ble.connectionState == .connected {
-            left.append(noteBanner("warn", "OTA 端到端链路 BLOCKED（固件侧暂未开放，P-03）：「固件更新」为真实调用链（选包校验→start→分块→commit→版本回读），无固件配合时将停在等待/失败态，不伪造成功。"))
+            left.append(noteBanner("warn", "OTA 尚未完成真实设备验证，暂不作为正式发布能力。仅支持匹配协议的设备与经过校验的固件包。"))
         }
 
         // 服务面板（五态 idle/connecting/ready/empty/error）
@@ -305,18 +305,18 @@ final class P006GattPage: NSViewController, PageProtocol {
         host.showSheet(title: "写入 · \(ch.name)", body: column)
     }
 
-    // MARK: - OTA（F025 · 真实调用链；端到端 P-03 BLOCKED 预警）
+    // MARK: - OTA（F025 · 实际运行版本核验；待真实设备验证）
 
     private func openOtaDialog() {
         guard let host, let deviceId = device?.id else { return }
         let ota = host.ble.ota
 
         var body: [NSView] = []
-        body.append(noteBanner("warn", "端到端升级链路当前 BLOCKED（固件侧暂未开放），流程可演示，正式使用前需固件配合。"))
+        body.append(noteBanner("warn", "OTA 尚未完成真实设备验证，暂不作为正式发布能力。请同时选择同目录 .bin 与 manifest.json。"))
 
         // 相位行（确认设备→校验→传输 N%→提交→回读→成功/失败，PATTERN 相位文案）
         let phaseLabel = makeLabel("相位：\(ota.phase.word)", size: 13, weight: .semibold)
-        let fileLabel = makeLabel(ota.fileName.map { "固件包：\($0)（\(ota.fileSize) 字节）" } ?? "未选择固件包（.bin）",
+        let fileLabel = makeLabel(ota.fileName.map { "固件包：\($0)（\(ota.fileSize) 字节）" } ?? "请选择同目录 .bin 和 manifest.json",
                                   size: 11, color: DS.mut)
         let progress = NSProgressIndicator()
         progress.minValue = 0
@@ -330,15 +330,16 @@ final class P006GattPage: NSViewController, PageProtocol {
         let errLabel = makeLabel("", size: 11, color: DS.danger, mono: true)
         errLabel.isHidden = true
 
-        let pickBtn = DSButton("选择固件（.bin）", tone: .soft, symbol: "folder", actionId: "p006-ota-pick") { [weak self] in
+        let pickBtn = DSButton("选择固件包", tone: .soft, symbol: "folder", actionId: "p006-ota-pick") { [weak self] in
             guard let self, let host = self.host else { return }
             let panel = NSOpenPanel()
             panel.allowedContentTypes = [.data]
             panel.allowsOtherFileTypes = true
             panel.canChooseDirectories = false
-            panel.message = "选择 OTA 固件包（.bin）"
-            if panel.runModal() == .OK, let url = panel.url {
-                host.ble.ota.selectFile(url: url)
+            panel.allowsMultipleSelection = true
+            panel.message = "同时选择同目录的 .bin 与 manifest.json；仅支持匹配 OTA 协议的设备"
+            if panel.runModal() == .OK {
+                host.ble.ota.selectFiles(urls: panel.urls)
             }
         }
         let startBtn = DSButton("开始升级", tone: .danger, symbol: "arrow.up.circle", actionId: "p006-ota-start") { [weak self] in
@@ -365,11 +366,11 @@ final class P006GattPage: NSViewController, PageProtocol {
             Task { @MainActor in
                 guard let ota else { return }
                 phaseLabel?.stringValue = "相位：\(ota.phase.word)"
-                fileLabel?.stringValue = ota.fileName.map { "固件包：\($0)（\(ota.fileSize) 字节）" } ?? "未选择固件包（.bin）"
+                fileLabel?.stringValue = ota.fileName.map { "固件包：\($0)（\(ota.fileSize) 字节）" } ?? "请选择同目录 .bin 和 manifest.json"
                 let pct: Double
                 if case .transferring(let p) = ota.phase { pct = Double(p) }
                 else if case .success = ota.phase { pct = 100 }
-                else { pct = ota.fileSize > 0 ? Double(ota.sentBytes) / Double(ota.fileSize) * 100 : 0 }
+                else { pct = min(99, ota.fileSize > 0 ? Double(ota.sentBytes) / Double(ota.fileSize) * 100 : 0) }
                 progress?.doubleValue = pct
                 if case .failed(let code, let msg) = ota.phase {
                     errLabel?.isHidden = false

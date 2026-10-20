@@ -2,12 +2,18 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { OtaManager, OTA_UUIDS, parseOtaStatusPayload } from '../../apps/uniapp/utils/ota_manager.js';
 
+function packageFor(length) {
+  const firmware = new Uint8Array(length);
+  return { firmware, manifest: {format_version: 1, target: 'lightble-peripheral', hardware: 'esp32-s3', firmware_version: '1.0.0', size: length, sha256: createHash('sha256').update(firmware).digest('hex') } };
+}
+
 function createHarness(overrides = {}) {
   const calls = [];
   let statusCallback = null;
+  let committed = false, connected = true;
   const session = { deviceId: 'ota-device', dead: false, mtu: 247 };
   const runtime = {
-    getSession: () => session,
+    getSession: () => connected ? session : null,
     setMtu: async (_session, mtu) => calls.push(['mtu', mtu]),
     subscribe: async (_session, _service, _char, callback) => {
       calls.push(['subscribe']);
@@ -23,18 +29,20 @@ function createHarness(overrides = {}) {
       try {
         const payload = JSON.parse(text);
         if (payload.op === 'start') {
-          statusCallback?.(new TextEncoder().encode(JSON.stringify({ status: 'ready' })).buffer);
+          statusCallback?.(new TextEncoder().encode(JSON.stringify({ type: 'ota', status: 'ready' })).buffer);
         }
         if (payload.op === 'commit') {
-          statusCallback?.(new TextEncoder().encode(JSON.stringify({ status: 'success' })).buffer);
+          committed = true;
+          statusCallback?.(new TextEncoder().encode(JSON.stringify({ type: 'ota', status: 'success' })).buffer);
+          connected = false;
         }
       } catch {
         // DATA chunk
       }
     },
-    readValue: async () => new TextEncoder().encode(JSON.stringify({ firmware_version: '0.0.0' })).buffer,
+    readValue: async () => new TextEncoder().encode(JSON.stringify({ type: 'system_info', firmware_version: committed ? '1.0.0' : '0.9.0', hardware: 'esp32-s3', target: 'lightble-peripheral' })).buffer,
     closeDevice: async () => calls.push(['close']),
-    connectDevice: async () => { calls.push(['connect']); return session; },
+    connectDevice: async () => { connected = true; calls.push(['connect']); return session; },
     setSessionOwner: () => {},
     cancelReconnect: () => {},
     chunkForMtu: (data, mtu) => {
@@ -73,10 +81,10 @@ const run = async (name, fn) => {
 console.log('[OTA manager]');
 
 await run('parses documented JSON status payloads and ignores non-JSON', async () => {
-  assert.equal(parseOtaStatusPayload(Uint8Array.from([...JSON.stringify({ status: 'success' })].map((c) => c.charCodeAt(0)))).kind, 'success');
+  assert.equal(parseOtaStatusPayload(Uint8Array.from([...JSON.stringify({ type: 'ota', status: 'success' })].map((c) => c.charCodeAt(0)))).kind, 'success');
   assert.equal(parseOtaStatusPayload(Uint8Array.from([...JSON.stringify({ type: 'ota', status: 'error', message: 'crc' })].map((c) => c.charCodeAt(0)))).kind, 'failure');
   assert.equal(parseOtaStatusPayload(Uint8Array.from([1, 2, 3])).kind, 'ignored');
-  assert.equal(parseOtaStatusPayload(Uint8Array.from([...JSON.stringify({ status: 'ready' })].map((c) => c.charCodeAt(0)))).kind, 'ready');
+  assert.equal(parseOtaStatusPayload(Uint8Array.from([...JSON.stringify({ type: 'ota', status: 'ready' })].map((c) => c.charCodeAt(0)))).kind, 'ready');
 });
 
 await run('rejects missing or empty firmware before MTU, Notify, or transfer', async () => {
@@ -115,7 +123,7 @@ await run('accepts full transaction with ready and success notifications', async
   const firmware = new Uint8Array(10);
   const sha = createHash('sha256').update(firmware).digest('hex');
   const harness = createHarness({
-    readValue: async () => new TextEncoder().encode(JSON.stringify({ firmware_version: '1.0.0' })).buffer,
+
   });
   let completed = 0;
   const manager = new OtaManager('ota-device', null, {
@@ -168,7 +176,7 @@ await run('timeout, device failure, cancel, and write rejection never report suc
     confirmTimeoutMs: 20,
   });
   const timeoutResult = await timeoutManager.startOta(
-    new ArrayBuffer(20),
+    packageFor(20),
     null,
     (message) => timeoutErrors.push(message),
     () => { timeoutSuccess += 1; },
@@ -188,7 +196,7 @@ await run('timeout, device failure, cancel, and write rejection never report suc
       try {
         const payload = JSON.parse(text);
         if (payload.op === 'start') {
-          failHarness.emitStatus({ status: 'ready' });
+          failHarness.emitStatus({ type: 'ota', status: 'ready' });
         }
       } catch {
         // DATA chunk
@@ -203,14 +211,14 @@ await run('timeout, device failure, cancel, and write rejection never report suc
     confirmTimeoutMs: 200,
   });
   const failing = failManager.startOta(
-    new ArrayBuffer(20),
+    packageFor(20),
     null,
     (message) => failErrors.push(message),
     () => { failSuccess += 1; },
     { skipVerify: true },
   );
   await new Promise((resolve) => setTimeout(resolve, 50));
-  failHarness.emitStatus({ status: 'error', message: 'crc mismatch' });
+  failHarness.emitStatus({ type: 'ota', status: 'error', message: 'crc mismatch' });
   await failing;
   assert.ok(failErrors.some((e) => /crc mismatch|失败/i.test(String(e))));
   assert.equal(failSuccess, 0);
@@ -222,8 +230,11 @@ await run('timeout, device failure, cancel, and write rejection never report suc
   const cancelErrors = [];
   let cancelSuccess = 0;
   const cancelManager = new OtaManager('ota-device', null, { runtime: cancelled.runtime, delay: async () => {} });
-  const cancelling = cancelManager.startOta(new ArrayBuffer(20), null, (message) => cancelErrors.push(message), () => { cancelSuccess += 1; }, { skipVerify: true });
-  await new Promise((resolve) => setTimeout(resolve, 0));
+  const cancelling = cancelManager.startOta(packageFor(20), null, (message) => cancelErrors.push(message), () => { cancelSuccess += 1; }, { skipVerify: true });
+  for (let retry = 0; !releaseMtu && retry < 100; retry++) {
+    await new Promise((resolve) => setTimeout(resolve, 1));
+  }
+  assert.equal(typeof releaseMtu, 'function', 'package validation must reach the blocked MTU operation');
   cancelManager.cancel();
   releaseMtu({ mtu: 247 });
   await cancelling;
@@ -241,8 +252,8 @@ await run('timeout, device failure, cancel, and write rejection never report suc
   const transferErrors = [];
   let transferSuccess = 0;
   const failedManager = new OtaManager('ota-device', null, { runtime: failed.runtime, delay: async () => {}, readyTimeoutMs: 200 });
-  await failedManager.startOta(new ArrayBuffer(400), null, (message) => transferErrors.push(message), () => { transferSuccess += 1; }, { skipVerify: true });
-  assert.equal(writes, 1);
+  await failedManager.startOta(packageFor(400), null, (message) => transferErrors.push(message), () => { transferSuccess += 1; }, { skipVerify: true });
+  assert.equal(writes, 2); // Failed start, followed by best-effort abort.
   assert.ok(transferErrors.some((e) => /link lost/i.test(String(e))));
   assert.equal(transferSuccess, 0);
 });

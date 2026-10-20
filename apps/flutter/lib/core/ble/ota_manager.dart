@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart'
+    show BluetoothConnectionState;
 import 'ble_manager.dart';
+import 'ota_protocol.dart';
 
 /// 统一定义与 Android 侧完全一致的 OtaUUIDs
 class OtaUuids {
@@ -13,13 +16,12 @@ class OtaUuids {
 }
 
 /// 发送协议常量
-const int _otaChunkSize = 180;
-const int _chunkDelayMs = 20;
 
 /// OTA 状态实体
 class OtaState {
   final File? selectedFile;
   final String? fileName;
+  final String? manifestName;
   final int fileSize;
   final bool isInProgress;
   final bool isCompleted;
@@ -32,6 +34,7 @@ class OtaState {
   const OtaState({
     this.selectedFile,
     this.fileName,
+    this.manifestName,
     this.fileSize = 0,
     this.isInProgress = false,
     this.isCompleted = false,
@@ -45,6 +48,7 @@ class OtaState {
   OtaState copyWith({
     File? selectedFile,
     String? fileName,
+    String? manifestName,
     int? fileSize,
     bool? isInProgress,
     bool? isCompleted,
@@ -58,6 +62,7 @@ class OtaState {
     return OtaState(
       selectedFile: selectedFile ?? this.selectedFile,
       fileName: fileName ?? this.fileName,
+      manifestName: manifestName ?? this.manifestName,
       fileSize: fileSize ?? this.fileSize,
       isInProgress: isInProgress ?? this.isInProgress,
       isCompleted: isCompleted ?? this.isCompleted,
@@ -81,14 +86,14 @@ class OtaManager extends StateNotifier<OtaState> {
   final String deviceId;
   final BleManager _bleManager = BleManager.instance;
 
-  StreamSubscription? _statusSub;
+  File? _manifest;
   bool _isCancelled = false;
 
   OtaManager(this.deviceId) : super(const OtaState());
 
   @override
   void dispose() {
-    _statusSub?.cancel();
+    _isCancelled = true;
     super.dispose();
   }
 
@@ -106,160 +111,110 @@ class OtaManager extends StateNotifier<OtaState> {
     );
   }
 
+  void selectManifest(File file, String name) {
+    _manifest = file;
+    state = state.copyWith(manifestName: name, clearError: true);
+  }
+
   void cancelOta() {
-    if (state.isInProgress) {
-      _isCancelled = true;
-      _sendCommand({'action': 'abort'});
-      state = state.copyWith(
-        isInProgress: false,
-        statusMessage: '已取消 OTA',
-      );
-    }
+    _isCancelled = true;
   }
 
   Future<void> startOta() async {
-    final file = state.selectedFile;
-    if (file == null) {
-      state = state.copyWith(errorMessage: '未选择固件');
+    if (state.isInProgress) return;
+    final file = state.selectedFile, manifest = _manifest;
+    if (file == null || manifest == null) {
+      state = state.copyWith(errorMessage: '请选择 .bin 和对应 manifest');
       return;
     }
-
-    if (!_bleManager.isDeviceConnected(deviceId)) {
-      state = state.copyWith(errorMessage: '设备已断开');
+    if (!state.fileName!.toLowerCase().endsWith('.bin')) {
+      state = state.copyWith(errorMessage: '请选择 .bin 格式的固件');
       return;
     }
-
     _isCancelled = false;
     state = state.copyWith(
-      isInProgress: true,
-      isCompleted: false,
-      progressPercent: 0,
-      sentBytes: 0,
-      statusMessage: '正在初始化 OTA...',
-      clearError: true,
-    );
-
+        isInProgress: true,
+        isCompleted: false,
+        progressPercent: 0,
+        sentBytes: 0,
+        statusMessage: '正在校验固件包',
+        clearError: true);
     try {
-      // 1. 请求放大 MTU，确保 180 字节负载安全通过
+      final package = OtaPackage.validate(
+          await file.readAsBytes(), jsonDecode(await manifest.readAsString()));
+      if (_isCancelled) throw StateError('用户已取消');
       await _bleManager.requestMtu(deviceId, 247);
-
-      // 2. 监听 Status
-      await _bleManager.setNotification(
-        deviceId: deviceId,
-        serviceUuid: OtaUuids.service,
-        characteristicUuid: OtaUuids.status,
-        enable: true,
-      );
-
-      _statusSub?.cancel();
-      _statusSub = _bleManager
-          .listenCharacteristicValue(
-            deviceId: deviceId,
-            serviceUuid: OtaUuids.service,
-            characteristicUuid: OtaUuids.status,
-          )
-          ?.listen(_handleStatusUpdate);
-
-      await Future.delayed(const Duration(milliseconds: 200));
-
-      // 3. 发送 Start 命令
-      final totalBytes = state.fileSize;
-      await _sendCommand({
-        'action': 'start',
-        'size': totalBytes,
-        'chunk_size': _otaChunkSize,
-        'firmware_version': 'flutter-bin'
-      });
-
-      await Future.delayed(const Duration(milliseconds: 200));
-
-      // 4. 读取文件并分包发送
-      final bytes = await file.readAsBytes();
-      int sent = 0;
-
-      for (int i = 0; i < bytes.length; i += _otaChunkSize) {
-        if (_isCancelled) {
-          throw Exception('用户手动取消');
-        }
-
-        final end = (i + _otaChunkSize < bytes.length)
-            ? i + _otaChunkSize
-            : bytes.length;
-        final chunk = bytes.sublist(i, end);
-
-        // 阻塞发送
-        await _bleManager.writeCharacteristic(
-          deviceId: deviceId,
-          serviceUuid: OtaUuids.service,
-          characteristicUuid: OtaUuids.data,
-          data: chunk,
-          withoutResponse: true, // 数据通道默认可以 noResponse
-        );
-
-        sent += chunk.length;
-        final percent = ((sent / totalBytes) * 100).toInt().clamp(0, 99);
+      final transport = _BleOtaTransport(_bleManager, deviceId);
+      await runOta(transport, package, (percent, message) {
+        if (!mounted) return;
         state = state.copyWith(
-          sentBytes: sent,
-          progressPercent: percent,
-          statusMessage: '正在发送分包...',
-        );
-
-        // 延时保证 ESP32 消化数据
-        await Future.delayed(const Duration(milliseconds: _chunkDelayMs));
+            progressPercent: percent,
+            totalBytes: package.bytes.length,
+            sentBytes: package.bytes.length * percent ~/ 100,
+            statusMessage: message);
+      }, () => _isCancelled);
+      if (mounted) {
+        state = state.copyWith(isInProgress: false, isCompleted: true);
       }
-
-      // 5. 提交完成
-      await _sendCommand({'action': 'commit'});
-
-      state = state.copyWith(
-        sentBytes: totalBytes,
-        progressPercent: 100,
-        statusMessage: '发送完成，等待设备验证...',
-      );
-    } catch (e) {
-      if (_isCancelled) return;
-      state = state.copyWith(
-        isInProgress: false,
-        statusMessage: '传输中断',
-        errorMessage: e.toString(),
-      );
+    } catch (error) {
+      if (mounted) {
+        state = state.copyWith(
+            isInProgress: false,
+            isCompleted: false,
+            statusMessage: _isCancelled ? '已停止跟踪，设备结果未确认' : '升级结果未确认',
+            errorMessage: error.toString());
+      }
     }
   }
+}
 
-  Future<void> _sendCommand(Map<String, dynamic> jsonCommand) async {
-    final payload = utf8.encode(jsonEncode(jsonCommand));
-    await _bleManager.writeCharacteristic(
-      deviceId: deviceId,
+class _BleOtaTransport implements OtaTransport {
+  final BleManager manager;
+  final String id;
+  _BleOtaTransport(this.manager, this.id);
+  @override
+  bool get connected => manager.isDeviceConnected(id);
+  @override
+  int get chunkSize => 20; // Safe for every ATT MTU; READY may lower further.
+  @override
+  Stream<bool> get connectionStates => manager.connectionStatesStream
+      .map((states) => states[id] == BluetoothConnectionState.connected);
+  @override
+  Stream<List<int>> get statuses =>
+      manager.listenCharacteristicValue(
+          deviceId: id,
+          serviceUuid: OtaUuids.service,
+          characteristicUuid: OtaUuids.status) ??
+      const Stream.empty();
+  @override
+  Future<void> subscribe(bool enabled) => manager.setNotification(
+      deviceId: id,
+      serviceUuid: OtaUuids.service,
+      characteristicUuid: OtaUuids.status,
+      enable: enabled);
+  @override
+  Future<void> writeControl(List<int> value) => manager.writeCharacteristic(
+      deviceId: id,
       serviceUuid: OtaUuids.service,
       characteristicUuid: OtaUuids.control,
-      data: payload,
-    );
-  }
-
-  void _handleStatusUpdate(List<int> raw) {
-    try {
-      final jsonStr = utf8.decode(raw);
-      final map = jsonDecode(jsonStr);
-
-      if (map['type'] != 'ota') return;
-
-      final status = map['status'];
-      final msg = map['message'];
-
-      if (status == 'success') {
-        state = state.copyWith(
-          isInProgress: false,
-          isCompleted: true,
-          progressPercent: 100,
-          statusMessage: 'OTA 成功，设备即将重启',
-        );
-      } else if (status == 'error') {
-        state = state.copyWith(
-          isInProgress: false,
-          statusMessage: '设备反馈错误',
-          errorMessage: msg ?? '未知系统错误',
-        );
-      }
-    } catch (_) {} // 忽略非 JSON 数据
+      data: value);
+  @override
+  Future<void> writeData(List<int> value) => manager.writeCharacteristic(
+      deviceId: id,
+      serviceUuid: OtaUuids.service,
+      characteristicUuid: OtaUuids.data,
+      data: value);
+  @override
+  Future<Map<String, dynamic>> readInfo() async =>
+      jsonDecode(utf8.decode(await manager.readCharacteristic(
+              deviceId: id,
+              serviceUuid: '4fafc201-1fb5-459e-8fcc-c5c9c331914b',
+              characteristicUuid: 'beb5483e-36e1-4688-b7f5-ea07361b26a8')))
+          as Map<String, dynamic>;
+  @override
+  Future<void> reconnect() async {
+    await manager.connect(id);
+    final services = await manager.discoverServices(id);
+    if (services.isEmpty) throw StateError('重连后未发现服务');
   }
 }

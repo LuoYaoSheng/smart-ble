@@ -76,6 +76,19 @@ public partial class MainWindowViewModel
         public Task<bool> SubscribeAsync(bool enable, CancellationToken token) => _ble.SetNotificationAsync(_id, OtaEngine.Service, OtaEngine.Status, enable, token);
         public Task<bool> WriteControlAsync(byte[] value, CancellationToken token) => _ble.WriteCharacteristicAsync(_id, OtaEngine.Service, OtaEngine.Control, value, withResponse: true, sensitive: true, cancellationToken: token);
         public Task<bool> WriteDataAsync(byte[] value, CancellationToken token) => _ble.WriteCharacteristicAsync(_id, OtaEngine.Service, OtaEngine.Data, value, withResponse: true, sensitive: true, cancellationToken: token);
+        public Task<byte[]?> ReadInfoAsync(CancellationToken token) => _ble.ReadCharacteristicAsync(_id, OtaEngine.InfoService, OtaEngine.Info, token);
+        public async Task<bool> ReconnectAsync(CancellationToken token)
+        {
+            // Existing BleService recovery owns each session. ConnectAsync shares
+            // its gate and performs uncached GATT discovery if recovery is pending.
+            for (var attempt = 0; attempt < 3; attempt++)
+            {
+                token.ThrowIfCancellationRequested();
+                await Task.Delay(TimeSpan.FromSeconds(1), token);
+                if (await _ble.ConnectAsync(_id, token).WaitAsync(token)) return true;
+            }
+            return false;
+        }
         public void Dispose() { _ble.CharacteristicValueChanged -= ValueChanged; _ble.DeviceDisconnected -= DeviceDisconnected; }
     }
     [RelayCommand]
@@ -96,7 +109,7 @@ public partial class MainWindowViewModel
                 }
             }), _otaTask.Token);
             if (generation == _otaGeneration && id == CurrentDeviceId)
-                OtaMessage = $"设备已确认升级成功，正在重启；重连后核对版本 {package.Version}";
+                OtaMessage = $"升级完成，已重连并核对设备实际版本 {package.Version}";
         }
         catch (OperationCanceledException) { if (generation == _otaGeneration) OtaMessage = "客户端跟踪已停止；已尝试发送取消请求，但设备结果未确认，请重连检查"; }
         catch (Exception ex) { if (generation == _otaGeneration) OtaMessage = (ex is TimeoutException or InvalidOperationException ? ex.Message : "蓝牙操作失败，未确认升级完成") + "；取消请求的设备结果未确认，请重连检查"; }

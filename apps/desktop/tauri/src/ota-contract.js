@@ -18,41 +18,19 @@
   // 状态帧分类（R-2）
   // -------------------------------------------------------------------------
 
-  /**
-   * 判定设备状态/版本回读帧；无关键词命中返回 null（调用方静默忽略，如版本串）。
-   * JSON 分支同样按子串匹配（旧实现整值精确匹配漏检 "failed"/"aborted" → 拖 30s 超时），
-   * 固件 abort 通知纳入错误类。顺序：ready → success/ok → 错误类。
-   * @param {string} text UTF-8 文本帧（调用方负责 hex → text）
-   * @returns {'ready'|'success'|'ok'|'error'|null} error 时详细串在 .text
-   */
+  /** Only the typed status field can acknowledge a transaction. */
   function classify(text) {
     if (typeof text !== 'string') return null;
-    let json = null;
     try {
-      const parsed = JSON.parse(text);
-      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) json = parsed;
-    } catch { /* 文本帧走下方直配 */ }
-
-    if (json) {
-      const values = [];
-      for (const v of Object.values(json)) {
-        if (typeof v === 'string') values.push(v.toLowerCase());
+      const frame = JSON.parse(text);
+      if (!frame || frame.type !== 'ota' || typeof frame.status !== 'string') return null;
+      switch (frame.status.toLowerCase()) {
+        case 'ready': return 'ready';
+        case 'success': return 'success';
+        case 'error': case 'failed': case 'failure': case 'aborted': return 'error';
+        default: return null;
       }
-      if (values.some((v) => v.includes('ready'))) return 'ready';
-      if (values.some((v) => v.includes('success'))) return 'success';
-      if (values.some((v) => v.includes('ok'))) return 'ok';
-      if (values.some((v) => v.includes('error') || v.includes('fail') || v.includes('abort'))) {
-        return 'error';
-      }
-      return null;
-    }
-
-    const lower = text.toLowerCase();
-    if (lower.includes('ready')) return 'ready';
-    if (lower.includes('success')) return 'success';
-    if (lower.includes('ok')) return 'ok';
-    if (lower.includes('error') || lower.includes('fail') || lower.includes('abort')) return 'error';
-    return null;
+    } catch { return null; }
   }
 
   const OtaStatusClassifier = {
@@ -74,20 +52,21 @@
    * manifest 缺项时省略对应键（不伪造枚举/版本，真固件以 missing_target 诚实拒绝）。
    */
   function buildStartPayload(opts) {
-    const p = {
-      op: 'start',
-      size: opts.fileSize,
-      chunk_size: opts.chunkSize,
-      sha256: opts.sha256,
-    };
-    if (opts.manifestTarget && isValidTarget(opts.manifestTarget)) p.target = opts.manifestTarget;
-    if (opts.manifestVersion) p.target_version = opts.manifestVersion;
-    return p;
+    if (!isValidTarget(opts.manifestTarget) || !isSemVer(opts.manifestVersion)
+      || typeof opts.manifestHardware !== 'string' || !opts.manifestHardware.trim()
+      || !Number.isInteger(opts.fileSize) || opts.fileSize < 1
+      || !Number.isInteger(opts.chunkSize) || opts.chunkSize < 1
+      || !/^[0-9a-f]{64}$/.test(opts.sha256 || '')) {
+      throw new Error('OTA start requires a validated firmware manifest');
+    }
+    return { op: 'start', target: opts.manifestTarget, hardware: opts.manifestHardware,
+      target_version: opts.manifestVersion, size: opts.fileSize,
+      chunk_size: opts.chunkSize, sha256: opts.sha256 };
   }
 
   /** 日志用展示串（不含 sha256 全文） */
   function displayPayload(p) {
-    return ['op', 'target', 'target_version', 'size', 'chunk_size']
+    return ['op', 'target', 'hardware', 'target_version', 'size', 'chunk_size']
       .filter((k) => p[k] !== undefined)
       .map((k) => `${k}=${p[k]}`)
       .join(' ');
@@ -103,7 +82,7 @@
   // manifest 解析（契约六字段 · legacy "version" 兼容）
   // -------------------------------------------------------------------------
 
-  const SEMVER_RE = /^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$/;
+  const SEMVER_RE = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
   const KNOWN_KEYS = ['format_version', 'target', 'hardware', 'firmware_version', 'version', 'size', 'sha256'];
 
   function isSemVer(v) {
@@ -177,7 +156,7 @@
     if (!Number.isInteger(json.size) || json.size < 1 || json.size !== fileSize) return fail('size_mismatch', 'manifest size 与固件实测不符');
     if (typeof json.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(json.sha256) || json.sha256 !== actualSha256) return fail('hash_mismatch', 'manifest sha256 与固件实测不符');
     if (Object.keys(json).some(key => !['format_version', 'target', 'hardware', 'firmware_version', 'size', 'sha256'].includes(key))) return fail('unknown_field', 'manifest 包含未定义字段');
-    return { ok: true, target: json.target, version: json.firmware_version };
+    return { ok: true, target: json.target, hardware: json.hardware, version: json.firmware_version };
   }
 
   const OtaManifest = {

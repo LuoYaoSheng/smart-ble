@@ -2,12 +2,12 @@
 
 #include <ArduinoJson.h>
 #include <Update.h>
-#include <Preferences.h>
+#include <esp_app_format.h>
+#include <esp_image_format.h>
+#include "fixture_config.h"
 #include <mbedtls/sha256.h>
 #include "ble_value_util.h"
 
-static const char* kOtaNvsNamespace = "smart_ble";
-static const char* kOtaNvsVersionKey = "fw_version";
 static const char* kBuildFirmwareVersion = FIRMWARE_VERSION;
 
 static OtaServer gOtaServer;
@@ -65,15 +65,13 @@ private:
     OtaServer& _owner;
 };
 
+OtaServer::~OtaServer() {
+    if (_inputs) vQueueDelete(_inputs);
+    delete _ctrlCallbacks;
+    delete _dataCallbacks;
+}
+
 String OtaServer::activeFirmwareVersion() const {
-    Preferences prefs;
-    if (prefs.begin(kOtaNvsNamespace, true)) {
-        String stored = prefs.getString(kOtaNvsVersionKey, "");
-        prefs.end();
-        if (stored.length() > 0) {
-            return stored;
-        }
-    }
     return String(kBuildFirmwareVersion);
 }
 
@@ -83,6 +81,7 @@ void OtaServer::begin(
     NimBLECharacteristic* status,
     SerialEventFn serialEvent
 ) {
+    _inputs = xQueueCreate(16, sizeof(InputEvent));
     _ctrl = ctrl;
     _data = data;
     _status = status;
@@ -95,11 +94,13 @@ void OtaServer::begin(
     _data->setCallbacks(_dataCallbacks);
     _ctrl->setValue("{\"type\":\"ota\",\"status\":\"idle\"}");
     _status->setValue("{\"type\":\"ota\",\"status\":\"idle\"}");
+    refreshControlValue();
 }
 
 void OtaServer::setState(OtaState next) {
     _state = next;
     emitSerialEvent(stateName(next).c_str());
+    refreshControlValue();
 }
 
 void OtaServer::emitSerialEvent(const char* stateLabel) {
@@ -159,9 +160,12 @@ void OtaServer::notifyStatus(
 }
 
 void OtaServer::resetSession(bool abortUpdate) {
-    if (abortUpdate && _state != OTA_IDLE && _state != OTA_SUCCESS && _state != OTA_ABORTED) {
-        Update.abort();
-    }
+    if (abortUpdate) Update.abort();
+    sha256Reset();
+    _beginPending = false;
+    _commitPending = false;
+    _staging.clear();
+    _imageValidated = false;
     _expectedSize = 0;
     _receivedSize = 0;
     _chunkSize = 180;
@@ -199,10 +203,10 @@ bool OtaServer::handleStart(const JsonDocument& doc, String& errorCode, String& 
         return false;
     }
 
-    if (_state != OTA_IDLE && _state != OTA_FAILED && _state != OTA_ABORTED) {
-        resetSession(true);
+    if (_restartPending) {
+        errorCode = "OTA_ERR_STATE"; errorDetail = "reboot_pending"; return false;
     }
-
+    resetSession(true);
     setState(OTA_STARTING);
 
     const char* target = doc["target"] | "";
@@ -211,20 +215,28 @@ bool OtaServer::handleStart(const JsonDocument& doc, String& errorCode, String& 
         errorDetail = "missing_target";
         return false;
     }
-    if (strcmp(target, OTA_TARGET_PERIPHERAL) != 0 && strcmp(target, OTA_TARGET_OBSERVER) != 0) {
+    if (strcmp(target, OTA_TARGET_PERIPHERAL) != 0) {
         errorCode = "OTA_ERR_STATE";
         errorDetail = "invalid_target";
         return false;
     }
 
-    size_t size = doc["size"] | 0;
-    if (size == 0) {
+    const char* hardware = doc["hardware"] | "";
+    if (strcmp(hardware, DEVICE_HARDWARE) != 0) {
+        errorCode = "OTA_ERR_STATE"; errorDetail = "hardware_mismatch"; return false;
+    }
+
+    if (!doc["size"].is<size_t>() || !doc["chunk_size"].is<uint16_t>()) {
+        errorCode = "OTA_ERR_SIZE"; errorDetail = "invalid_numeric_fields"; return false;
+    }
+    size_t size = doc["size"].as<size_t>();
+    if (size < sizeof(esp_image_header_t) + sizeof(esp_image_segment_header_t) + sizeof(esp_app_desc_t)) {
         errorCode = "OTA_ERR_SIZE";
         errorDetail = "invalid_size";
         return false;
     }
 
-    _chunkSize = doc["chunk_size"] | 180;
+    _chunkSize = doc["chunk_size"].as<uint16_t>();
     if (_chunkSize == 0 || _chunkSize > 512) {
         errorCode = "OTA_ERR_STATE";
         errorDetail = "invalid_chunk_size";
@@ -232,7 +244,7 @@ bool OtaServer::handleStart(const JsonDocument& doc, String& errorCode, String& 
     }
 
     const char* targetVersion = doc["target_version"] | "";
-    if (strlen(targetVersion) == 0) {
+    if (strlen(targetVersion) == 0 || strlen(targetVersion) >= sizeof(esp_app_desc_t::version)) {
         errorCode = "OTA_ERR_STATE";
         errorDetail = "missing_target_version";
         return false;
@@ -259,6 +271,7 @@ bool OtaServer::handleStart(const JsonDocument& doc, String& errorCode, String& 
     _expectedSize = size;
     _receivedSize = 0;
     _lastProgressMs = millis();
+    _lastInputMs = millis();
 
     // DEV-014：Update.begin 的同步擦除（数十~数百扇区，秒级）不得在 NimBLE
     // 回调里执行（真机证据：链路监督超时 + 设备复位）。排队到 loop()，
@@ -269,72 +282,107 @@ bool OtaServer::handleStart(const JsonDocument& doc, String& errorCode, String& 
     return true;
 }
 
-// DEV-014：原 handleCommit（flash 校验 + Update.end + NVS）已整体移入
+// DEV-014：原 handleCommit（flash 校验 + Update.end）已整体移入
 // loopCommit()，由 loop() 在 _commitPending 置位后调用——回调里做 flash
 // 操作会在真机上复位设备（E5 phase-7 实证，见 ota_server.h DEV-014 注记）。
 
 void OtaServer::handleAbort() {
-    // DEV-014：Update.abort 触及 flash — 排队到 loop；状态与通知立即返回。
-    _abortPending = true;
+    resetSession(true);
     setState(OTA_ABORTED);
     notifyStatus("aborted");
-    resetSession(false);
 }
 
 void OtaServer::onDisconnect() {
-    if (_state == OTA_RECEIVING || _state == OTA_STARTING || _state == OTA_READY || _state == OTA_COMMITTING) {
-        if (_faults.disconnectNext) {
-            _faults.disconnectNext = false;
-        }
-        // DEV-014：Update.abort 延迟到 loop；回调只复位状态
-        _abortPending = true;
-        resetSession(false);
-        setState(OTA_FAILED);
-        notifyStatus("error", "OTA_ERR_STATE", "disconnect");
+    _disconnected.store(true);
+}
+
+void OtaServer::enqueue(bool control, NimBLECharacteristic* characteristic) {
+    std::string value = characteristic->getValue();
+    if (!_inputs || value.size() > sizeof(InputEvent::bytes)) {
+        _queueOverflow.store(true);
+        return;
     }
+    InputEvent event{};
+    event.control = control;
+    event.length = value.size();
+    memcpy(event.bytes, value.data(), value.size());
+    if (xQueueSend(_inputs, &event, 0) != pdTRUE) _queueOverflow.store(true);
+}
+
+void OtaServer::handleCtrlWrite(NimBLECharacteristic* characteristic) { enqueue(true, characteristic); }
+void OtaServer::handleDataWrite(NimBLECharacteristic* characteristic) { enqueue(false, characteristic); }
+
+void OtaServer::fail(const char* code, const char* detail) {
+    resetSession(true);
+    setState(OTA_FAILED);
+    notifyStatus("error", code, detail);
+}
+
+bool OtaServer::validateImage(const uint8_t* bytes, size_t length) {
+    if (length < sizeof(esp_image_header_t) + sizeof(esp_image_segment_header_t) + sizeof(esp_app_desc_t)) return false;
+    esp_image_header_t image;
+    esp_app_desc_t app;
+    memcpy(&image, bytes, sizeof(image));
+    memcpy(&app, bytes + sizeof(image) + sizeof(esp_image_segment_header_t), sizeof(app));
+#if CONFIG_IDF_TARGET_ESP32S3
+    const uint16_t expectedChip = 9;
+#else
+    const uint16_t expectedChip = 0;
+#endif
+    return image.magic == 0xE9 && image.chip_id == expectedChip &&
+        app.magic_word == ESP_APP_DESC_MAGIC_WORD &&
+        strnlen(app.version, sizeof(app.version)) < sizeof(app.version) &&
+        _targetVersion == app.version &&
+        strnlen(app.project_name, sizeof(app.project_name)) < sizeof(app.project_name) &&
+        strcmp(app.project_name, OTA_TARGET_PERIPHERAL) == 0;
 }
 
 void OtaServer::loop() {
-    if (_restartPending && millis() >= _restartAt) {
+    if (_restartPending && static_cast<int32_t>(millis() - _restartAt) >= 0) {
         ESP.restart();
+        return;
     }
-
-    // DEV-014：全部 flash 操作集中在此（loop/arduino 任务上下文，BLE 主机
-    // 独立任务不受阻塞）。
-    if (_abortPending) {
-        _abortPending = false;
-        _staging.clear();
-        Update.abort();
+    // Disconnect/overflow invalidates every packet queued on the old link.
+    const bool disconnected = _disconnected.exchange(false);
+    const bool overflow = _queueOverflow.exchange(false);
+    if (disconnected || overflow) {
+        if (_inputs) xQueueReset(_inputs);
+        if (!_restartPending && (_state == OTA_STARTING || _state == OTA_READY ||
+            _state == OTA_RECEIVING || _state == OTA_COMMITTING || overflow)) {
+            fail("OTA_ERR_STATE", overflow ? "input_queue_overflow" : "disconnect");
+        }
     }
-
-    if (_beginPending) {
+    InputEvent event;
+    for (unsigned i = 0; _inputs && i < 8 && xQueueReceive(_inputs, &event, 0) == pdTRUE; ++i) {
+        if (_restartPending) break;
+        if (event.control) processControl(event); else processData(event);
+    }
+    if (_beginPending && uxQueueMessagesWaiting(_inputs) == 0) {
         _beginPending = false;
-        if (!Update.begin(_expectedSize)) {
-            resetSession(false);
-            setState(OTA_FAILED);
-            notifyStatus("error", "OTA_ERR_SPACE", "update_begin_failed");
-        } else {
+        if (!Update.begin(_expectedSize)) fail("OTA_ERR_SPACE", "update_begin_failed");
+        else {
+            sha256Begin();
+            _lastInputMs = millis();
             setState(OTA_READY);
             notifyStatus("ready");
             setState(OTA_RECEIVING);
         }
     }
-
-    if (_state == OTA_RECEIVING && !_staging.empty() && !_commitPending) {
-        // DEV-014c：单次 loop 只落盘一个批次（4KB）。整环 32KB 一次写入的
-        // flash 编程临界区（~350ms）会压过中断看门狗默认阈值（300ms），
-        // 高速率传输（实测 5.8KB/s 于 87% 处）触发 TG0WDT 复位；分批后
-        // 每次临界区 ~50ms，剩余数据留在环里由后续 loop 迭代消化
-        //（BLE 到包速率远低于排水能力，环不会积压）。
-        size_t len = _staging.size() > kOtaDrainBatch ? kOtaDrainBatch : _staging.size();
-        size_t written = Update.write(_staging.data(), len);
-        if (written != len) {
-            _staging.clear();
-            Update.abort();
-            resetSession(false);
-            setState(OTA_FAILED);
-            notifyStatus("error", "OTA_ERR_FLASH", "chunk_write_failed");
-        } else {
+    // Commit freezes input, but MUST continue draining bytes already accepted.
+    if ((_state == OTA_RECEIVING || _state == OTA_COMMITTING) && !_staging.empty()) {
+        const size_t headerSize = sizeof(esp_image_header_t) + sizeof(esp_image_segment_header_t) + sizeof(esp_app_desc_t);
+        if (!_imageValidated && _staging.size() >= headerSize) {
+            if (!validateImage(_staging.data(), _staging.size())) {
+                fail("OTA_ERR_STATE", "image_target_or_version_mismatch");
+                return;
+            }
+            _imageValidated = true;
+        }
+        // Hold the first short chunks until the full image descriptor is available.
+        if (_imageValidated) {
+            size_t len = std::min(_staging.size(), kOtaDrainBatch);
+            size_t written = Update.write(_staging.data(), len);
+            if (written != len) { fail("OTA_ERR_FLASH", "chunk_write_failed"); return; }
             sha256Update(_staging.data(), len);
             _receivedSize += written;
             _staging.erase(_staging.begin(), _staging.begin() + written);
@@ -342,14 +390,16 @@ void OtaServer::loop() {
                 _lastProgressMs = millis();
                 notifyStatus("progress", nullptr, nullptr, true);
                 emitSerialEvent("receiving");
+                refreshControlValue();
             }
-        }
+        } else if (_commitPending) { fail("OTA_SIZE_MISMATCH", "incomplete_image_header"); return; }
     }
-
     if (_commitPending && _staging.empty()) {
         _commitPending = false;
         loopCommit();
     }
+    if ((_state == OTA_STARTING || _state == OTA_RECEIVING || _state == OTA_COMMITTING) &&
+        millis() - _lastInputMs >= kOtaTimeoutMs) fail("OTA_ERR_STATE", "timeout");
 }
 
 // Incremental SHA256 for received firmware bytes
@@ -392,21 +442,19 @@ static void sha256Reset() {
     }
 }
 
-// DEV-014：commit 链（hash 比对 + 故障相位 + Update.end + NVS + success）
+// Commit validates the complete image before changing the boot partition.
 // 在 loop() 上下文执行；由 handleCtrlWrite 置 _commitPending 后调用。
 void OtaServer::loopCommit() {
-    auto fail = [this](const char* code, const char* detail) {
-        resetSession(true);
-        setState(OTA_FAILED);
-        notifyStatus("error", code, detail);
-    };
-
+    if (_receivedSize != _expectedSize || !_imageValidated) {
+        fail("OTA_SIZE_MISMATCH", "size_mismatch");
+        return;
+    }
     String actualSha = sha256FinalizeHex();
     if (_faults.wrongHash) {
         _faults.wrongHash = false;
         actualSha = "ff";
     }
-    if (actualSha.length() == 64 && _expectedSha256.length() == 64 && actualSha != _expectedSha256) {
+    if (actualSha.length() != 64 || _expectedSha256.length() != 64 || actualSha != _expectedSha256) {
         fail("OTA_HASH_MISMATCH", "sha256_mismatch");
         return;
     }
@@ -428,27 +476,20 @@ void OtaServer::loopCommit() {
         return;
     }
 
-    if (!Update.end(true)) {
+    if (!Update.end(false)) {
         // Update.end 校验镜像结构（magic/segment/checksum/app_desc）——
         // 合成负载在此被拒（真机实证 update_end_failed），不切启动分区。
         fail("OTA_ERR_FLASH", "update_end_failed");
         return;
     }
 
-    Preferences prefs;
-    if (prefs.begin(kOtaNvsNamespace, false)) {
-        prefs.putString(kOtaNvsVersionKey, _targetVersion);
-        prefs.end();
-    }
-
     setState(OTA_SUCCESS);
     notifyStatus("success", nullptr, nullptr, true, true);
     _restartPending = true;
     _restartAt = millis() + 1500;
-    setState(OTA_IDLE);
 }
 
-void OtaServer::handleCtrlRead(NimBLECharacteristic* characteristic) {
+void OtaServer::refreshControlValue() {
     StaticJsonDocument<256> doc;
     doc["type"] = "ota";
     doc["status"] = stateName(_state);
@@ -457,11 +498,17 @@ void OtaServer::handleCtrlRead(NimBLECharacteristic* characteristic) {
     doc["firmware_version"] = activeFirmwareVersion();
     String json;
     serializeJson(doc, json);
-    bleSetValue(characteristic, json);
+    std::lock_guard<std::mutex> lock(_snapshotMutex);
+    _controlSnapshot.assign(json.c_str(), json.length());
 }
 
-void OtaServer::handleCtrlWrite(NimBLECharacteristic* characteristic) {
-    std::string value = characteristic->getValue();
+void OtaServer::handleCtrlRead(NimBLECharacteristic* characteristic) {
+    std::lock_guard<std::mutex> lock(_snapshotMutex);
+    bleSetValue(characteristic, _controlSnapshot);
+}
+
+void OtaServer::processControl(const InputEvent& event) {
+    std::string value(reinterpret_cast<const char*>(event.bytes), event.length);
     if (value.empty()) {
         notifyStatus("error", "OTA_ERR_STATE", "empty_control_payload");
         return;
@@ -484,12 +531,8 @@ void OtaServer::handleCtrlWrite(NimBLECharacteristic* characteristic) {
     String errorDetail;
 
     if (strcmp(op, "start") == 0) {
-        sha256Reset();
         if (!handleStart(doc, errorCode, errorDetail)) {
-            sha256Reset();
-            resetSession(true);
-            setState(OTA_FAILED);
-            notifyStatus("error", errorCode.c_str(), errorDetail.c_str());
+            fail(errorCode.c_str(), errorDetail.c_str());
         }
         return;
     }
@@ -499,14 +542,13 @@ void OtaServer::handleCtrlWrite(NimBLECharacteristic* characteristic) {
             notifyStatus("error", "OTA_ERR_STATE", "ota_not_started");
             return;
         }
-        // DEV-014：hash 比对 + Update.end + NVS 全部在 loopCommit（loop 上下文）
+        // Hash comparison and Update.end run only in loop().
         setState(OTA_COMMITTING);
         _commitPending = true;
         return;
     }
 
     if (strcmp(op, "abort") == 0) {
-        sha256Reset();
         handleAbort();
         return;
     }
@@ -514,13 +556,13 @@ void OtaServer::handleCtrlWrite(NimBLECharacteristic* characteristic) {
     notifyStatus("error", "OTA_ERR_STATE", "unknown_op");
 }
 
-void OtaServer::handleDataWrite(NimBLECharacteristic* characteristic) {
+void OtaServer::processData(const InputEvent& event) {
     if (_state != OTA_RECEIVING) {
         notifyStatus("error", "OTA_ERR_STATE", "ota_not_started");
         return;
     }
 
-    std::string value = characteristic->getValue();
+    std::string value(reinterpret_cast<const char*>(event.bytes), event.length);
     if (value.empty()) {
         notifyStatus("error", "OTA_ERR_STATE", "empty_chunk");
         return;
@@ -529,24 +571,17 @@ void OtaServer::handleDataWrite(NimBLECharacteristic* characteristic) {
     const uint8_t* bytes = reinterpret_cast<const uint8_t*>(value.data());
     size_t len = value.length();
 
-    if (_receivedSize + _staging.size() + len > _expectedSize) {
-        _abortPending = true;
-        resetSession(false);
-        setState(OTA_FAILED);
-        notifyStatus("error", "OTA_ERR_SIZE", "overflow");
-        sha256Reset();
+    if (len > _chunkSize || _receivedSize + _staging.size() + len > _expectedSize) {
+        fail("OTA_ERR_SIZE", "overflow_or_oversized_chunk");
         return;
     }
 
-    // DEV-014：分片只进 RAM 暂存环（32KB），flash 写入在 loop() 统一执行。
+    // loop() stages bounded FIFO input in RAM before a bounded flash batch.
     // BLE 到包速率（~4-8KB/s）远低于 flash 写入速率，环不会成为瓶颈。
     if (_staging.size() + len > kOtaStagingCap) {
-        _abortPending = true;
-        resetSession(false);
-        setState(OTA_FAILED);
-        notifyStatus("error", "OTA_ERR_STATE", "staging_overflow");
-        sha256Reset();
+        fail("OTA_ERR_STATE", "staging_overflow");
         return;
     }
     _staging.insert(_staging.end(), bytes, bytes + len);
+    _lastInputMs = millis();
 }

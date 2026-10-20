@@ -80,23 +80,23 @@ fun applyOtaStatusPayload(current: OtaUiState, rawPayload: String): OtaStatusTra
             state = current.copy(
                 sentBytes = received,
                 totalBytes = total,
-                progressPercent = percent,
+                progressPercent = percent.coerceIn(0, 99),
                 statusMessage = "设备正在写入固件..."
             )
         )
 
         "success" -> OtaStatusTransition(
             state = current.copy(
-                isInProgress = false,
-                isCompleted = true,
+                isInProgress = true,
+                isCompleted = false,
                 sentBytes = total.coerceAtLeast(current.sentBytes),
                 totalBytes = total.coerceAtLeast(current.totalBytes),
-                progressPercent = 100,
-                statusMessage = "OTA 成功，设备即将重启",
+                progressPercent = 99,
+                statusMessage = "固件已提交，等待真实重启及运行版本验证",
                 errorMessage = null
             ),
-            logMessage = "OTA 成功，设备即将重启",
-            logType = LogType.Success
+            logMessage = "固件已提交，尚未确认运行版本",
+            logType = LogType.Info
         )
 
         "aborted" -> OtaStatusTransition(

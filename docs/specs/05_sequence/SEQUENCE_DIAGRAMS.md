@@ -213,28 +213,30 @@ sequenceDiagram
     participant D as LightBLE 固件
 
     Note over UI: 仅当检测到 OTA 服务 4fafc201-…-914d 时入口可见
-    U->>UI: 「固件更新」→ 选 .bin（wx.chooseMessageFile）
+    U->>UI: 「固件更新」→ 明确选择 .bin + manifest.json
     UI->>OM: startOta(file)
     OM->>OM: 包校验（manifest 6 字段+SemVer+sha256 实测）
     alt 校验失败（六种包错误）
         OM-->>UI: 报错终止（不发起传输）
     end
     OM->>RT: 获取会话所有权（WORKFLOW:'ota-manager'）
-    Note over RT: OTA 期间禁自动重连
+    OM->>WX: 读 INFO：target/hardware/实际版本，拒绝错型号和同版
+    Note over RT: 传输期间禁自动重连；提交后恢复验证重连
     OM->>WX: setBLEMTU(247)·订阅 STATUS(26c2)
-    OM->>WX: CTRL(26c0) 写 {op:'start',target,size,chunk_size:180,sha256}
+    OM->>WX: CTRL(26c0) 写 {op:'start',target,hardware,target_version,size,chunk_size,sha256}
     D-->>OM: ready（等待 30s）
     loop 分块传输（块 180B，间隔 20ms）
         OM->>WX: DATA(26c1) writeNoResponse(MTU-3 分包)
         OM-->>UI: 进度 sentBytes/totalBytes
     end
     OM->>WX: CTRL {op:'commit'}
-    D-->>OM: success（等待 30s）
-    OM->>RT: 重连
-    OM->>WX: 读 DeviceInfo.firmware_version
+    D-->>OM: success（仅提交完成，尚未最终成功）
+    D-->>RT: 设备真实重启断开
+    OM->>RT: 重连并重新发现服务
+    OM->>WX: 读 INFO target/hardware/firmware_version
     D-->>OM: 版本
     alt 一致
-        OM-->>UI: 成功 → 2s 自动关闭
+        OM-->>UI: 成功 → 100%（真实运行版本已核实）
     else 不一致
         OM-->>UI: OTA_VERSION_MISMATCH
     end
