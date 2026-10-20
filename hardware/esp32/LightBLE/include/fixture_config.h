@@ -4,7 +4,11 @@
 
 #define DEVICE_NAME "BLEToolkit-Server"
 #define DEVICE_OBSERVER_NAME "BLEToolkit-Observer"
+#if CONFIG_IDF_TARGET_ESP32S3
+#define DEVICE_HARDWARE "esp32-s3"
+#else
 #define DEVICE_HARDWARE "esp32-wroom-32"
+#endif
 #define FIXTURE_ROLE_PERIPHERAL "peripheral"
 #define FIXTURE_ROLE_OBSERVER "observer"
 

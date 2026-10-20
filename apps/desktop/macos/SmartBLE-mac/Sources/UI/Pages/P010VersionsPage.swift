@@ -11,7 +11,7 @@ final class P010VersionsPage: NSViewController, PageProtocol {
     private var scroll: PageScroll!
 
     private let limitations = [
-        "OTA 端到端链路 BLOCKED：固件侧暂未开放升级通道",
+        "OTA 尚未完成真实设备验证，暂不作为正式发布能力",
         "iOS 广播依赖原生能力与签名真机验证",
         "H5 平台不支持 BLE 外围模式",
     ]

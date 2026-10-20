@@ -164,6 +164,7 @@ class BLEManager: NSObject, ObservableObject {
 
     /// Per-device peripheral references (deviceId -> CBPeripheral)
     private var connectedPeripherals: [String: CBPeripheral] = [:]
+    private weak var otaTransfer: OtaBluetoothSession?
     private var sessionPeripherals: [String: CBPeripheral] = [:]
     private var connectTimers: [String: Timer] = [:]
     private var readTimers: [String: Timer] = [:]
@@ -399,6 +400,7 @@ class BLEManager: NSObject, ObservableObject {
 
     /// Disconnect a specific device by ID
     func disconnect(deviceId: String) {
+        if otaTransfer?.deviceID == deviceId { otaTransfer?.cancel() }
         userInitiatedDisconnects.insert(deviceId)
         cancelReconnect(deviceId: deviceId)
         connectTimers.removeValue(forKey: deviceId)?.invalidate()
@@ -510,9 +512,37 @@ class BLEManager: NSObject, ObservableObject {
         }
     }
 
+    // OTA reserves an empty per-device write lane. Delegate ownership stays here.
+    func canStartOta(deviceId: String) -> Bool {
+        isDeviceConnected(deviceId) && writeQueue.depth(deviceId) == 0 && otaTransfer?.holdsWriteLane != true
+    }
+
+    func makeOtaSession(package: OtaLocalPackage, deviceId: String) -> OtaBluetoothSession {
+        let original = connectedPeripherals[deviceId]
+        let transfer = OtaBluetoothSession(package: package, deviceID: deviceId, connection: { [weak self] in
+            self?.connectedPeripherals[deviceId]
+        }, resolve: { [weak self] service, characteristic in
+            self?.findCharacteristic(deviceId: deviceId, serviceUUID: service, characteristicUUID: characteristic)?.1
+        }, reconnect: { [weak self, weak original] in
+            guard let self, let original, !self.userInitiatedDisconnects.contains(deviceId),
+                  self.connectedPeripherals[deviceId] == nil else { return }
+            self.cancelReconnect(deviceId: deviceId)
+            self.beginConnect(original)
+        }, closeConnection: { [weak self, weak original] in
+            guard let self, let original else { return }
+            self.centralManager.cancelPeripheralConnection(original)
+        })
+        otaTransfer = transfer
+        return transfer
+    }
+
     // MARK: - Write Characteristic (Multi-device)
     @discardableResult
     func writeCharacteristic(deviceId: String, serviceUUID: String, characteristicUUID: String, data: Data, withoutResponse: Bool = false) -> Bool {
+        guard !(otaTransfer?.holdsWriteLane == true && otaTransfer?.deviceID == deviceId) else {
+            logForDevice(deviceId, "OTA 升级占用写通道", type: .error)
+            return false
+        }
         guard let (peripheral, characteristic) = findCharacteristic(
             deviceId: deviceId, serviceUUID: serviceUUID, characteristicUUID: characteristicUUID
         ) else {
@@ -1014,6 +1044,7 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
             log("Disconnected from \(deviceId.prefix(8))...", type: .info)
             attemptReconnect(deviceId: deviceId, peripheral: peripheral)
         }
+        if otaTransfer?.deviceID == deviceId { otaTransfer?.disconnected() }
     }
 }
 
@@ -1074,6 +1105,10 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
               characteristicsMap["\(peripheral.identifier.uuidString):\(service.uuid.uuidString):\(characteristic.uuid.uuidString)"] === characteristic else { return }
         let readKey = "\(peripheral.identifier.uuidString):\(characteristic.service?.uuid.uuidString.uppercased() ?? ""):\(characteristic.uuid.uuidString.uppercased())"
         readTimers.removeValue(forKey: readKey)?.invalidate()
+        if otaTransfer?.deviceID == peripheral.identifier.uuidString {
+            otaTransfer?.received(characteristic.value ?? Data(), serviceUUID: service.uuid.uuidString,
+                                  characteristicUUID: characteristic.uuid.uuidString, error: error)
+        }
         if let error = error {
             log("Failed to update value: \(error.localizedDescription)", type: .error)
             return
@@ -1113,6 +1148,8 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
               let service = characteristic.service,
               characteristicsMap["\(peripheral.identifier.uuidString):\(service.uuid.uuidString):\(characteristic.uuid.uuidString)"] === characteristic else { return }
         let deviceId = peripheral.identifier.uuidString
+        if otaTransfer?.deviceID == deviceId,
+           otaTransfer?.wrote(serviceUUID: service.uuid.uuidString, characteristicUUID: characteristic.uuid.uuidString, error: error) == true { return }
         if let error = error {
             logForDevice(deviceId, "Write failed: \(error.localizedDescription)", type: .error)
         } else {
@@ -1133,6 +1170,9 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
               let service = characteristic.service,
               characteristicsMap["\(peripheral.identifier.uuidString):\(service.uuid.uuidString):\(characteristic.uuid.uuidString)"] === characteristic else { return }
         if let error = error {
+            if otaTransfer?.deviceID == peripheral.identifier.uuidString {
+                otaTransfer?.received(Data(), serviceUUID: service.uuid.uuidString, characteristicUUID: characteristic.uuid.uuidString, error: error)
+            }
             log("Notification update failed: \(error.localizedDescription)", type: .error)
         } else {
             let state = characteristic.isNotifying ? "enabled" : "disabled"

@@ -1,0 +1,296 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-10-20",
+  "status": "SOFTWARE_PASS_REAL_DEVICE_E5_PENDING",
+  "mode": "LOCAL_BIN_AND_MANIFEST_NO_BACKEND",
+  "protocol": "docs/ota-local-upgrade.md",
+  "source_baseline": "54b49e109501f512551712d36f88793865d26bd0",
+  "source_scope": "Local builds were executed before commit, with dirty Git metadata. Receipt source-file hashes and package SHA bind the evidence. The toolchain pin matches the platform actually used for the successful local builds.",
+  "firmware_source_sha256": {
+    "hardware/esp32/LightBLE/src/ota_server.cpp": "0510df4e463f732aefccdeba0f80a1ffce13b516635612d103b2f9fc5d2de756",
+    "hardware/esp32/LightBLE/include/ota_server.h": "9104b1e7bbd0a58c4e82f8113767e02646c16aa97a07954e69325c987bb6939b",
+    "hardware/esp32/LightBLE/include/fixture_config.h": "599ca05337d917fca808219ac5d4996f769aac58d74848314eb53dc6c64aa370",
+    "hardware/esp32/LightBLE/src/device_info.cpp": "32d0beac5c8c5fc6ed0e1bc2a43cf08035b937b5ae163c04cba227b3f03f89a9",
+    "hardware/esp32/LightBLE/src/main.cpp": "825ae422b5530f4efe4b21358943b60857a0993ac7352fd71eb3aadda36cdbb9",
+    "hardware/esp32/scripts/build-info.py": "f5d360b724e2aa9d0bb6beb74129fa749d5fee8c93a52a7e2f88a2b07de556b8",
+    "hardware/esp32/LightBLE/platformio.ini": "caada3693b611503750d8e78c4e28b27b53889f5a750f7a2c43868781d639a37"
+  },
+  "firmware": {
+    "verification": "SOFTWARE_BUILD_ONLY",
+    "hardware_tests": "NOT_RUN",
+    "firmware_images": [
+      {
+        "environment": "fixture_peripheral",
+        "bytes": 665568,
+        "sha256": "99a29fe6338f993bc2c5c9440bfa389a14e0f0af556cd41a77c918dca78eacfd",
+        "chip_id": 0,
+        "version": "1.0.0",
+        "project_name": "lightble-peripheral",
+        "build_metadata": {
+          "firmware_name": "LightBLE",
+          "target": "lightble-peripheral",
+          "version": "1.0.0",
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:16:26Z"
+        }
+      },
+      {
+        "environment": "fixture_peripheral_s3",
+        "bytes": 573792,
+        "sha256": "a988434c6b5a162db46b595b5c3725b1e63b15aaddbd85c3ecc181590702ca1d",
+        "chip_id": 9,
+        "version": "1.0.0",
+        "project_name": "lightble-peripheral",
+        "build_metadata": {
+          "firmware_name": "LightBLE",
+          "target": "lightble-peripheral",
+          "version": "1.0.0",
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:16:40Z"
+        }
+      },
+      {
+        "environment": "fixture_peripheral_ota",
+        "bytes": 665632,
+        "sha256": "2f1f485d6a99618895bd636a6e2149535d51e49ee8b4c5d3cfcd64fa374122b3",
+        "chip_id": 0,
+        "version": "1.0.1",
+        "project_name": "lightble-peripheral",
+        "build_metadata": {
+          "firmware_name": "LightBLE",
+          "target": "lightble-peripheral",
+          "version": "1.0.1",
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:17:24Z"
+        }
+      },
+      {
+        "environment": "fixture_peripheral_s3_ota",
+        "bytes": 573840,
+        "sha256": "8e691ae2c17b516f7a36108b9ccb5b4a5c271f931dd1b3b8cc4e6a0e67f34f4d",
+        "chip_id": 9,
+        "version": "1.0.1",
+        "project_name": "lightble-peripheral",
+        "build_metadata": {
+          "firmware_name": "LightBLE",
+          "target": "lightble-peripheral",
+          "version": "1.0.1",
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:17:39Z"
+        }
+      },
+      {
+        "environment": "fixture_observer",
+        "bytes": 627760,
+        "sha256": "283367b3d26ada4e3a5b85e430a0fe6883cc96a52c7b6c1d0a6e1bea654af41e",
+        "chip_id": 0,
+        "version": "1.0.0",
+        "project_name": "lightble-observer",
+        "build_metadata": {
+          "firmware_name": "LightBLE",
+          "target": "lightble-observer",
+          "version": "1.0.0",
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:16:55Z"
+        }
+      },
+      {
+        "environment": "fixture_observer_s3",
+        "bytes": 528000,
+        "sha256": "4f0e4d45ea423b3acf1fc9f2a3253760c575318d405018fc5626e9495f1424b4",
+        "chip_id": 9,
+        "version": "1.0.0",
+        "project_name": "lightble-observer",
+        "build_metadata": {
+          "firmware_name": "LightBLE",
+          "target": "lightble-observer",
+          "version": "1.0.0",
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:17:09Z"
+        }
+      }
+    ],
+    "host_command": "OTA_HOST_TEST_BUILT_IMAGES=1 OTA_HOST_SANITIZER=undefined python3 scripts/ota/test-firmware-host.py"
+  },
+  "local_packages": [
+    {
+      "directory": ".tmp/ota/2026-10-20/pinned/esp32-wroom-32/1.0.0",
+      "manifest": {
+        "format_version": 1,
+        "target": "lightble-peripheral",
+        "hardware": "esp32-wroom-32",
+        "firmware_version": "1.0.0",
+        "size": 665568,
+        "sha256": "99a29fe6338f993bc2c5c9440bfa389a14e0f0af556cd41a77c918dca78eacfd"
+      },
+      "local_image_integrity": "PASS"
+    },
+    {
+      "directory": ".tmp/ota/2026-10-20/pinned/esp32-s3/1.0.0",
+      "manifest": {
+        "format_version": 1,
+        "target": "lightble-peripheral",
+        "hardware": "esp32-s3",
+        "firmware_version": "1.0.0",
+        "size": 573792,
+        "sha256": "a988434c6b5a162db46b595b5c3725b1e63b15aaddbd85c3ecc181590702ca1d"
+      },
+      "local_image_integrity": "PASS"
+    },
+    {
+      "directory": ".tmp/ota/2026-10-20/pinned/esp32-wroom-32/1.0.1",
+      "manifest": {
+        "format_version": 1,
+        "target": "lightble-peripheral",
+        "hardware": "esp32-wroom-32",
+        "firmware_version": "1.0.1",
+        "size": 665632,
+        "sha256": "2f1f485d6a99618895bd636a6e2149535d51e49ee8b4c5d3cfcd64fa374122b3"
+      },
+      "local_image_integrity": "PASS"
+    },
+    {
+      "directory": ".tmp/ota/2026-10-20/pinned/esp32-s3/1.0.1",
+      "manifest": {
+        "format_version": 1,
+        "target": "lightble-peripheral",
+        "hardware": "esp32-s3",
+        "firmware_version": "1.0.1",
+        "size": 573840,
+        "sha256": "8e691ae2c17b516f7a36108b9ccb5b4a5c271f931dd1b3b8cc4e6a0e67f34f4d"
+      },
+      "local_image_integrity": "PASS"
+    }
+  ],
+  "software_checks": {
+    "firmware_actual_cpp_host_with_ubsan_and_built_images": {
+      "status": "PASS",
+      "tests": 54,
+      "command": "OTA_HOST_TEST_BUILT_IMAGES=1 OTA_HOST_SANITIZER=undefined python3 scripts/ota/test-firmware-host.py",
+      "log": ".tmp/ota-firmware-host-built-images-final.log",
+      "sanitizer_fail_closed": true
+    },
+    "package_corruption_and_provenance": {
+      "status": "PASS",
+      "tests": 9,
+      "command": "python3 -m unittest discover -s scripts/ota -p 'test_*.py'"
+    },
+    "apple_shared_core": {
+      "status": "PASS",
+      "tests": 43
+    },
+    "native_macos_spm": {
+      "status": "PASS",
+      "tests": 19
+    },
+    "native_macos_core": {
+      "status": "PASS",
+      "tests": 80
+    },
+    "native_ios_simulator_unit": {
+      "status": "PASS",
+      "tests": 32
+    },
+    "qt_all_tests": {
+      "status": "PASS",
+      "tests": 58
+    },
+    "avalonia_portable_ota_engine": {
+      "status": "PASS",
+      "tests": 20
+    },
+    "avalonia_windows_cross_build": {
+      "status": "PASS",
+      "warnings": 0,
+      "errors": 0
+    },
+    "all_desktop_contracts": {
+      "status": "PASS",
+      "tests": 198
+    },
+    "target_system": {
+      "status": "PASS",
+      "checks": 408,
+      "harness_tests": 108
+    },
+    "kotlin_android": {
+      "status": "PASS",
+      "unit_tests": 113,
+      "ota_tests_added": 13,
+      "assemble_debug": "PASS",
+      "log": ".tmp/ota-android-build-tests.log"
+    },
+    "flutter_analyze": {
+      "status": "PASS"
+    },
+    "flutter_all_tests": {
+      "status": "PASS",
+      "tests": 167
+    },
+    "uniapp_full_verify": {
+      "status": "PASS",
+      "unit_files": 30,
+      "static_gates": 15,
+      "log": ".tmp/ota-client-work/uniapp-verify.log"
+    },
+    "uniapp_build_h5": {
+      "status": "PASS"
+    },
+    "uniapp_build_app_resources": {
+      "status": "PASS"
+    },
+    "docs_build": {
+      "status": "PASS"
+    },
+    "device_verifier_cli_and_result_guards": {
+      "status": "PASS",
+      "tests": 11,
+      "hardware": "NOT_RUN"
+    },
+    "uniapp_ota_safety": {
+      "status": "PASS",
+      "tests": 8
+    },
+    "ota_target_integration": {
+      "status": "PASS",
+      "tests": 19
+    },
+    "firmware_pinned_platform_six_environments": {
+      "status": "PASS",
+      "platform": "espressif32@6.12.0",
+      "log": ".tmp/ota-firmware-pinned-build.log"
+    }
+  },
+  "hardware_validation": {
+    "status": "NOT_RUN",
+    "device": "WAITING_USER_CONNECT_REFLASHABLE_ESP32_OR_S3",
+    "scan_connect": "NOT_RUN",
+    "success_actual_boot_version": "NOT_RUN",
+    "abort": "NOT_RUN",
+    "bad_hash": "NOT_RUN",
+    "bad_size": "NOT_RUN",
+    "disconnect_retry": "NOT_RUN",
+    "power_loss_rollback": "NOT_RUN"
+  },
+  "known_boundaries": [
+    "Observer firmware does not expose OTA",
+    "UniApp iOS lacks a native file import bridge; official iOS uses SwiftUI",
+    "Android OPEN_DOCUMENT URI bridge has software tests but no current physical-device verification",
+    "Host stubs do not prove BLE radio, real Flash, boot health or power-loss rollback",
+    "SHA256 is integrity checking, not vendor authentication or Secure Boot"
+  ],
+  "store_preparation": {
+    "status": "BLOCKED_PENDING_REAL_DEVICE_E5_AND_REPACKAGING",
+    "old_packages": "2026-10-19 1.0.5/101 exports predate these fixes; do not submit as fixed binaries",
+    "store_upload": "NOT_RUN"
+  },
+  "toolchain": {
+    "platform": "espressif32@6.12.0",
+    "arduino": "2.0.17",
+    "esp_idf": "4.4.7",
+    "reason": "CI clean install resolved unpinned espressif32 to8.0.0/Arduino3.3.12, whose app descriptor/SHA APIs differ. Pin actual validated toolchain for reproducibility.",
+    "first_ci_failure_run": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39357630670",
+    "first_ci_failure_job": 118416008135
+  },
+  "software_source_commit": "e6e6e5d5caf725e53f33903b3b7d6c6b644d1abe"
+}

@@ -1,132 +1,131 @@
-//
-//  OtaContract.swift — OTA 契约纯逻辑（R-1/R-2 对齐 · Apple 双端共享）
-//
-//  契约事实源：contracts/target/ota-package.schema.json（manifest 六字段：format_version /
-//  target 枚举 / hardware / firmware_version SemVer / size / sha256）与固件 handleStart
-//  校验链（hardware/esp32/LightBLE/src/ota_server.cpp：missing_target / invalid_target /
-//  missing_target_version / invalid_sha256）；BLE STATUS 帧为
-//  {"type":"ota","status":"ready|error|success|aborted"}（notifyStatus）。
-//  决策记录：docs/specs/06_review/OTA_CONTRACT_R1_R2_DECISION.md（方案 A：App 对齐冻结契约）。
-//
-
 import Foundation
 import CryptoKit
+import CoreFoundation
 
-// MARK: - 状态帧分类（R-2）
-
+/// Only typed OTA frames are commands/events. Never infer success from arbitrary text,
+/// a firmware version, or words inside an error detail.
 public enum OtaDeviceEvent: Equatable {
     case ready
     case success
-    case ok
+    case ok // Kept for source compatibility; never produced by the frozen protocol.
     case error(String)
 }
 
 public enum OtaStatusClassifier {
-    /// 判定设备状态/版本回读帧；无关键词命中返回 nil（调用方静默忽略，如版本串）。
-    /// JSON 分支同样按**子串**匹配（旧实现整值精确匹配漏检 "failed"/"aborted" → 拖 30s 超时），
-    /// 固件 abort 通知纳入错误类。顺序：ready → success/ok → 错误类。
     public static func classify(_ data: Data) -> OtaDeviceEvent? {
-        let text = String(data: data, encoding: .utf8) ?? ""
-        if let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] {
-            let values = json.values.compactMap { $0 as? String }.map { $0.lowercased() }
-            if values.contains(where: { $0.contains("ready") }) { return .ready }
-            if values.contains(where: { $0.contains("success") }) { return .success }
-            if values.contains(where: { $0.contains("ok") }) { return .ok }
-            if values.contains(where: { $0.contains("error") || $0.contains("fail") || $0.contains("abort") }) {
-                return .error(text)
-            }
-            return nil
+        guard let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any],
+              json["type"] as? String == "ota", let status = json["status"] as? String else { return nil }
+        switch status {
+        case "ready": return .ready
+        case "success": return .success
+        case "error", "failed", "aborted":
+            return .error([json["code"] as? String, json["detail"] as? String, status].compactMap { $0 }.joined(separator: ": "))
+        default: return nil
         }
-        let lower = text.lowercased()
-        if lower.contains("ready") { return .ready }
-        if lower.contains("success") { return .success }
-        if lower.contains("ok") { return .ok }
-        if lower.contains("error") || lower.contains("fail") || lower.contains("abort") { return .error(text) }
-        return nil
     }
 }
-
-// MARK: - start 帧构造（R-1）
 
 public enum OtaStartPayload {
     public static let validTargets: Set<String> = ["lightble-peripheral", "lightble-observer"]
-
     public static func isValidTarget(_ s: String) -> Bool { validTargets.contains(s) }
-
-    /// 契约 start 帧：op/target/target_version/size/chunk_size/sha256；
-    /// manifest 缺项时省略对应键（不伪造枚举/版本，真固件以 missing_target 诚实拒绝）。
-    public static func build(manifestTarget: String?, manifestVersion: String?,
-                             fileSize: Int, chunkSize: Int, sha256: String) -> [String: Any] {
-        var p: [String: Any] = [
-            "op": "start",
-            "size": fileSize,
-            "chunk_size": chunkSize,
-            "sha256": sha256,
-        ]
-        if let t = manifestTarget, isValidTarget(t) { p["target"] = t }
-        if let v = manifestVersion, !v.isEmpty { p["target_version"] = v }
-        return p
+    public static func build(manifest: OtaManifestInfo, chunkSize: Int) -> [String: Any] {
+        ["op": "start", "target": manifest.target, "hardware": manifest.hardware,
+         "target_version": manifest.version, "size": manifest.size,
+         "chunk_size": chunkSize, "sha256": manifest.sha256]
     }
-
-    /// 日志用展示串（不含 sha256 全文）
     public static func display(_ p: [String: Any]) -> String {
-        ["op", "target", "target_version", "size", "chunk_size"]
-            .compactMap { k -> String? in p[k].map { "\(k)=\($0)" } }
-            .joined(separator: " ")
+        ["op", "target", "hardware", "target_version", "size", "chunk_size"]
+            .compactMap { k in p[k].map { "\(k)=\($0)" } }.joined(separator: " ")
     }
 }
 
-// MARK: - manifest sidecar 解析（契约六字段 · legacy "version" 兼容）
-
 public enum OtaManifestError: Error, Equatable {
+    case invalidFields
+    case invalidFormatVersion
     case invalidTarget(String)
+    case invalidHardware
     case invalidSemVer(key: String, value: String)
+    case invalidSize
+    case invalidHash
     case sizeMismatch(manifest: Int, actual: Int)
     case hashMismatch
+    case invalidFileSelection
+    case fileTooLarge
 }
 
 public struct OtaManifestInfo: Equatable {
-    public let target: String?
-    public let version: String?
-    public let ignoredKeys: [String]
-    public init(target: String?, version: String?, ignoredKeys: [String]) {
-        self.target = target
-        self.version = version
-        self.ignoredKeys = ignoredKeys
-    }
+    public let target: String
+    public let hardware: String
+    public let version: String
+    public let size: Int
+    public let sha256: String
 }
 
+/// Six mandatory fields, no legacy alias and no additional fields: exactly the package schema.
 public enum OtaManifest {
+    private static let keys: Set<String> = ["format_version", "target", "hardware", "firmware_version", "size", "sha256"]
     public static func isSemVer(_ v: String) -> Bool {
-        v.range(of: #"^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$"#, options: .regularExpression) != nil
+        guard let range = v.range(of: #"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$"#, options: .regularExpression) else { return false }
+        return range == v.startIndex..<v.endIndex
     }
-
     public static func sha256Hex(_ data: Data) -> String {
         SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
     }
-
-    private static let knownKeys = ["format_version", "target", "hardware", "firmware_version", "version", "size", "sha256"]
-
-    /// 校验顺序：target 枚举 → firmware_version(legacy version) SemVer → size 实测 → sha256 实测。
+    private static func integer(_ value: Any?) -> Int? {
+        guard let n = value as? NSNumber, CFGetTypeID(n) != CFBooleanGetTypeID(),
+              n.doubleValue.isFinite, n.doubleValue.rounded() == n.doubleValue,
+              n.doubleValue >= 0, n.doubleValue < Double(Int.max) else { return nil }
+        return n.intValue
+    }
     public static func parse(_ json: [String: Any], fileSize: Int, actualSha256: String) -> Result<OtaManifestInfo, OtaManifestError> {
-        var target: String?
-        if let t = json["target"] as? String {
-            guard OtaStartPayload.isValidTarget(t) else { return .failure(.invalidTarget(t)) }
-            target = t
+        guard Set(json.keys) == keys else { return .failure(.invalidFields) }
+        guard integer(json["format_version"]) == 1 else { return .failure(.invalidFormatVersion) }
+        let target = json["target"] as? String ?? ""
+        guard OtaStartPayload.isValidTarget(target) else { return .failure(.invalidTarget(target)) }
+        guard let hardware = json["hardware"] as? String, !hardware.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              hardware == hardware.trimmingCharacters(in: .whitespacesAndNewlines) else { return .failure(.invalidHardware) }
+        let version = json["firmware_version"] as? String ?? ""
+        guard isSemVer(version) else { return .failure(.invalidSemVer(key: "firmware_version", value: version)) }
+        guard let size = integer(json["size"]), size > 0 else { return .failure(.invalidSize) }
+        guard size == fileSize else { return .failure(.sizeMismatch(manifest: size, actual: fileSize)) }
+        guard let sha = json["sha256"] as? String, sha.count == 64,
+              sha.range(of: #"^[0-9a-f]{64}$"#, options: .regularExpression) != nil else { return .failure(.invalidHash) }
+        guard sha == actualSha256 else { return .failure(.hashMismatch) }
+        return .success(OtaManifestInfo(target: target, hardware: hardware, version: version, size: size, sha256: sha))
+    }
+}
+
+/// Both selected URLs receive their own security scope. iOS file selection does not grant
+/// access to a neighbouring manifest. Require the actual manifest.json from the same folder.
+public struct OtaLocalPackage {
+    // Current ESP32/S3 partition table and scripts/ota/package-firmware.py use 0x180000.
+    public static let maximumFirmwareSize = 0x180000
+    public let firmware: Data
+    public let manifest: OtaManifestInfo
+    public let firmwareURL: URL
+    public static func load(urls: [URL]) throws -> OtaLocalPackage {
+        guard urls.count == 2,
+              let bin = urls.first(where: { $0.pathExtension.lowercased() == "bin" }),
+              let manifestURL = urls.first(where: { $0.lastPathComponent == "manifest.json" }),
+              bin.deletingLastPathComponent().standardizedFileURL == manifestURL.deletingLastPathComponent().standardizedFileURL else {
+            throw OtaManifestError.invalidFileSelection
         }
-        var version: String?
-        let versionKey = (json["firmware_version"] as? String) != nil ? "firmware_version" : "version"
-        if let v = json[versionKey] as? String {
-            guard isSemVer(v) else { return .failure(.invalidSemVer(key: versionKey, value: v)) }
-            version = v
+        let scopes = urls.map { $0.startAccessingSecurityScopedResource() }
+        defer { for (url, granted) in zip(urls, scopes) where granted { url.stopAccessingSecurityScopedResource() } }
+        let firmware = try readBounded(bin, limit: maximumFirmwareSize)
+        let manifestData = try readBounded(manifestURL, limit: 64 * 1024)
+        guard let json = try JSONSerialization.jsonObject(with: manifestData) as? [String: Any] else { throw OtaManifestError.invalidFields }
+        let manifest = try OtaManifest.parse(json, fileSize: firmware.count, actualSha256: OtaManifest.sha256Hex(firmware)).get()
+        return OtaLocalPackage(firmware: firmware, manifest: manifest, firmwareURL: bin)
+    }
+    private static func readBounded(_ url: URL, limit: Int) throws -> Data {
+        let handle = try FileHandle(forReadingFrom: url)
+        defer { try? handle.close() }
+        var result = Data()
+        while let chunk = try handle.read(upToCount: min(64 * 1024, limit + 1 - result.count)), !chunk.isEmpty {
+            result.append(chunk)
+            guard result.count <= limit else { throw OtaManifestError.fileTooLarge }
         }
-        if let size = json["size"] as? Int, size != fileSize {
-            return .failure(.sizeMismatch(manifest: size, actual: fileSize))
-        }
-        if let sha = json["sha256"] as? String, sha.lowercased() != actualSha256 {
-            return .failure(.hashMismatch)
-        }
-        let ignored = json.keys.filter { !knownKeys.contains($0) }.sorted()
-        return .success(OtaManifestInfo(target: target, version: version, ignoredKeys: ignored))
+        return result
     }
 }

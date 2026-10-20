@@ -93,9 +93,14 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 - [x] 特征值写入
 - [x] 通知订阅
 - [x] 数据导出（设备信息 + 服务摘要 + 操作日志）
-- [x] 实验性 BLE OTA（文件选择、分包发送、进度展示）
+- [x] 本地固件 OTA 事务（严格 manifest、设备身份、CCCD/分包回执、真实重启后版本核验；端到端仍待真机 E5）
+
 - [x] 操作日志
 - [x] Material 3 设计
+
+OTA 通过系统多选文件界面同时选择 `.bin` 与 `manifest.json`，两者分别授予读取权限。Android 文档提供程序可能不公开父目录路径，因此以显式选中的文件名、六字段 manifest、实测 size/SHA256 确认固件对，而不猜测相邻文件权限。固件限当前 `0x180000` 分区大小，manifest 限 64 KiB。只支持提供匹配 OTA 和 system_info 服务的设备；App 不提供固件后台，也不能给任意 BLE 设备刷写。提交回执只表示 Flash 已完成，进度在真实断开、重连并读回目标运行版本前最多 99%。取消后显示客户端跟踪已停止、设备结果待核实；失败/取消会尽力 abort 并恢复原有通知状态。
+
+软件验证：`OtaEngineTest` 的 Fake 传输验证事务和取消竞态，不代替真实蓝牙、Flash、重启与回滚测试。
 
 ---
 

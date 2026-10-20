@@ -5,12 +5,18 @@ import unittest
 from types import SimpleNamespace
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from ota_protocol import SERVICE, CTRL, DATA, STATUS, OtaError, status_frame, update, validate_package
+from ota_protocol import SERVICE, CTRL, DATA, STATUS, INFO_SERVICE, INFO, OtaError, status_frame, update as real_update, validate_package
 from ota_dialog import capable
 from att_client import AttClient
 
 FIXTURE = json.loads((Path(__file__).resolve().parents[1] / 'ota-fixtures.json').read_text())
 FIRMWARE = bytes.fromhex(FIXTURE['firmwareHex'])
+
+
+async def update(client, *args, **kwargs):
+    native = getattr(client, 'native', client)
+    kwargs.setdefault('get_client', lambda: native.reboot_client)
+    return await real_update(client, *args, **kwargs)
 
 class ContractTests(unittest.TestCase):
     def test_shared_firmware_status_fixtures(self):
@@ -38,10 +44,18 @@ class Client:
         self.ready, self.success = ready, success
         self.writes, self.stops = [], 0
         self.data_effect = None
+        self.version = '1.0.0'
+        self.hardware = FIXTURE['manifest']['hardware']
+        self.reboot_client = None
+        self.reboot = True
+        self.reboot_version = FIXTURE['manifest']['firmware_version']
         self.services = [SimpleNamespace(uuid=SERVICE, characteristics=[
             SimpleNamespace(uuid=CTRL, service_uuid=SERVICE, properties=['write']),
             SimpleNamespace(uuid=DATA, service_uuid=SERVICE, properties=['write']),
-            SimpleNamespace(uuid=STATUS, service_uuid=SERVICE, properties=['notify'])])]
+            SimpleNamespace(uuid=STATUS, service_uuid=SERVICE, properties=['notify'])]),
+            SimpleNamespace(uuid=INFO_SERVICE, characteristics=[SimpleNamespace(uuid=INFO, service_uuid=INFO_SERVICE, properties=['read'])])]
+    async def read_gatt_char(self, characteristic):
+        return json.dumps({'type': 'system_info', 'target': 'lightble-peripheral', 'hardware': self.hardware, 'firmware_version': self.version}).encode()
     async def start_notify(self, uuid, callback): self.callback = callback
     async def stop_notify(self, uuid): self.stops += 1
     def emit(self, frame): self.callback(None, json.dumps(frame).encode())
@@ -53,7 +67,12 @@ class Client:
             return
         message = json.loads(data)
         if message['op'] == 'start' and self.ready: self.emit({'type': 'ota', 'status': 'ready', 'max_chunk': 20})
-        if message['op'] == 'commit' and self.success: self.emit({'type': 'ota', 'status': 'success', 'rebooting': True})
+        if message['op'] == 'commit' and self.success:
+            self.emit({'type': 'ota', 'status': 'success', 'rebooting': True})
+            if self.reboot:
+                self.is_connected = False
+                self.reboot_client = Client()
+                self.reboot_client.version = self.reboot_version
     def operations(self): return [json.loads(data)['op'] for uuid, data, _ in self.writes if uuid == CTRL]
 
 class TransactionTests(unittest.IsolatedAsyncioTestCase):
@@ -62,10 +81,10 @@ class TransactionTests(unittest.IsolatedAsyncioTestCase):
         result = await update(client, FIRMWARE, FIXTURE['manifest'], progress.append, timeout=5)
         self.assertEqual(client.operations(), ['start', 'commit'])
         start = json.loads(client.writes[0][1])
-        self.assertEqual(set(start), {'op', 'target', 'target_version', 'size', 'chunk_size', 'sha256'})
+        self.assertEqual(set(start), {'op', 'target', 'hardware', 'target_version', 'size', 'chunk_size', 'sha256'})
         self.assertEqual(b''.join(data for uuid, data, _ in client.writes if uuid == DATA), FIRMWARE)
         self.assertEqual(progress[-1], 100)
-        self.assertTrue(result['reboot_pending']); self.assertEqual(client.stops, 1)
+        self.assertFalse(result['reboot_pending']); self.assertTrue(result['verified']); self.assertEqual(client.stops, 1)
     async def test_data_mode_respects_the_discovered_write_without_response_capability(self):
         client = Client()
         client.services[0].characteristics[1].properties = ['write-without-response']
@@ -76,7 +95,7 @@ class TransactionTests(unittest.IsolatedAsyncioTestCase):
         native = Client()
         client = AttClient(native)
         result = await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=5)
-        self.assertTrue(result['reboot_pending'])
+        self.assertFalse(result['reboot_pending'])
         self.assertEqual(native.operations(), ['start', 'commit'])
         self.assertEqual(client.depth, 0)
         client.retire(notify=False, disconnect=False)
@@ -129,8 +148,27 @@ class TransactionTests(unittest.IsolatedAsyncioTestCase):
         client = RebootClient()
         progress = []
         result = await update(client, FIRMWARE, FIXTURE['manifest'], progress.append, timeout=5)
-        self.assertTrue(result['reboot_pending'])
+        self.assertFalse(result['reboot_pending'])
         self.assertEqual(order, ['start', 'ready', 'commit', 'success', 'disconnect'])
         self.assertEqual(client.operations(), ['start', 'commit'])
         self.assertEqual(progress[-1], 100)
         self.assertEqual(client.stops, 1)
+
+    async def test_success_without_real_reboot_never_reaches_100(self):
+        client = Client(); client.reboot = False; progress = []
+        with self.assertRaises(TimeoutError):
+            await update(client, FIRMWARE, FIXTURE['manifest'], progress.append, timeout=.01)
+        self.assertNotIn(100, progress)
+
+    async def test_reboot_old_version_rejected(self):
+        client = Client(); client.reboot_version = '1.0.0'; progress = []
+        with self.assertRaisesRegex(OtaError, 'OTA_VERSION_MISMATCH'):
+            await update(client, FIRMWARE, FIXTURE['manifest'], progress.append)
+        self.assertNotIn(100, progress)
+
+    async def test_hardware_or_same_version_fails_before_start(self):
+        for key, value in [('hardware', 'wrong-board'), ('version', FIXTURE['manifest']['firmware_version'])]:
+            client = Client(); setattr(client, key, value)
+            with self.assertRaises(OtaError):
+                await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None)
+            self.assertEqual(client.writes, [])

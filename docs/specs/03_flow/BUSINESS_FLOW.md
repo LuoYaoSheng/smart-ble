@@ -60,11 +60,11 @@
 
 ## 6. OTA 业务
 
-**正常**：检测到 OTA 服务（4fafc201-…-914d）→「固件更新」→选 .bin（微信 chooseMessageFile 限 .bin）→包校验（manifest 白名单 6 字段+SemVer+sha256 实测；无 manifest 跳过）→接管会话+禁重连→MTU 247→订阅 STATUS→CTRL 写 {op:'start',target,size,chunk_size:180,sha256}→等 ready 30s→DATA 按 MTU-3 分包 writeNoResponse（块间隔 20ms）→{op:'commit'} 等 success 30s→重连回读 firmware_version 比对→一致→成功 2s 自动关。
+**正常**：检测到匹配 OTA 服务 → 明确选择 .bin + manifest.json → 六字段、SemVer、实际 size/SHA256 校验 → 读取 INFO 核对 target/hardware/当前版本（拒绝同版）→ 接管会话 → 订阅 STATUS → 写 start（op/target/hardware/target_version/size/chunk_size/sha256）→ 等 ready → 按协商分包、间隔20ms发送 → commit → 等设备 success → 观察真实重启断开 → 重连重新发现 → 读 INFO target/hardware/实际 firmware_version → 全部一致才显示成功和100%。
 
-**异常**：六种包错误码（校验失败终止，不发起传输）；五种运行错误码；VERIFYING 版本不一致→OTA_VERSION_MISMATCH；任意时刻取消→{op:'abort'}→CANCELLED。
+**异常**：包错误不进入写事务；ready/commit/重启/回读超时、断线、固件拒绝、旧版本均失败；提交前取消尽力发送 abort 并清理，失败后整包重试。设备 success 不是最终客户端成功。
 
-**边界**：chunk 180B/20ms；OTA 窗口期禁自动重连（避免干扰传输）；ota-dialog 非受控组件。
+**边界**：DATA块取 ATT 可用负载、180B、设备 max_chunk 的最小值；传输阶段不自动抢占重连，提交成功后的验证阶段恢复重连。iOS/Mac 必须对两个文件分别取得授权。当前仍受真实设备 E5 发布门禁约束。完整错误码与协议见 [本地升级说明](../../ota-local-upgrade.md)。
 
 ## 7. 日志与脱敏业务（横切）
 

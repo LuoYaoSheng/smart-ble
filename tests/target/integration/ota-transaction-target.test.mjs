@@ -98,12 +98,13 @@ function makePlatform({ autoStatus = true, targetVersion = '1.2.0', readVersion 
   ];
 
   let platform;
-  platform = createFakePlatform({
+  const script = {
     services,
     readValue: Buffer.from(JSON.stringify({
       type: 'system_info',
+      target: 'lightble-peripheral',
       name: 'BLEToolkit-Server',
-      firmware_version: readVersion,
+      firmware_version: '1.1.0',
       hardware: 'esp32-s3',
     })),
     onWrite: autoStatus
@@ -114,13 +115,14 @@ function makePlatform({ autoStatus = true, targetVersion = '1.2.0', readVersion 
           const j = JSON.parse(text);
           if (sameUuid(cid, CHR_CTRL) && j.op === 'start') {
             setTimeout(
-              () => platform.emitValue(o.deviceId, OTA_SVC, CHR_STATUS, Buffer.from(JSON.stringify({ status: 'ready' }))),
+              () => platform.emitValue(o.deviceId, OTA_SVC, CHR_STATUS, Buffer.from(JSON.stringify({ type: 'ota', status: 'ready' }))),
               0,
             );
           }
           if (sameUuid(cid, CHR_CTRL) && j.op === 'commit') {
+            script.readValue = Buffer.from(JSON.stringify({ type: 'system_info', target: 'lightble-peripheral', hardware: 'esp32-s3', firmware_version: readVersion }));
             setTimeout(
-              () => platform.emitValue(o.deviceId, OTA_SVC, CHR_STATUS, Buffer.from(JSON.stringify({ status: 'success' }))),
+              () => { platform.emitValue(o.deviceId, OTA_SVC, CHR_STATUS, Buffer.from(JSON.stringify({ type: 'ota', status: 'success' }))); platform.emitConn(o.deviceId, false); },
               0,
             );
           }
@@ -129,7 +131,8 @@ function makePlatform({ autoStatus = true, targetVersion = '1.2.0', readVersion 
         }
       }
       : undefined,
-  });
+  };
+  platform = createFakePlatform(script);
   return platform;
 }
 
@@ -352,9 +355,9 @@ test('TEST-I-010 #14 commit failure / no success', async () => {
     async (ota) => {
       const p = ota.startOta(GOOD_PKG, () => {}, () => {}, () => {});
       await new Promise((r) => setTimeout(r, 10));
-      platform.emitValue('OTA1', OTA_SVC, CHR_STATUS, Buffer.from(JSON.stringify({ status: 'ready' })));
+      platform.emitValue('OTA1', OTA_SVC, CHR_STATUS, Buffer.from(JSON.stringify({ type: 'ota', status: 'ready' })));
       await new Promise((r) => setTimeout(r, 30));
-      platform.emitValue('OTA1', OTA_SVC, CHR_STATUS, Buffer.from(JSON.stringify({ status: 'error', message: 'commit failed' })));
+      platform.emitValue('OTA1', OTA_SVC, CHR_STATUS, Buffer.from(JSON.stringify({ type: 'ota', status: 'error', message: 'commit failed' })));
       return p;
     },
     { confirmTimeoutMs: 200, readyTimeoutMs: 200 },
@@ -372,7 +375,7 @@ test('TEST-I-010 cancel #16 abort + #17 cleanup', async () => {
     async (ota) => {
       const p = ota.startOta(GOOD_PKG, () => {}, () => {}, () => {});
       await new Promise((r) => setTimeout(r, 15));
-      platform.emitValue('OTA1', OTA_SVC, CHR_STATUS, Buffer.from(JSON.stringify({ status: 'ready' })));
+      platform.emitValue('OTA1', OTA_SVC, CHR_STATUS, Buffer.from(JSON.stringify({ type: 'ota', status: 'ready' })));
       await new Promise((r) => setTimeout(r, 5));
       await ota.cancelOta();
       await p.catch(() => {});

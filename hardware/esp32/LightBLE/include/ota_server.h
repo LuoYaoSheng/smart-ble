@@ -5,6 +5,10 @@
 #include <NimBLECharacteristic.h>
 #include <functional>
 #include <vector>
+#include <atomic>
+#include <mutex>
+#include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
 
 #ifndef FIRMWARE_VERSION
 #define FIRMWARE_VERSION "1.0.0"
@@ -42,6 +46,10 @@ struct OtaFaultFlags {
 class OtaServer {
 public:
     using SerialEventFn = std::function<void(const char* json)>;
+    OtaServer() = default;
+    ~OtaServer();
+    OtaServer(const OtaServer&) = delete;
+    OtaServer& operator=(const OtaServer&) = delete;
 
     void begin(
         NimBLECharacteristic* ctrl,
@@ -50,6 +58,7 @@ public:
         SerialEventFn serialEvent = nullptr
     );
 
+    // Session accessors and fault flags are loop-context only.
     OtaState state() const { return _state; }
     size_t expectedSize() const { return _expectedSize; }
     size_t receivedSize() const { return _receivedSize; }
@@ -81,14 +90,34 @@ private:
     bool _restartPending = false;
     unsigned long _restartAt = 0;
 
+    // All session/flash/hash state belongs to loop(). BLE callbacks only copy
+    // bounded packets into a FreeRTOS FIFO, never mutate session state.
+    struct InputEvent {
+        bool control;
+        uint16_t length;
+        uint8_t bytes[512];
+    };
+    QueueHandle_t _inputs = nullptr;
+    std::mutex _snapshotMutex;
+    std::string _controlSnapshot;
+    std::atomic<bool> _disconnected{false};
+    std::atomic<bool> _queueOverflow{false};
+    unsigned long _lastInputMs = 0;
+    bool _imageValidated = false;
+    static constexpr unsigned long kOtaTimeoutMs = 30000;
+    void enqueue(bool control, NimBLECharacteristic* characteristic);
+    void processControl(const InputEvent& event);
+    void processData(const InputEvent& event);
+    void fail(const char* code, const char* detail);
+    bool validateImage(const uint8_t* data, size_t length);
+
     // DEV-014（E5 phase-7 实证）：NimBLE 回调里做任何 flash 操作（begin 的多秒
     // 同步擦除 / write / end / abort）都会饿死 BLE 主机并触发设备复位——真机
     // 证据：op=start 后 ~800ms 链路监督超时 + uptime 归零，且与包大小无关。
     // 回调只做 RAM 级校验与排队，全部 flash 工作在 loop() 上下文执行。
     bool _beginPending = false;
     bool _commitPending = false;
-    bool _abortPending = false;
-    std::vector<uint8_t> _staging;          // DATA 分片暂存（loop 侧落盘）
+    std::vector<uint8_t> _staging;          // loop-owned DATA staging
     static constexpr size_t kOtaStagingCap = 32 * 1024;
     // DEV-014c：单次 loop 落盘批次上限。整环一次性 Update.write 的 flash
     // 编程临界区（32KB ≈ 350ms）会触发中断看门狗（TG0WDT 默认 300ms，
@@ -106,6 +135,7 @@ private:
         bool rebooting = false
     );
 
+    void refreshControlValue();
     void handleCtrlRead(NimBLECharacteristic* characteristic);
     void handleCtrlWrite(NimBLECharacteristic* characteristic);
     void handleDataWrite(NimBLECharacteristic* characteristic);

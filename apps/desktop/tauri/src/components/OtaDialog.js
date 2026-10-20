@@ -6,7 +6,7 @@
  *   → CTRL 写 {op:start,target,target_version,size,chunk_size,sha256} → 等 ready(30s)
  *   → DATA 分块带响应写(块间隔 20ms) → {op:commit} 等 success(30s)
  *   → 取消 {op:abort}。
- * 状态帧分类走共享 ota-contract.js（子串匹配，failed/aborted 不漏检）。
+ * 状态帧仅接受 type=ota 的 status 精确枚举，提交后重连读实际版本。
  * 契约事实源：contracts/target/ota-package.schema.json + 固件 ota_server.cpp；
  * 决策记录：docs/specs/06_review/OTA_CONTRACT_R1_R2_DECISION.md（方案 A）。
  */
@@ -19,6 +19,7 @@ class OtaDialog extends HTMLElement {
         this.manifestJson = null;   // 必需 manifest（契约六字段）
         this.manifestTarget = null;
         this.manifestVersion = null;
+        this.manifestHardware = null;
         this.chunkSize = 180;
         this._phase = 'idle';       // idle | waiting_ready | transferring | committing | done
         this._cancelled = false;
@@ -141,6 +142,7 @@ class OtaDialog extends HTMLElement {
         this.manifestJson = null;
         this.manifestTarget = null;
         this.manifestVersion = null;
+        this.manifestHardware = null;
         this._phase = 'idle';
         this._cancelled = false;
         this._clearWait();
@@ -166,6 +168,7 @@ class OtaDialog extends HTMLElement {
         this.fileSha256 = null;
         this.manifestTarget = null;
         this.manifestVersion = null;
+        this.manifestHardware = null;
         this.startBtn.disabled = true;
         if (!file.name.toLowerCase().endsWith('.bin')) { this._setStatus('请选择 .bin 格式的固件文件', 'error'); return; }
         this.fileNameEl.textContent = file.name;
@@ -194,6 +197,7 @@ class OtaDialog extends HTMLElement {
         this.manifestJson = null;
         this.manifestTarget = null;
         this.manifestVersion = null;
+        this.manifestHardware = null;
         this.startBtn.disabled = true;
         const reader = new FileReader();
         reader.onload = event => {
@@ -214,12 +218,14 @@ class OtaDialog extends HTMLElement {
     _validateManifest() {
         this.manifestTarget = null;
         this.manifestVersion = null;
+        this.manifestHardware = null;
         this.startBtn.disabled = true;
         if (!this.fileBuffer?.length || !this.fileSha256) { this._setStatus('请选择非空固件 .bin', ''); return false; }
         const result = window.SmartBLEOtaContract?.OtaManifest.validateRequired(this.manifestJson, this.fileBuffer.length, this.fileSha256);
         if (!result?.ok) { this._setStatus(`包校验失败（${result?.code || 'missing_contract'}）：${result?.message || 'OTA 契约未加载'}`, 'error'); return false; }
         this.manifestTarget = result.target;
         this.manifestVersion = result.version;
+        this.manifestHardware = result.hardware;
         this.startBtn.disabled = Boolean(this._run || this._cancelPromise);
         this._setStatus(`包校验通过：${result.target} · ${result.version} · ${this.fileBuffer.length} 字节`, 'success');
         return true;
@@ -234,6 +240,9 @@ class OtaDialog extends HTMLElement {
             writeRaw: (deviceId, serviceUuid, charUuid, data, withoutResponse) => call('write_raw', { deviceId, serviceUuid, charUuid, data, writeWithResponse: !withoutResponse }),
             notifyCharacteristic: (deviceId, serviceUuid, charUuid, notify) => call('notify_characteristic', { deviceId, serviceUuid, charUuid, notify }),
             disconnect: deviceId => call('disconnect', { deviceId }),
+            connect: deviceId => call('connect', { deviceId }),
+            discoverServices: deviceId => call('discover_services', { deviceId }),
+            readCharacteristic: (deviceId, serviceUuid, charUuid) => call('read_characteristic', { deviceId, serviceUuid, charUuid }),
             onCharacteristicValueChanged: callback => events('notification-received', event => { const p = event.payload || {}; callback({ deviceId: p.deviceId, serviceUuid: p.serviceUuid, characteristicUuid: p.charUuid, value: p.value }); }),
             onDeviceDisconnected: callback => events('device-disconnected', event => callback({ id: event.payload?.deviceId })),
         };
@@ -269,7 +278,7 @@ class OtaDialog extends HTMLElement {
             const waiter = this._pendingWait;
             this._pendingWait = null;
             this._clearWait();
-            waiter.resolve();
+            waiter.resolve(JSON.parse(text));
         }
     }
 
@@ -322,19 +331,25 @@ class OtaDialog extends HTMLElement {
             this._assertRun(run);
             if (subscription?.success !== true) throw new Error(subscription?.error || 'OTA 状态订阅未确认');
             run.subscribed = true;
+            const info = await this._readInfo(run);
+            if (info.hardware !== this.manifestHardware || info.target !== this.manifestTarget) throw new Error('固件目标或硬件型号与设备不符');
+            if (info.firmware_version === this.manifestVersion) throw new Error('设备已运行同版本固件');
+            this._assertRun(run);
             this._phase = 'waiting_ready';
             const ready = this._waitFor(run, 'ready'); // Arm before CTRL write; do not lose an early ready.
-            const payload = window.SmartBLEOtaContract.OtaStartPayload.build({ manifestTarget: this.manifestTarget, manifestVersion: this.manifestVersion, fileSize: run.bytes.length, chunkSize: this.chunkSize, sha256: this.fileSha256 });
+            const payload = window.SmartBLEOtaContract.OtaStartPayload.build({ manifestTarget: this.manifestTarget, manifestHardware: this.manifestHardware, manifestVersion: this.manifestVersion, fileSize: run.bytes.length, chunkSize: this.chunkSize, sha256: this.fileSha256 });
             run.started = true;
             await this._writeRun(run, this.charControlUuid, new TextEncoder().encode(JSON.stringify(payload)));
-            await ready;
+            const receipt = await ready;
+            if (receipt.max_chunk != null && (!Number.isInteger(receipt.max_chunk) || receipt.max_chunk < 1)) throw new Error('设备返回非法 max_chunk');
+            run.chunkSize = Math.min(this.chunkSize, receipt.max_chunk || this.chunkSize);
             this._assertRun(run);
             this._phase = 'transferring';
             for (let sent = 0; sent < run.bytes.length;) {
-                const end = Math.min(sent + this.chunkSize, run.bytes.length);
+                const end = Math.min(sent + run.chunkSize, run.bytes.length);
                 await this._writeRun(run, this.charDataUuid, run.bytes.slice(sent, end));
                 sent = end;
-                this._setProgress(Math.floor(sent * 100 / run.bytes.length));
+                this._setProgress(Math.min(99, Math.floor(sent * 100 / run.bytes.length)));
                 this._setStatus(`传输中：${sent} / ${run.bytes.length} 字节`);
                 if (sent < run.bytes.length) await this._sleep(20);
                 this._assertRun(run);
@@ -344,20 +359,69 @@ class OtaDialog extends HTMLElement {
             await this._writeRun(run, this.charControlUuid, new TextEncoder().encode(JSON.stringify({ op: 'commit' })));
             await success;
             this._assertRun(run);
+            this._phase = 'verifying';
+            this._setStatus('固件已提交，等待重启并核对实际版本');
+            await this._verifyVersion(run);
+            this._assertRun(run);
             this._phase = 'done';
             this._setProgress(100);
-            this._setStatus('设备确认升级成功，重启后请核验固件版本', 'success');
+            this._setStatus(`升级完成，实际固件版本已核验：${this.manifestVersion}`, 'success');
         } catch (error) {
             this._rejectWait(error);
             if (this._isCurrent(run)) {
                 this._phase = 'idle';
-                this._setStatus(run.successSeen ? '设备已报告成功，但提交写入响应未确认；请重连核验固件版本' : `OTA 失败：${error.message || error}`, 'error');
+                this._setStatus(run.successSeen ? `固件已提交，升级结果未确认：${error.message || error}；请重连核验实际版本` : `OTA 失败：${error.message || error}`, 'error');
+                if (run.started && !run.successSeen && !run.disconnected) {
+                    try { await run.api.writeRaw(run.deviceId, this.otaServiceUuid, this.charControlUuid, Array.from(new TextEncoder().encode('{"op":"abort"}')), false); } catch (_) {}
+                }
                 await this._disconnectRun(run); // Never resume a failed transaction on the old handles.
             }
         } finally {
             await this._cleanupRun(run);
             if (this._run === run) { this._run = null; this._restoreUi(); }
         }
+    }
+
+    async _readInfo(run) {
+        if (typeof run.api.readCharacteristic !== 'function') throw new Error('设备版本读取接口不可用');
+        const result = await run.api.readCharacteristic(run.deviceId, '4fafc201-1fb5-459e-8fcc-c5c9c331914b', 'beb5483e-36e1-4688-b7f5-ea07361b26a8');
+        this._assertRun(run);
+        if (result?.success !== true) throw new Error(result?.error || '读取设备版本失败');
+        const contract = window.SmartBLEOtaContract;
+        const info = JSON.parse(contract.bytesToUtf8(contract.hexToBytes(result.value)));
+        if (info?.type !== 'system_info' || !contract.OtaManifest.isSemVer(info.firmware_version)) throw new Error('设备未提供有效的运行固件信息');
+        return info;
+    }
+
+    async _verifyVersion(run) {
+        for (let elapsed = 0; !run.disconnected && elapsed < 30000; elapsed += 100) {
+            this._assertRun(run);
+            await this._sleep(100);
+        }
+        this._assertRun(run);
+        if (!run.disconnected) throw new Error('设备提交后未断开重启，不能确认升级完成');
+        await this._cleanupRun(run);
+        await this._sleep(1000);
+        let lastError;
+        for (let attempt = 0; attempt < 10; attempt++) {
+            this._assertRun(run);
+            try {
+                const connected = await run.api.connect(run.deviceId);
+                this._assertRun(run);
+                if (connected?.success !== true) throw new Error(connected?.error || '重连未确认');
+                run.disconnected = false;
+                if (typeof run.api.discoverServices === 'function') {
+                    const discovered = await run.api.discoverServices(run.deviceId);
+                    if (discovered?.success === false) throw new Error(discovered.error || '服务发现失败');
+                }
+                const info = await this._readInfo(run);
+                if (info.hardware !== this.manifestHardware || info.target !== this.manifestTarget) throw new Error('重连设备硬件不符');
+                if (info.firmware_version !== this.manifestVersion) throw new Error(`固件实际版本不符：${info.firmware_version || '未知'}`);
+                return;
+            } catch (error) { lastError = error; }
+            if (attempt < 9) await this._sleep(1000);
+        }
+        throw lastError || new Error('重启后版本核验超时');
     }
 
     async _disconnectRun(run) {

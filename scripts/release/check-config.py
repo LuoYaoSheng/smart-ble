@@ -54,6 +54,7 @@ for relative in ('apps/desktop/macos/SmartBLE-mac/Entitlements.plist', 'apps/flu
     require(data.get('com.apple.security.app-sandbox') is True, f'{relative}: missing sandbox')
     require(data.get('com.apple.security.device.bluetooth') is True, f'{relative}: missing Bluetooth entitlement')
     require(data.get('com.apple.security.device.camera') is True, f'{relative}: missing camera entitlement')
+    require(data.get('com.apple.security.files.user-selected.read-only') is True, f'{relative}: missing user-selected firmware file read entitlement')
 
 for relative in ('apps/android/app/build.gradle.kts', 'apps/flutter/android/app/build.gradle.kts'):
     text = (ROOT / relative).read_text(encoding='utf-8')

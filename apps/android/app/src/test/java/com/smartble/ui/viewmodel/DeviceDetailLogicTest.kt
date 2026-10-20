@@ -73,7 +73,7 @@ class DeviceDetailLogicTest {
     }
 
     @Test
-    fun `applyOtaStatusPayload marks success and emits success log`() {
+    fun `applyOtaStatusPayload flash receipt is not verified upgrade success`() {
         val current = OtaUiState(
             isInProgress = true,
             totalBytes = 1024,
@@ -87,12 +87,12 @@ class DeviceDetailLogicTest {
         )
 
         assertNotNull(transition)
-        assertTrue(transition!!.state.isCompleted)
-        assertEquals(false, transition.state.isInProgress)
-        assertEquals(100, transition.state.progressPercent)
-        assertEquals("OTA 成功，设备即将重启", transition.state.statusMessage)
-        assertEquals("OTA 成功，设备即将重启", transition.logMessage)
-        assertEquals(LogType.Success, transition.logType)
+        assertEquals(false, transition!!.state.isCompleted)
+        assertEquals(true, transition.state.isInProgress)
+        assertEquals(99, transition.state.progressPercent)
+        assertEquals("固件已提交，等待真实重启及运行版本验证", transition.state.statusMessage)
+        assertEquals("固件已提交，尚未确认运行版本", transition.logMessage)
+        assertEquals(LogType.Info, transition.logType)
     }
 
     @Test

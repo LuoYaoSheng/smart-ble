@@ -5,7 +5,7 @@
  * 纯核心：不 import ble-runtime（由 utils/ota_manager.js 注入 defaultRuntime）。
  */
 
-import { validateFirmwarePackage, ERROR_CODES, sha256Hex, toUint8Array } from './package-validator.js';
+import { validateFirmwarePackage, ERROR_CODES, toUint8Array } from './package-validator.js';
 import { parseFirmwarePackage } from './firmware-package.js';
 import { createLogger } from '../logger/log-redaction.js';
 
@@ -44,6 +44,7 @@ const DEFAULT_READY_TIMEOUT_MS = 30000;
 const DEFAULT_CHUNK_DELAY_MS = 20;
 const DEFAULT_MTU = 247;
 const DEFAULT_CHUNK_SIZE = 180;
+const SEMVER_RE = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
 
 export function createOtaRuntime(runtime = {}) {
   return {
@@ -51,6 +52,7 @@ export function createOtaRuntime(runtime = {}) {
     setMtu: runtime.setMtu,
     setNotifyEnabled: runtime.setNotifyEnabled,
     subscribe: runtime.subscribe,
+    subscribeConnectionState: runtime.subscribeConnectionState,
     writeValue: runtime.writeValue,
     readValue: runtime.readValue,
     closeDevice: runtime.closeDevice,
@@ -111,13 +113,13 @@ export function parseOtaStatusPayload(value) {
   }
 
   if (!payload || typeof payload !== 'object') return { kind: 'ignored' };
-  if (payload.type != null && payload.type !== 'ota') return { kind: 'ignored' };
+  if (payload.type !== 'ota') return { kind: 'ignored' };
 
   const status = String(payload.status || '').toLowerCase();
   if (status === 'success') return { kind: 'success', message: payload.message, raw: payload };
   if (status === 'ready') return { kind: 'ready', message: payload.message, raw: payload };
-  if (status === 'error' || status === 'failed' || status === 'failure') {
-    return { kind: 'failure', message: payload.message || payload.error || '设备报告 OTA 失败', raw: payload };
+  if (status === 'error' || status === 'failed' || status === 'failure' || status === 'aborted') {
+    return { kind: 'failure', message: payload.detail || payload.message || payload.error || '设备报告 OTA 失败', raw: payload };
   }
   if (status === 'progress' || status === 'accepted' || status === 'verified') {
     return { kind: 'progress', message: payload.message, raw: payload };
@@ -222,13 +224,11 @@ export class OtaManager {
     if (input instanceof ArrayBuffer || input instanceof Uint8Array || ArrayBuffer.isView(input)) {
       return {
         pkg: parseFirmwarePackage({ firmware: input, manifest: options.manifest }),
-        skipValidation: !options.manifest,
       };
     }
     if (input && typeof input === 'object') {
       return {
         pkg: parseFirmwarePackage(input),
-        skipValidation: Boolean(options.skipValidation),
       };
     }
     throw new Error('invalid OTA input');
@@ -243,6 +243,7 @@ export class OtaManager {
     }
 
     this.log(`OTA Status: ${parsed.kind}${parsed.message ? ` (${parsed.message})` : ''}`);
+    if (parsed.kind === 'success' && this._state === OTA_STATE.COMMITTING) this._flashCommitted = true;
 
     if (parsed.kind === 'progress' && this._progressCallback && parsed.raw?.percent != null) {
       const percent = Number(parsed.raw.percent);
@@ -254,6 +255,7 @@ export class OtaManager {
 
     if (parsed.kind === 'failure') {
       this.isTransmitting = false;
+      this._pendingFailure = Object.assign(new Error(parsed.message || '设备报告 OTA 失败'), { code: 'OTA_DEVICE_FAILED' });
       if (this._statusWait) {
         clearTimeout(this._statusTimer);
         this._statusTimer = null;
@@ -273,12 +275,14 @@ export class OtaManager {
       return;
     }
 
-    if (parsed.kind === 'ready' || parsed.kind === 'success') {
+    if ((parsed.kind === 'ready' && this._state === OTA_STATE.STARTING)
+      || (parsed.kind === 'success' && this._state === OTA_STATE.COMMITTING)) {
       this._pendingStatus = parsed;
     }
   }
 
   _waitForStatus(expectedKinds, timeoutMs, label) {
+    if (this._pendingFailure) return Promise.reject(this._pendingFailure);
     const expected = new Set(Array.isArray(expectedKinds) ? expectedKinds : [expectedKinds]);
     if (this._pendingStatus && expected.has(this._pendingStatus.kind)) {
       const pending = this._pendingStatus;
@@ -316,6 +320,16 @@ export class OtaManager {
 
   async setupStatusListener(onProgress) {
     this._progressCallback = onProgress;
+    this._connectionUnsubscribe?.();
+    this._connectionUnsubscribe = this.runtime.subscribeConnectionState?.((event) => {
+      if (event.deviceId !== this.deviceId || event.connectionState !== 'DISCONNECTED') return;
+      if (this._flashCommitted) this._rebootDisconnected = true;
+      else if (this.isTransmitting) {
+        this._pendingFailure = new Error('OTA 传输期间设备断开，升级结果未确认');
+        this.isTransmitting = false;
+        this._clearStatusWait(this._pendingFailure.message);
+      }
+    });
     this._statusUnsubscribe?.();
     const session = this.session;
     this._statusSession = session;
@@ -378,7 +392,7 @@ export class OtaManager {
   }
 
   _emitProgress(sent, total) {
-    const percentage = total > 0 ? Math.floor((sent / total) * 100) : 0;
+    const percentage = total > 0 ? Math.min(99, Math.floor((sent / total) * 100)) : 0;
     if (this._progressCallback) {
       this._progressCallback(sent, total, { phase: 'transfer' });
     }
@@ -397,45 +411,49 @@ export class OtaManager {
   }
 
   async _startTransaction(manifest, binary, options) {
-    const chunkSize = Number(manifest?.chunk_size) || options.chunkSize || DEFAULT_CHUNK_SIZE;
-    const sha256 = manifest?.sha256 || await sha256Hex(binary);
+    if (this._pendingFailure) throw this._pendingFailure;
+    if (this._cancelled || !this.isTransmitting) throw new Error('OTA Cancelled');
+    const requestedChunk = options.chunkSize ?? DEFAULT_CHUNK_SIZE;
+    if (!Number.isInteger(requestedChunk) || requestedChunk < 1) throw new Error('invalid chunk size');
+    const chunkSize = Math.min(DEFAULT_CHUNK_SIZE, requestedChunk, Math.max(1, (this.session?.mtu || 23) - 3));
+    this._chunkSize = chunkSize;
     const payload = {
       op: 'start',
-      target: manifest?.target || options.target || 'lightble-peripheral',
+      target: manifest.target,
+      hardware: manifest.hardware,
       size: binary.byteLength,
       chunk_size: chunkSize,
-      target_version: manifest?.firmware_version || options.targetVersion || '0.0.0',
-      sha256,
+      target_version: manifest.firmware_version,
+      sha256: manifest.sha256,
     };
     this._targetVersion = payload.target_version;
     this._setState(OTA_STATE.STARTING);
-    await this._writeCtrl(payload);
+    this._pendingStatus = null;
     this._started = true;
+    await this._writeCtrl(payload);
     this._emit('start_sent', { payload });
   }
 
   async _waitReady() {
     this._setState(OTA_STATE.STARTING);
-    await this._waitForStatus('ready', this.readyTimeoutMs, 'OTA ready timeout');
+    const ready = await this._waitForStatus('ready', this.readyTimeoutMs, 'OTA ready timeout');
+    const limit = ready.raw?.max_chunk;
+    if (limit != null && (!Number.isInteger(limit) || limit < 1)) throw new Error('invalid max_chunk');
+    this._chunkSize = Math.min(this._chunkSize, limit || this._chunkSize);
     this._setState(OTA_STATE.READY);
     this._emit('ready', {});
   }
 
-  async _transferData(binary, chunkSize, mtu) {
+  async _transferData(binary) {
     this._setState(OTA_STATE.TRANSFERRING);
-    const chunks = this.runtime.chunkForMtu
-      ? this.runtime.chunkForMtu(binary, mtu)
-      : (() => {
-        const bytes = toUint8Array(binary);
-        const chunkSize = Math.max(1, mtu - 3);
-        const out = [];
-        for (let offset = 0; offset < bytes.length; offset += chunkSize) {
-          out.push(bytes.slice(offset, Math.min(offset + chunkSize, bytes.length)));
-        }
-        return out;
-      })();
+    const chunks = [];
+    const bytes = toUint8Array(binary);
+    for (let offset = 0; offset < bytes.length; offset += this._chunkSize) {
+      chunks.push(bytes.slice(offset, Math.min(offset + this._chunkSize, bytes.length)));
+    }
 
     for (const chunk of chunks) {
+      if (this._pendingFailure) throw this._pendingFailure;
       if (this._cancelled || !this.isTransmitting) throw new Error('OTA Cancelled');
       const payload = chunk.byteOffset === 0 && chunk.byteLength === chunk.buffer.byteLength
         ? chunk.buffer
@@ -448,6 +466,7 @@ export class OtaManager {
   }
 
   async _commitAndWaitSuccess() {
+    this._pendingStatus = null;
     this._setState(OTA_STATE.COMMITTING);
     await this._writeCtrl({ op: 'commit' });
     this._emit('commit_sent', {});
@@ -455,10 +474,22 @@ export class OtaManager {
   }
 
   async _verifyFirmwareVersion(expectedVersion, options) {
-    if (options.skipVerify) return;
     this._setState(OTA_STATE.VERIFYING);
-    await this.runtime.closeDevice(this.deviceId, { owner: OTA_OWNER });
-    await this.runtime.connectDevice(this.deviceId, { owner: OTA_OWNER, discover: true });
+    for (let elapsed = 0; !this._rebootDisconnected && elapsed < this.confirmTimeoutMs; elapsed += 100) {
+      if (this._cancelled) throw new Error('OTA Cancelled');
+      const current = this.runtime.getSession(this.deviceId);
+      if (!current || current.dead || current.connectionState === 'DISCONNECTED') { this._rebootDisconnected = true; break; }
+      await this.delay(100);
+    }
+    if (!this._rebootDisconnected) throw Object.assign(new Error('设备提交后未断开重启，不能确认升级完成'), { code: 'OTA_REBOOT_TIMEOUT' });
+    await this.delay(1000);
+    let reconnectError;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      if (this._cancelled) throw new Error('OTA Cancelled');
+      try { await this.runtime.connectDevice(this.deviceId, { owner: OTA_OWNER, discover: true }); reconnectError = null; break; }
+      catch (error) { reconnectError = error; await this.delay(1000); }
+    }
+    if (reconnectError) throw reconnectError;
     const session = this.runtime.getSession(this.deviceId);
     if (!session) throw Object.assign(new Error('OTA reconnect failed'), { code: 'OTA_VERIFY_FAILED' });
 
@@ -475,6 +506,7 @@ export class OtaManager {
     } catch {
       throw Object.assign(new Error('OTA version read failed'), { code: 'OTA_VERIFY_FAILED' });
     }
+    if (info.type !== 'system_info' || info.hardware !== this._expectedHardware || info.target !== this._expectedTarget) throw new Error('OTA verification identity mismatch');
     const version = info.firmware_version;
     if (!version || version !== expectedVersion) {
       throw Object.assign(new Error('OTA_VERSION_MISMATCH'), { code: 'OTA_VERSION_MISMATCH' });
@@ -503,6 +535,8 @@ export class OtaManager {
     this._statusSession = null;
     this._statusUnsubscribe?.();
     this._statusUnsubscribe = null;
+    this._connectionUnsubscribe?.();
+    this._connectionUnsubscribe = null;
     this._progressCallback = null;
     this._started = false;
     this._pendingStatus = null;
@@ -513,13 +547,17 @@ export class OtaManager {
   }
 
   async cancelOta() {
-    if (this._cancelled) return { ok: false, cancelled: true };
+    const completion = this._completionPromise;
+    if (this._cancelled) {
+      if (completion) await completion;
+      return { ok: false, cancelled: true };
+    }
     this._cancelled = true;
     this.isTransmitting = false;
     this._clearStatusWait('OTA Cancelled');
 
-    if (this._started) {
-      this._writeCtrl({ op: 'abort' }).catch((error) => {
+    if (this._started && this._state !== OTA_STATE.VERIFYING) {
+      await this._writeCtrl({ op: 'abort' }).catch((error) => {
         this.log(`OTA abort failed: ${error?.message || error}`);
       });
     }
@@ -527,6 +565,7 @@ export class OtaManager {
     this._setState(OTA_STATE.CANCELLED);
     this._emit('cancelled', {});
     await this._cleanup();
+    if (completion) await completion;
     this._releaseOtaOwner();
     return { ok: false, cancelled: true };
   }
@@ -541,15 +580,22 @@ export class OtaManager {
       onSuccess = options.onSuccess;
     }
 
+    if (this.isTransmitting || this._completionPromise) return { ok: false, code: 'OTA_BUSY', error: new Error('OTA transfer already in progress') };
+    let finishTransaction;
+    this._completionPromise = new Promise(resolve => { finishTransaction = resolve; });
     let result = { ok: false };
     this._cancelled = false;
     this._started = false;
     this._targetVersion = null;
+    this._pendingFailure = null;
+    this._pendingStatus = null;
+    this._flashCommitted = false;
+    this._rebootDisconnected = false;
 
     try {
       if (this.isTransmitting) throw new Error('OTA transfer already in progress');
 
-      const { pkg, skipValidation } = this._resolveInput(input, options);
+      const { pkg } = this._resolveInput(input, options);
       const binary = toUint8Array(pkg.binary);
       if (!binary.byteLength) throw new Error('firmware file is empty');
 
@@ -560,29 +606,38 @@ export class OtaManager {
 
       this._acquireOtaOwner();
 
-      if (!skipValidation) {
-        await this._validatePackageOrThrow(pkg, options);
-      }
+      await this._validatePackageOrThrow(pkg, options);
 
       await this.requestMtu();
+      if (this._pendingFailure) throw this._pendingFailure;
       if (!this.isTransmitting || this._cancelled) throw new Error('OTA Cancelled');
 
       this._setState(OTA_STATE.SUBSCRIBING);
       await this.setupStatusListener(onProgress);
+      if (this._pendingFailure) throw this._pendingFailure;
       if (!this.isTransmitting || this._cancelled) throw new Error('OTA Cancelled');
 
-      const manifest = pkg.manifest || options.manifest || null;
-      const chunkSize = Number(manifest?.chunk_size) || options.chunkSize || DEFAULT_CHUNK_SIZE;
-      const mtu = this.session?.mtu || DEFAULT_MTU;
+      const manifest = pkg.manifest;
+      const infoRaw = await this.runtime.readValue(this.session, DEVICE_INFO_UUIDS.SERVICE, DEVICE_INFO_UUIDS.CHAR_CONTROL, options.verifyTimeoutMs || 5000);
+      if (this._pendingFailure) throw this._pendingFailure;
+      if (this._cancelled || !this.isTransmitting) throw new Error('OTA Cancelled');
+      const info = JSON.parse(decodeUtf8(infoRaw).trim());
+      if (info.type !== 'system_info' || !SEMVER_RE.test(info.firmware_version || '') || info.hardware !== manifest.hardware || info.target !== manifest.target) throw new Error('OTA target/hardware mismatch');
+      if (info.firmware_version === manifest.firmware_version) throw new Error('device already runs the selected firmware version');
+      this._expectedHardware = manifest.hardware;
+      this._expectedTarget = manifest.target;
 
       await this._startTransaction(manifest, binary, options);
       await this._waitReady();
-      await this._transferData(binary, chunkSize, mtu);
+      await this._transferData(binary);
 
+      if (this._pendingFailure) throw this._pendingFailure;
       if (!this.isTransmitting || this._cancelled) throw new Error('OTA Cancelled');
 
       await this._commitAndWaitSuccess();
       await this._verifyFirmwareVersion(this._targetVersion, options);
+      if (this._pendingFailure) throw this._pendingFailure;
+      if (!this.isTransmitting || this._cancelled) throw new Error('OTA Cancelled');
 
       this._setState(OTA_STATE.SUCCESS);
       this._emit('success', { target_version: this._targetVersion });
@@ -590,6 +645,9 @@ export class OtaManager {
       result = { ok: true, sentBytes: this.sentBytes, totalBytes: this.totalBytes, target_version: this._targetVersion };
       return result;
     } catch (error) {
+      if (this._started && !this._cancelled && this._state !== OTA_STATE.VERIFYING) {
+        try { await this._writeCtrl({ op: 'abort' }); } catch (_) {}
+      }
       const message = error?.message || String(error);
       this.log(`OTA Error: ${message}`);
       if (!this._cancelled) {
@@ -601,8 +659,8 @@ export class OtaManager {
       return result;
     } finally {
       this.isTransmitting = false;
-      await this._cleanup();
-      this._releaseOtaOwner();
+      try { await this._cleanup(); this._releaseOtaOwner(); }
+      finally { finishTransaction(); this._completionPromise = null; }
     }
   }
 }

@@ -97,7 +97,7 @@ enum CoreUnit {
         check("CU-60", { if case .error = aborted { return true }; return false }(), "aborted 帧判 error（固件 abort 通知同族漏检）")
         // 非 JSON 文本回退 + 无关键词静默忽略（如版本串回读）
         let textOk = OtaStatusClassifier.classify(Data("ok".utf8))
-        check("CU-61", { if case .ok = textOk { return true }; return false }(), "文本 ok")
+        check("CU-61", textOk == nil, "裸文本 ok 不是 OTA 成功帧")
         let version = OtaStatusClassifier.classify(Data("1.0.5".utf8))
         check("CU-62", version == nil, "版本串不误判")
     }
@@ -106,18 +106,17 @@ enum CoreUnit {
 
     private static func testOtaStartPayload() {
         let sha = String(repeating: "a", count: 64)
-        let p = OtaStartPayload.build(manifestTarget: "lightble-peripheral", manifestVersion: "1.2.3",
-                                      fileSize: 1024, chunkSize: 180, sha256: sha)
+        let manifest = try! OtaManifest.parse(["format_version": 1, "target": "lightble-peripheral",
+            "hardware": "esp32c3", "firmware_version": "1.2.3", "size": 1024, "sha256": sha],
+            fileSize: 1024, actualSha256: sha).get()
+        let p = OtaStartPayload.build(manifest: manifest, chunkSize: 180)
         check("CU-63", (p["target"] as? String) == "lightble-peripheral"
-              && (p["target_version"] as? String) == "1.2.3",
-              "start 帧含契约 target/target_version（R-1 · 旧实现发版本号且缺 target_version）")
+              && (p["target_version"] as? String) == "1.2.3", "start 含真实目标与固件版本")
         check("CU-64", (p["op"] as? String) == "start" && (p["size"] as? Int) == 1024
               && (p["chunk_size"] as? Int) == 180 && (p["sha256"] as? String) == sha
-              && p.count == 6, "六键齐全 op/target/target_version/size/chunk_size/sha256")
-        let bare = OtaStartPayload.build(manifestTarget: nil, manifestVersion: nil,
-                                         fileSize: 10, chunkSize: 20, sha256: "x")
-        check("CU-65", bare["target"] == nil && bare["target_version"] == nil,
-              "无 manifest 不伪造枚举（省略键 → 真固件 missing_target 诚实拒绝）")
+              && (p["hardware"] as? String) == "esp32c3" && p.count == 7, "七键齐全且硬件明确")
+        let empty = OtaManifest.parse([:], fileSize: 10, actualSha256: sha)
+        check("CU-65", empty == .failure(.invalidFields), "无完整 manifest 不能构造 start")
         check("CU-66", OtaStartPayload.isValidTarget("lightble-peripheral")
               && OtaStartPayload.isValidTarget("lightble-observer")
               && !OtaStartPayload.isValidTarget("1.2.3")

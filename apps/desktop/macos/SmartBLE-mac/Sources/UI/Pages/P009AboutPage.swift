@@ -34,7 +34,7 @@ final class P009AboutPage: NSViewController, PageProtocol {
         ("多设备", "⚠️", ""),
         ("长连接", "✅", "常驻形态（§4）"),
         ("自动重连", "✅", ""),
-        ("OTA", "✅", "现版 F025 BLOCKED 不变"),
+        ("OTA", "待验证", "尚未完成真实设备验证，暂不作为正式发布能力"),
     ]
 
     private let features = ["01 蓝牙扫描与筛选", "02 GATT 读写与监听", "03 多设备会话管理",

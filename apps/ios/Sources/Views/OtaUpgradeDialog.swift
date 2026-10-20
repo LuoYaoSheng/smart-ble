@@ -49,7 +49,7 @@ struct OtaUpgradeDialog: View {
             VStack(alignment: .leading, spacing: 20) {
                 // File Selection
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("选择固件文件 (.bin)")
+                    Text("同时选择 .bin 和 manifest.json（同一目录）")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
@@ -149,18 +149,17 @@ struct OtaUpgradeDialog: View {
         .background(otaPanelBackground)
         .cornerRadius(12)
         .shadow(radius: 10)
+        .onDisappear { otaManager.cancelOta() }
         .fileImporter(
             isPresented: $showingFilePicker,
             allowedContentTypes: [UTType.data],
-            allowsMultipleSelection: false
+            allowsMultipleSelection: true
         ) { result in
             switch result {
             case .success(let urls):
-                if let url = urls.first {
-                    otaManager.selectFile(url: url)
-                }
+                otaManager.selectFiles(urls: urls)
             case .failure(let error):
-                print("Failed to select file: \(error.localizedDescription)")
+                otaManager.state.errorMessage = "选择失败：\(error.localizedDescription)"
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.smartble.ui.screen
 
 import android.content.Intent
-import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,6 +23,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -99,13 +99,10 @@ fun DeviceDetailScreen(
         mutableStateOf(services.map { it.uuid }.toSet())
     }
 
-    val otaFilePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) {
-            queryDocumentMeta(context, uri)?.let { (displayName, size) ->
-                viewModel.selectOtaFile(uri, displayName, size)
-            } ?: Toast.makeText(context, "无法读取固件文件信息", Toast.LENGTH_SHORT).show()
-        }
+    val otaFilePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
+        if (uris.isNotEmpty()) viewModel.selectOtaFiles(uris)
     }
+    DisposableEffect(viewModel) { onDispose { viewModel.cancelOtaTransfer() } }
 
     val connected = connectionState == ConnectionState.Connected
     val connecting = connectionState == ConnectionState.Connecting
@@ -198,7 +195,7 @@ fun DeviceDetailScreen(
                 DsNote(
                     kind = DsNoteKind.Warn,
                     boldLead = "OTA 端到端链路 BLOCKED",
-                    text = "（固件侧暂未开放）：右上「固件更新」可演示完整流程，正式使用前需固件配合。",
+                    text = "OTA 尚未完成真实设备验证，暂不作为正式发布能力；仅支持匹配协议的设备。",
                 )
             }
 
@@ -250,7 +247,7 @@ fun DeviceDetailScreen(
                             Spacer(modifier = Modifier.height(12.dp))
                             OtaCard(
                                 state = otaState,
-                                onSelectFile = { otaFilePicker.launch(arrayOf("*/*")) },
+                                onSelectFile = { if (!otaState.isInProgress) otaFilePicker.launch(arrayOf("*/*")) },
                                 onStart = { viewModel.startOtaTransfer() },
                                 onCancel = { viewModel.cancelOtaTransfer() },
                             )
@@ -319,26 +316,7 @@ private fun stateWord(state: ConnectionState): String = when (state) {
     ConnectionState.Disconnected -> "未连接"
 }
 
-private fun queryDocumentMeta(context: android.content.Context, uri: android.net.Uri): Pair<String, Long>? {
-    context.contentResolver.query(
-        uri,
-        arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE),
-        null,
-        null,
-        null
-    )?.use { cursor ->
-        if (!cursor.moveToFirst()) return null
-        val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-        val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
-        val name = if (nameIndex >= 0) cursor.getString(nameIndex) else "firmware.bin"
-        val size = if (sizeIndex >= 0) cursor.getLong(sizeIndex) else 0L
-        return name to size
-    }
-    return null
-}
-
 /* ============ B7 op-state（components.css .op） ============ */
-
 private enum class OpMode { Loading, Warn, Err }
 
 @Composable
@@ -454,7 +432,7 @@ private fun OtaCard(
         }
         Row(modifier = Modifier.padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
             DsGhostButton(
-                label = "选择固件",
+                label = "选择 .bin 和 manifest.json",
                 onClick = onSelectFile,
                 modifier = Modifier.weight(1f),
             )

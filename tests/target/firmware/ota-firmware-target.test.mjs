@@ -23,6 +23,7 @@ function readFirmwareSources() {
 
 const GOOD_MANIFEST = {
   target: 'lightble-peripheral',
+    hardware: 'esp32-s3',
   firmware_version: '1.2.0',
 };
 const FIRMWARE = Buffer.from([1, 2, 3, 4, 5, 6]);
@@ -59,6 +60,7 @@ test('4 invalid hash 格式拒绝', () => {
   const sim = new OtaFirmwareSimulator();
   const r = sim.ctrlStart({
     target: 'lightble-peripheral',
+    hardware: 'esp32-s3',
     size: 6,
     chunk_size: 180,
     target_version: '1.0.0',
@@ -71,6 +73,7 @@ test('5 start 后 ready', () => {
   const sim = new OtaFirmwareSimulator();
   sim.ctrlStart({
     target: 'lightble-peripheral',
+    hardware: 'esp32-s3',
     size: 6,
     chunk_size: 180,
     target_version: '1.2.0',
@@ -94,6 +97,7 @@ test('7 progress 事件', () => {
   const sim = new OtaFirmwareSimulator();
   sim.ctrlStart({
     target: 'lightble-peripheral',
+    hardware: 'esp32-s3',
     size: 6,
     chunk_size: 180,
     target_version: '1.2.0',
@@ -107,6 +111,7 @@ test('8 overflow 拒绝', () => {
   const sim = new OtaFirmwareSimulator();
   sim.ctrlStart({
     target: 'lightble-peripheral',
+    hardware: 'esp32-s3',
     size: 2,
     chunk_size: 180,
     target_version: '1.2.0',
@@ -120,6 +125,7 @@ test('9 wrong size on commit', () => {
   const sim = new OtaFirmwareSimulator();
   sim.ctrlStart({
     target: 'lightble-peripheral',
+    hardware: 'esp32-s3',
     size: 6,
     chunk_size: 180,
     target_version: '1.2.0',
@@ -142,6 +148,7 @@ test('11 hash mismatch on commit', () => {
   const sim = new OtaFirmwareSimulator();
   sim.ctrlStart({
     target: 'lightble-peripheral',
+    hardware: 'esp32-s3',
     size: 6,
     chunk_size: 180,
     target_version: '1.2.0',
@@ -156,6 +163,7 @@ test('12 abort 清理', () => {
   const sim = new OtaFirmwareSimulator();
   sim.ctrlStart({
     target: 'lightble-peripheral',
+    hardware: 'esp32-s3',
     size: 6,
     chunk_size: 180,
     target_version: '1.2.0',
@@ -166,9 +174,11 @@ test('12 abort 清理', () => {
   assert.equal(sim.receivedSize, 0);
 });
 
-test('13 version update after success', () => {
+test('13 flash receipt does not change running version before reboot', () => {
   const sim = new OtaFirmwareSimulator();
   sim.runHappyPath(FIRMWARE, GOOD_MANIFEST);
+  assert.equal(sim.firmwareVersion, '1.0.0');
+  sim.reboot('1.2.0');
   assert.equal(sim.firmwareVersion, '1.2.0');
 });
 
@@ -195,6 +205,7 @@ test('Fake Client：fault wrongHash', () => {
   sim.faults.wrongHash = true;
   sim.ctrlStart({
     target: 'lightble-peripheral',
+    hardware: 'esp32-s3',
     size: FIRMWARE.length,
     chunk_size: 180,
     target_version: '1.2.0',
@@ -205,10 +216,11 @@ test('Fake Client：fault wrongHash', () => {
   assert.equal(r.ok, false);
 });
 
-test('固件源码：SHA256 commit 校验 + NVS 版本', () => {
+test('固件源码：SHA256 commit 校验 + 实际运行版本', () => {
   const src = readFirmwareSources();
   assert.match(src, /OTA_HASH_MISMATCH|sha256_mismatch|mbedtls_sha256/);
-  assert.match(src, /Preferences|fw_version|activeFirmwareVersion/);
+  assert.match(src, /activeFirmwareVersion/);
+  assert.doesNotMatch(src, /prefs\.putString|prefs\.getString/);
 });
 
 test('固件源码：串口 JSON ota 事件', () => {

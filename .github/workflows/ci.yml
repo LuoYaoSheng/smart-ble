@@ -187,6 +187,20 @@ jobs:
         working-directory: hardware/esp32/LightBLE
         run: pio run -e fixture_peripheral_s3 -e fixture_observer_s3 -e fixture_shid_sim_s3
 
+      - name: Build actual OTA target images and validate packages
+        run: |
+          pio run -d hardware/esp32/LightBLE -e fixture_peripheral_ota -e fixture_peripheral_s3_ota
+          python3 scripts/ota/package-firmware.py --firmware hardware/esp32/LightBLE/.pio/build/fixture_peripheral_ota/firmware.bin --hardware esp32-wroom-32 --version 1.0.1 --output-dir "$RUNNER_TEMP/ota-esp32-1.0.1"
+          python3 scripts/ota/package-firmware.py --verify "$RUNNER_TEMP/ota-esp32-1.0.1"
+          python3 scripts/ota/package-firmware.py --firmware hardware/esp32/LightBLE/.pio/build/fixture_peripheral_s3_ota/firmware.bin --hardware esp32-s3 --version 1.0.1 --output-dir "$RUNNER_TEMP/ota-s3-1.0.1"
+          python3 scripts/ota/package-firmware.py --verify "$RUNNER_TEMP/ota-s3-1.0.1"
+
+      - name: Execute actual OTA firmware state machine with built images
+        env:
+          OTA_HOST_TEST_BUILT_IMAGES: '1'
+          OTA_HOST_SANITIZER: undefined
+        run: python3 scripts/ota/test-firmware-host.py
+
   uniapp:
     name: UniApp (full verify-uniapp.sh + h5 build)
     runs-on: ubuntu-latest
@@ -251,6 +265,17 @@ jobs:
           node scripts/generate-privacy-policy.mjs --check
           python3 scripts/release/check-config.py
           python3 -m unittest discover -s scripts/release -p 'test_*.py'
+
+      - name: Local firmware package corruption and provenance tests
+        run: python3 -m unittest discover -s scripts/ota -p 'test_*.py'
+
+      - name: Setup .NET for portable OTA engine tests
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Execute actual Avalonia OTA engine without Windows UI
+        run: dotnet test tests/ota-dotnet/SmartBLE.Ota.Tests.csproj --nologo
 
       - name: Target contract suite (system layer)
         run: node scripts/verify-target.mjs --mode=system --format=json

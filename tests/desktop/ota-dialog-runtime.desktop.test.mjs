@@ -16,7 +16,12 @@ function fixture(lane, options = {}) {
   }
   let dialog;
   const notify = text => { for (const fn of [...listeners]) fn({ deviceId: 'device', serviceUuid: dialog.otaServiceUuid, characteristicUuid: dialog.charStatusUuid, value: [...new TextEncoder().encode(text)].map(byte => byte.toString(16).padStart(2, '0')).join(' ') }); };
+  let rebooted = false;
+  const hex = text => [...new TextEncoder().encode(text)].map(byte => byte.toString(16).padStart(2, '0')).join('');
   const api = {
+    connect: async () => { rebooted = true; return { success: true }; },
+    discoverServices: async () => ({ success: true }),
+    readCharacteristic: async () => ({ success: true, value: hex(JSON.stringify({ type: 'system_info', target: 'lightble-peripheral', hardware: options.wrongHardware ? 'different' : 'esp32s3', firmware_version: options.sameVersion || (rebooted && !options.wrongReadback) ? '1.0.5' : '1.0.4' })) }),
     notifyCharacteristic: async (_, __, ___, enabled) => enabled && options.subscriptionFails ? { success: false, error: 'subscribe failed' } : { success: true },
     onCharacteristicValueChanged: fn => { listeners.add(fn); return () => listeners.delete(fn); },
     onDeviceDisconnected: fn => { disconnects.add(fn); return () => disconnects.delete(fn); },
@@ -27,15 +32,15 @@ function fixture(lane, options = {}) {
       writes.push(entry);
       if (entry.op === 'start') {
         if (options.startAck) await options.startAck;
-        if (!options.noReady) notify('{"status":"ready"}');
+        if (!options.noReady) notify('{"type":"ota","status":"ready"}');
         if (options.startFails) return { success: false, error: 'start write failed' };
       }
       if (char === dialog.charDataUuid && options.dataAck) await options.dataAck;
       if (char === dialog.charDataUuid && options.dataFails) return { success: false, error: 'data write failed' };
       if (entry.op === 'commit') {
-        notify('{"status":"success","rebooting":true}');
+        notify('{"type":"ota","status":"success","rebooting":true}');
         if (options.commitFails) return { success: false, error: 'commit write failed' };
-        if (options.reboot) for (const fn of [...disconnects]) fn({ id: 'device' });
+        if (!options.noReboot) for (const fn of [...disconnects]) fn({ id: 'device' });
       }
       if (entry.op === 'abort' && options.abortFails) return { success: false, error: 'abort write failed' };
       return { success: true };
@@ -47,6 +52,9 @@ function fixture(lane, options = {}) {
       if (name === 'notify_characteristic') return api.notifyCharacteristic(args.deviceId, args.serviceUuid, args.charUuid, args.notify);
       if (name === 'write_raw') return api.writeRaw(args.deviceId, args.serviceUuid, args.charUuid, args.data, !args.writeWithResponse);
       if (name === 'disconnect') return api.disconnect(args.deviceId);
+      if (name === 'connect') return api.connect(args.deviceId);
+      if (name === 'discover_services') return api.discoverServices(args.deviceId);
+      if (name === 'read_characteristic') return api.readCharacteristic(args.deviceId);
       throw new Error(`unexpected command ${name}`);
     } }, event: { listen: async (name, callback) => {
       if (name === 'notification-received') return api.onCharacteristicValueChanged(data => callback({ payload: { deviceId: data.deviceId, serviceUuid: data.serviceUuid, charUuid: data.characteristicUuid, value: data.value } }));
@@ -86,7 +94,7 @@ for (const lane of lanes) {
     const run = fixture(lane, { reboot: true }); await run.dialog._startOta();
     assert.deepEqual(run.writes.map(entry => entry.op || 'DATA'), ['start', 'DATA', 'DATA', 'commit']);
     assert.ok(run.writes.every(entry => entry.withoutResponse === false));
-    assert.equal(run.dialog._phase, 'done'); assert.match(run.dialog.statusText.textContent, /设备确认升级成功/);
+    assert.equal(run.dialog._phase, 'done'); assert.match(run.dialog.statusText.textContent, /实际固件版本已核验/);
     assert.equal(run.listeners.size, 0); assert.equal(run.waits.size, 0);
   });
   test(`${lane} failed START/DATA/COMMIT acknowledgements terminate instead of reporting success`, async () => {
@@ -94,7 +102,7 @@ for (const lane of lanes) {
       const run = fixture(lane, { [option]: true }); await run.dialog._startOta();
       assert.equal(run.dialog._phase, 'idle'); assert.equal(run.listeners.size, 0);
       if (option !== 'commitFails') assert.equal(run.writes.some(entry => entry.op === 'commit'), false);
-      else assert.match(run.dialog.statusText.textContent, /响应未确认/);
+      else assert.match(run.dialog.statusText.textContent, /结果未确认/);
     }
   });
   test(`${lane} disconnect while waiting cannot be mistaken for firmware reboot success`, async () => {
@@ -107,7 +115,7 @@ for (const lane of lanes) {
     const run = fixture(lane, { noReady: true }); const pending = run.dialog._startOta(); await flush();
     assert.equal(run.waits.size, 1); [...run.waits.values()][0](); await pending;
     assert.match(run.dialog.statusText.textContent, /超时/); assert.equal(run.listeners.size, 0);
-    run.notify('{"status":"ready"}'); assert.equal(run.writes.length, 1);
+    run.notify('{"type":"ota","status":"ready"}'); assert.equal(run.writes.filter(entry => !entry.op).length, 0);
   });
   test(`${lane} cancellation rejects the old waiter; stale READY cannot restart it`, async () => {
     const run = fixture(lane, { noReady: true }); const pending = run.dialog._startOta(); await flush();
@@ -121,6 +129,17 @@ for (const lane of lanes) {
     await run.dialog._cancel(); await pending;
     assert.match(run.dialog.statusText.textContent, /取消未确认/); assert.equal(run.dialog.overlay.style.display, 'flex');
     assert.equal(run.dialog.statusText.textContent.includes('已发送'), false);
+  });
+  test(`${lane} preflight hardware and same-version rejection have no START`, async () => {
+    for (const option of ['wrongHardware', 'sameVersion']) {
+      const run = fixture(lane, { [option]: true }); await run.dialog._startOta();
+      assert.equal(run.writes.length, 0); assert.equal(run.dialog._phase, 'idle');
+    }
+  });
+  test(`${lane} success receipt with wrong actual version never reports 100% completion`, async () => {
+    const run = fixture(lane, { wrongReadback: true }); await run.dialog._startOta();
+    assert.equal(run.dialog._phase, 'idle'); assert.match(run.dialog.statusText.textContent, /实际版本不符/);
+    assert.notEqual(run.dialog.progressFill.style.width, '100%');
   });
   test(`${lane} changing firmware cannot re-enable a rejected manifest`, async () => {
     const run = fixture(lane); run.dialog.manifestJson.sha256 = 'b'.repeat(64);
@@ -153,3 +172,13 @@ test('desktop OTA implementation and strict manifest contract are identical acro
     assert.equal(sources[0], sources[1]); assert.equal(sources[1], sources[2]);
   }
 });
+
+for (const lane of lanes) {
+  test(`${lane} success receipt without a device reboot disconnect cannot verify completion`, async () => {
+    const run = fixture(lane, { noReboot: true });
+    await run.dialog._startOta();
+    assert.equal(run.dialog._phase, 'idle');
+    assert.match(run.dialog.statusText.textContent, /未断开重启/);
+    assert.notEqual(run.dialog.progressFill.style.width, '100%');
+  });
+}

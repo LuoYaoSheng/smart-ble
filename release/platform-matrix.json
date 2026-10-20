@@ -11,7 +11,7 @@
     "tencent-myapp",
     "desktop-distribution"
   ],
-  "status": "CURRENT_NAME_PACKAGES_BUILT_HARDWARE_AND_CHANNEL_GATES_OPEN",
+  "status": "OTA_SOURCE_UPDATED_HARDWARE_VERIFICATION_AND_REPACKAGING_REQUIRED",
   "rule": "Every implementation requires current-source build, functional and hardware evidence. Candidate packages and static checks are not store-ready releases.",
   "implementations": [
     {
@@ -878,7 +878,7 @@
       "privacy_manifest": true,
       "path": ".tmp/release-delivery/2026-10-19/apple/macos.xcarchive"
     },
-    "store_export": "SIGNED_EXPORTS_VERIFIED_CURRENT_NAME",
+    "store_export": "HISTORICAL_SIGNED_EXPORTS_PRE_OTA_FIX_REBUILD_REQUIRED",
     "store_upload": "NOT_RUN",
     "signed_exports": {
       "ios": ".tmp/release-delivery/2026-10-19/apple/蓝析BLE工具箱-1.0.5-ios-原生-AppStore.ipa",
@@ -931,6 +931,31 @@
     "artifact_count": 39,
     "manifest": "release/package-rebuild-2026-10-19.json",
     "verification": "ALL_DELIVERED_FILE_HASHES_NAMES_AND_NATIVE_ARCHITECTURES_PASS",
-    "store_submission": "NOT_RUN"
+    "store_submission": "NOT_RUN",
+    "current_source_eligible": false,
+    "rebuild_reason": "2026-10-20 OTA source/metadata changed; 2026-10-19 packages remain historical exports and must not be presented as containing OTA fixes."
+  },
+  "ota_completion": {
+    "date": "2026-10-20",
+    "mode": "LOCAL_FIRMWARE_PACKAGE_NO_BACKEND",
+    "verification_report": "release/ota-verification-2026-10-20.json",
+    "hardware": "NOT_RUN",
+    "release_ready": false,
+    "uniapp_ios_file_import": "UNSUPPORTED_USE_NATIVE_SWIFTUI",
+    "observer_ota": "UNSUPPORTED_SCAN_ONLY",
+    "kotlin_android_ota": "SOFTWARE_IMPLEMENTED_113_UNIT_TESTS_PASS_HARDWARE_NOT_RUN",
+    "software": "PASS_ALL_TEN_IMPLEMENTATION_FAMILIES",
+    "supported_ota_clients": [
+      "uniapp-android",
+      "flutter",
+      "kotlin-android",
+      "swiftui-ios",
+      "appkit-macos",
+      "electron",
+      "tauri",
+      "wails",
+      "avalonia",
+      "qt"
+    ]
   }
 }

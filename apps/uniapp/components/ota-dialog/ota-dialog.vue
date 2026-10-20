@@ -8,15 +8,17 @@
       <!-- P-03 预警（PATTERN §75 / N-MAC·F-MAC 同款逐字） -->
       <view class="ota-warn">
         <AppIcon name="warn" :size="26" tone="warningDeep" />
-        <text class="ota-warn-text">端到端升级链路当前 BLOCKED（固件侧暂未开放），流程可演示，正式使用前需固件配合。</text>
+        <text class="ota-warn-text">仅适用于支持本项目 OTA 协议的设备。请使用匹配硬件的固件和 manifest，升级时保持连接及供电。</text>
       </view>
 
       <view class="ota-body">
         <view v-if="!isTransmitting" class="ota-prompt">
-          <text class="ota-desc">发现 OTA 升级服务。选择固件 (.bin) 后开始传输；只有设备返回确认状态后才会显示升级成功。</text>
+          <text class="ota-desc">选择固件 (.bin) 和对应 manifest，校验通过后开始传输；重启并核验实际版本后显示升级成功。</text>
           
           <button class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="selectFile">选择文件</button>
           <text v-if="fileName" class="ota-filename">已选择: {{fileName}}</text>
+          <button class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="selectManifest">选择 manifest</button>
+          <text v-if="manifestName" class="ota-filename">manifest: {{manifestName}}</text>
         </view>
         
         <view v-else class="ota-progress-container">
@@ -30,16 +32,18 @@
 
       <view class="ota-footer">
         <button class="ble-btn ble-btn--ghost ble-btn--lg ble-btn--block" :class="{ 'ble-btn--busy': isTransmitting }" @click="cancel">取消</button>
-        <button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': !fileBuffer, 'ble-btn--busy': isTransmitting }" @click="startOta" :disabled="!fileBuffer || isTransmitting">开始升级</button>
+        <button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': !packageReady, 'ble-btn--busy': isTransmitting }" @click="startOta" :disabled="!packageReady || isTransmitting">开始升级</button>
       </view>
     </view>
   </view>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onBeforeUnmount } from 'vue';
 import { OtaManager } from '../../utils/ota_manager.js';
 import AppIcon from '../ui/AppIcon.vue';
+import { chooseFirmwareFile } from '../../services/ota/firmware-file-picker.js';
+import { validateFirmwarePackage } from '../../services/ota/package-validator.js';
 
 const props = defineProps({
   visible: {
@@ -56,25 +60,37 @@ const emit = defineEmits(['close']);
 
 const fileName = ref('');
 const fileBuffer = ref(null);
+const manifestJson = ref(null);
+const manifestName = ref('');
+const packageReady = ref(false);
+let revision = 0;
 const isTransmitting = ref(false);
 const sentBytes = ref(0);
 const totalBytes = ref(0);
 const statusText = ref('');
 const statusType = ref('info'); // info, success, error
 let manager = null;
+let cleanup = Promise.resolve();
 
 const progressPercent = computed(() => {
   if (totalBytes.value === 0) return 0;
-  return Math.floor((sentBytes.value / totalBytes.value) * 100);
+  return statusType.value === 'success' && !isTransmitting.value ? 100 : Math.min(99, Math.floor((sentBytes.value / totalBytes.value) * 100));
 });
 
 watch(() => props.visible, (newVal) => {
-  if (newVal) {
-    reset();
+  if (newVal) reset();
+  else if (manager) {
+    revision++;
+    const previous = manager; manager = null;
+    cleanup = cleanup.then(() => previous.cancel()).catch(() => {});
   }
 });
 
 const reset = () => {
+  revision++;
+  manifestJson.value = null;
+  manifestName.value = '';
+  packageReady.value = false;
   fileName.value = '';
   fileBuffer.value = null;
   isTransmitting.value = false;
@@ -83,41 +99,47 @@ const reset = () => {
   statusText.value = '';
   statusType.value = 'info';
   if (manager) {
-    manager.cancel();
-    manager = null;
+    const previous = manager; manager = null;
+    cleanup = cleanup.then(() => previous.cancel()).catch(() => {});
   }
 };
 
-const selectFile = () => {
-  uni.chooseFile({
-    count: 1,
-    extension: ['.bin'],
-    success: (res) => {
-      const file = res.tempFiles[0];
-      fileName.value = file.name;
-      readFile(res.tempFilePaths[0]);
-    }
-  });
+const validateSelection = async (current) => {
+  packageReady.value = false;
+  if (!fileBuffer.value || !manifestJson.value) { statusText.value = '请选择固件和对应 manifest'; statusType.value = 'info'; return; }
+  const result = await validateFirmwarePackage({ binary: fileBuffer.value, manifest: manifestJson.value });
+  if (current !== revision) return;
+  packageReady.value = result.valid;
+  statusText.value = result.valid ? '包校验通过，可开始升级' : `包校验失败：${result.errors[0]?.message || '无效固件'}`;
+  statusType.value = result.valid ? 'info' : 'error';
 };
-
-const readFile = (path) => {
-  uni.getFileSystemManager().readFile({
-    filePath: path,
-    success: (res) => {
-      fileBuffer.value = res.data;
-      statusText.value = '文件加载成功，可开始升级';
-      statusType.value = 'success';
-    },
-    fail: (err) => {
-      statusText.value = '文件读取失败';
-      statusType.value = 'error';
-    }
-  });
+const selectPackageFile = async (extension) => {
+  if (isTransmitting.value) return;
+  const current = ++revision;
+  packageReady.value = false;
+  try {
+    const selected = await chooseFirmwareFile(extension);
+    if (current !== revision) return;
+    if (!selected) { await validateSelection(current); return; }
+    if (extension === '.bin') { fileBuffer.value = selected.data; fileName.value = selected.name; }
+    else { manifestJson.value = JSON.parse(selected.data); manifestName.value = selected.name; }
+    await validateSelection(current);
+  } catch (error) {
+    if (current !== revision) return;
+    if (extension === '.json') manifestJson.value = null;
+    else fileBuffer.value = null;
+    statusText.value = error.message || '文件读取失败'; statusType.value = 'error';
+  }
 };
+const selectFile = () => selectPackageFile('.bin');
+const selectManifest = () => selectPackageFile('.json');
 
-const startOta = () => {
-  if (!fileBuffer.value) return;
-  
+const startOta = async () => {
+  if (!packageReady.value || isTransmitting.value) return;
+  const current = revision;
+  isTransmitting.value = true;
+  await cleanup;
+  if (current !== revision) return;
   manager = new OtaManager(props.deviceId, (type, msg) => {
     console.log(`[${type}] ${msg}`);
   });
@@ -127,8 +149,9 @@ const startOta = () => {
   statusType.value = 'info';
 
   manager.startOta(
-    fileBuffer.value,
+    { binary: fileBuffer.value, manifest: manifestJson.value },
     (sent, total, meta) => {
+      if (current !== revision) return;
       sentBytes.value = sent;
       totalBytes.value = total;
       if (meta?.phase === 'confirm') {
@@ -140,27 +163,33 @@ const startOta = () => {
       }
     },
     (errMsg) => {
+      if (current !== revision) return;
       isTransmitting.value = false;
       statusText.value = `升级失败: ${errMsg}`;
       statusType.value = 'error';
     },
     () => {
+      if (current !== revision) return;
       isTransmitting.value = false;
-      statusText.value = '设备已确认升级成功';
+      statusText.value = '升级完成，实际固件版本已核验';
       statusType.value = 'success';
       setTimeout(() => {
-        emit('close');
+        if (current === revision) emit('close');
       }, 2000);
     }
   );
 };
 
 const cancel = () => {
+  revision++;
   if (manager) {
-    manager.cancel();
+    const previous = manager; manager = null;
+    cleanup = cleanup.then(() => previous.cancel()).catch(() => {});
   }
   emit('close');
 };
+watch(() => props.deviceId, () => reset());
+onBeforeUnmount(() => { revision++; manager?.cancel(); });
 </script>
 
 <style scoped>

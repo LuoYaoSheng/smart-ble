@@ -1,5 +1,5 @@
 {
-  "status": "SIGNED_EXPORTS_VERIFIED_UPLOAD_NOT_RUN",
+  "status": "HISTORICAL_SIGNED_EXPORTS_PRE_OTA_FIX_REBUILD_REQUIRED",
   "display_name": "蓝析BLE工具箱",
   "team_id": "72MZZQB893",
   "application_id": "com.i2kai.open.smartble",
@@ -73,5 +73,11 @@
     ]
   },
   "archive_signing_note": "Fresh Xcode Release archives were signed locally with the selected team Apple Distribution identity and existing App Store profiles before Xcode app-store-connect export; a development identity from another team was not used.",
-  "source_scope": "Application and shared-core trees match source_commit. iOS resource fixes were built from the worktree before that snapshot was committed; unrelated Windows/Linux packages retain their own CI source commit."
+  "source_scope": "Application and shared-core trees match source_commit. iOS resource fixes were built from the worktree before that snapshot was committed; unrelated Windows/Linux packages retain their own CI source commit.",
+  "current_source_eligibility": {
+    "date": "2026-10-20",
+    "matches_current_ota_source": false,
+    "rebuild_required": true,
+    "reason": "These verified 2026-10-19 exports predate OTA transaction/firmware fixes. Preserve them as historical evidence; do not submit as the fixed application."
+  }
 }

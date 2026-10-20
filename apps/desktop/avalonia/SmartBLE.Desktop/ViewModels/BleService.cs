@@ -382,7 +382,7 @@ public class BleService
         _ = RecoverAsync(session);
     }
 
-    public async Task<bool> ConnectAsync(string deviceId)
+    public async Task<bool> ConnectAsync(string deviceId, CancellationToken cancellationToken = default)
     {
         if (!ulong.TryParse(deviceId, System.Globalization.NumberStyles.HexNumber, null, out _))
         {
@@ -391,11 +391,11 @@ public class BleService
         }
         await StopScanAsync();
         var session = _sessions.GetOrAdd(deviceId, id => new DeviceSession(id));
-        await session.Gate.WaitAsync();
+        await session.Gate.WaitAsync(cancellationToken);
         try
         {
             if (!Owns(session)) return false;
-            if (!session.Connected) await EstablishAsync(session);
+            if (!session.Connected) await EstablishAsync(session, cancellationToken);
             return Owns(session) && session.Connected;
         }
         catch (Exception ex)
@@ -407,10 +407,10 @@ public class BleService
         finally { session.Gate.Release(); }
     }
 
-    private async Task EstablishAsync(DeviceSession session)
+    private async Task EstablishAsync(DeviceSession session, CancellationToken cancellationToken = default)
     {
         ReleaseHandles(session);
-        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token);
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token, cancellationToken);
         timeout.CancelAfter(TimeSpan.FromSeconds(15));
         var token = timeout.Token;
         var address = ulong.Parse(session.Id, System.Globalization.NumberStyles.HexNumber);
@@ -511,11 +511,11 @@ public class BleService
         await DisconnectAllAsync();
     }
 
-    public async Task<byte[]?> ReadCharacteristicAsync(string deviceId, string serviceUuid, string characteristicUuid)
+    public async Task<byte[]?> ReadCharacteristicAsync(string deviceId, string serviceUuid, string characteristicUuid, CancellationToken cancellationToken = default)
     {
         if (!_sessions.TryGetValue(deviceId, out var session)) return null;
-        await session.Gate.WaitAsync();
-        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token);
+        await session.Gate.WaitAsync(cancellationToken);
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token, cancellationToken);
         timeout.CancelAfter(TimeSpan.FromSeconds(15));
         try
         {

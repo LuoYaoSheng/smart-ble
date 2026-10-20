@@ -2,6 +2,15 @@ package com.smartble.ui.viewmodel
 
 import android.app.Application
 import android.net.Uri
+import android.provider.OpenableColumns
+import com.smartble.core.ota.BleManagerOtaTransport
+import com.smartble.core.ota.OtaEngine
+import com.smartble.core.ota.OtaPackage
+import com.smartble.core.ota.OtaPhase
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.smartble.core.ble.BleManager
@@ -53,6 +62,8 @@ class DeviceDetailViewModel(
 
     private val _otaState = MutableStateFlow(OtaUiState())
     val otaState: StateFlow<OtaUiState> = _otaState.asStateFlow()
+    private var otaPackage: OtaPackage? = null
+    private var otaJob: Job? = null
 
     init {
         observeConnectionState()
@@ -96,13 +107,6 @@ class DeviceDetailViewModel(
         viewModelScope.launch {
             bleManager.characteristicChanges.collect { event ->
                 if (event.deviceId != deviceId) return@collect
-                if (
-                    event.serviceUuid.equals(BleUuids.SERVICE_OTA, ignoreCase = true) &&
-                    event.characteristicUuid.equals(BleUuids.CHARACTERISTIC_OTA_STATUS, ignoreCase = true)
-                ) {
-                    handleOtaStatus(event.value)
-                    return@collect
-                }
                 val hex = DataConverter.bytesToHex(event.value)
                 // WIN-AAND-004：读值与通知同样进入日志（按 kind 区分呈现）；
                 // W3：带响应写完成同流（配网分帧逐帧确认），按发送方向呈现
@@ -133,11 +137,13 @@ class DeviceDetailViewModel(
     }
 
     fun disconnect() {
+        cancelOtaTransfer()
         Logger.info("断开连接")
         bleManager.disconnect(deviceId)
     }
 
     fun readCharacteristic(serviceUuid: String, characteristicUuid: String) {
+        if (_otaState.value.isInProgress) { Logger.warning("OTA 占用设备操作，请等待清理完成"); return }
         viewModelScope.launch {
             val service = _services.value.find { it.uuid == serviceUuid }
             val characteristic = service?.characteristics?.find { it.uuid == characteristicUuid }
@@ -152,6 +158,7 @@ class DeviceDetailViewModel(
     }
 
     fun writeCharacteristic(serviceUuid: String, characteristicUuid: String, data: ByteArray) {
+        if (_otaState.value.isInProgress) { Logger.warning("OTA 占用设备操作，请等待清理完成"); return }
         viewModelScope.launch {
             val service = _services.value.find { it.uuid == serviceUuid }
             val characteristic = service?.characteristics?.find { it.uuid == characteristicUuid }
@@ -168,6 +175,7 @@ class DeviceDetailViewModel(
     }
 
     fun toggleNotification(serviceUuid: String, characteristicUuid: String) {
+        if (_otaState.value.isInProgress) { Logger.warning("OTA 占用设备操作，请等待清理完成"); return }
         viewModelScope.launch {
             val service = _services.value.find { it.uuid == serviceUuid }
             val characteristic = service?.characteristics?.find { it.uuid == characteristicUuid }
@@ -191,151 +199,69 @@ class DeviceDetailViewModel(
         Logger.clear()
     }
 
-    fun selectOtaFile(uri: Uri, displayName: String, size: Long) {
-        _otaState.value = _otaState.value.copy(
-            fileUri = uri,
-            fileName = displayName,
-            fileSize = size,
-            progressPercent = 0,
-            sentBytes = 0,
-            totalBytes = size,
-            statusMessage = "已选择固件文件",
-            isCompleted = false,
-            errorMessage = null
-        )
-        Logger.info("选择 OTA 文件: $displayName (${size} bytes)")
+    fun selectOtaFiles(uris: List<Uri>) {
+        if (_otaState.value.isInProgress || otaJob?.isActive == true) return
+        otaPackage = null
+        _otaState.value = OtaUiState(statusMessage = "正在校验固件与 manifest.json")
+        otaJob = viewModelScope.launch {
+            try {
+                val selected = withContext(Dispatchers.IO) {
+                    require(uris.size == 2) { "请同时选择 .bin 和 manifest.json" }
+                    val resolver = getApplication<Application>().contentResolver
+                    fun name(uri: Uri): String = resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
+                        if (cursor.moveToFirst()) cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)) else null
+                    } ?: error("无法读取所选文件名称")
+                    val names = uris.associateWith { name(it) }
+                    val bin = names.entries.singleOrNull { it.value.endsWith(".bin", ignoreCase = true) } ?: error("请选择一个 .bin 应用镜像")
+                    val manifest = names.entries.singleOrNull { it.value == "manifest.json" } ?: error("请选择对应的 manifest.json")
+                    fun read(uri: Uri, limit: Int) = resolver.openInputStream(uri)?.use { OtaPackage.readBounded(it, limit) } ?: error("无法读取所选文件")
+                    val pkg = OtaPackage.validate(read(bin.key, OtaPackage.MAX_FIRMWARE_SIZE), read(manifest.key, 64 * 1024).toString(Charsets.UTF_8))
+                    Triple(bin.key, bin.value, pkg)
+                }
+                otaPackage = selected.third
+                _otaState.value = OtaUiState(fileUri = selected.first, fileName = selected.second,
+                    fileSize = selected.third.size.toLong(), totalBytes = selected.third.size.toLong(),
+                    statusMessage = "已校验 ${selected.third.target} / ${selected.third.hardware} / ${selected.third.version}")
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) { _otaState.value = OtaUiState(errorMessage = "固件包校验失败：${error.message}") }
+        }
     }
 
     fun startOtaTransfer() {
-        val currentState = _otaState.value
-        val fileUri = currentState.fileUri ?: run {
-            _otaState.value = currentState.copy(errorMessage = "请先选择固件文件")
-            return
-        }
-        val totalBytes = currentState.fileSize
+        val pkg = otaPackage ?: return
+        if (_otaState.value.isInProgress || otaJob?.isActive == true) return
         if (connectionState.value != ConnectionState.Connected) {
-            _otaState.value = currentState.copy(errorMessage = "请先连接设备")
+            _otaState.value = _otaState.value.copy(errorMessage = "请先连接设备")
             return
         }
-        if (totalBytes <= 0L) {
-            _otaState.value = currentState.copy(errorMessage = "固件文件大小无效")
-            return
-        }
-
-        viewModelScope.launch {
+        _otaState.value = _otaState.value.copy(isInProgress = true, isCompleted = false, errorMessage = null, progressPercent = 0, sentBytes = 0)
+        otaJob = viewModelScope.launch {
             try {
-                _otaState.value = currentState.copy(
-                    isInProgress = true,
-                    isCompleted = false,
-                    progressPercent = 0,
-                    sentBytes = 0,
-                    totalBytes = totalBytes,
-                    statusMessage = "正在初始化 OTA...",
-                    errorMessage = null
-                )
-                Logger.info("开始 OTA 传输")
-
-                bleManager.requestMtu(deviceId, 247)
-                bleManager.setNotification(
-                    deviceId,
-                    BleUuids.SERVICE_OTA,
-                    BleUuids.CHARACTERISTIC_OTA_STATUS,
-                    true
-                )
-
-                delay(200)
-
-                val startPayload = """
-                    {"action":"start","size":$totalBytes,"chunk_size":$OTA_CHUNK_SIZE,"firmware_version":"android-build"}
-                """.trimIndent().toByteArray()
-
-                val started = bleManager.writeCharacteristic(
-                    deviceId,
-                    BleUuids.SERVICE_OTA,
-                    BleUuids.CHARACTERISTIC_OTA_CONTROL,
-                    startPayload
-                )
-                if (!started) {
-                    throw IllegalStateException("无法发送 OTA start 命令")
-                }
-
-                delay(200)
-
-                val buffer = ByteArray(OTA_CHUNK_SIZE)
-                var sent = 0L
-                getApplication<Application>().contentResolver.openInputStream(fileUri)?.use { input ->
-                    while (true) {
-                        val read = input.read(buffer)
-                        if (read <= 0) break
-
-                        val chunk = if (read == buffer.size) buffer else buffer.copyOf(read)
-                        val success = bleManager.writeCharacteristic(
-                            deviceId,
-                            BleUuids.SERVICE_OTA,
-                            BleUuids.CHARACTERISTIC_OTA_DATA,
-                            chunk
-                        )
-                        if (!success) {
-                            throw IllegalStateException("第 ${(sent / OTA_CHUNK_SIZE) + 1} 个分包发送失败")
-                        }
-
-                        sent += read
-                        val percent = ((sent * 100) / totalBytes).toInt().coerceIn(0, 99)
-                        _otaState.value = _otaState.value.copy(
-                            sentBytes = sent,
-                            totalBytes = totalBytes,
-                            progressPercent = percent,
-                            statusMessage = "正在发送固件分包..."
-                        )
-                        delay(20)
+                OtaEngine().run(BleManagerOtaTransport(bleManager, deviceId), pkg) { value ->
+                    val message = when (value.phase) {
+                        OtaPhase.Checking -> "正在核对设备型号、硬件及运行版本"
+                        OtaPhase.Subscribing -> "正在开启 OTA 状态通知"
+                        OtaPhase.WaitingReady -> "等待设备擦除分区并就绪"
+                        OtaPhase.Transferring -> "正在发送固件"
+                        OtaPhase.Committing -> "等待设备校验并提交固件"
+                        OtaPhase.WaitingReboot -> "固件已提交，等待设备真实重启"
+                        OtaPhase.Verifying -> "正在重连并核对运行固件版本"
+                        OtaPhase.Success -> "OTA 升级成功，运行版本已核实"
                     }
-                } ?: throw IllegalStateException("无法读取固件文件")
-
-                val committed = bleManager.writeCharacteristic(
-                    deviceId,
-                    BleUuids.SERVICE_OTA,
-                    BleUuids.CHARACTERISTIC_OTA_CONTROL,
-                    """{"action":"commit"}""".toByteArray()
-                )
-                if (!committed) {
-                    throw IllegalStateException("无法发送 OTA commit 命令")
+                    _otaState.value = _otaState.value.copy(sentBytes = value.sent.toLong(), totalBytes = value.total.toLong(),
+                        progressPercent = value.percent, statusMessage = message, isCompleted = value.phase == OtaPhase.Success)
                 }
-
-                _otaState.value = _otaState.value.copy(
-                    sentBytes = totalBytes,
-                    totalBytes = totalBytes,
-                    progressPercent = 100,
-                    statusMessage = "固件已发送，等待设备完成升级..."
-                )
-                Logger.info("OTA 固件已发送完成，等待设备确认")
-            } catch (e: Exception) {
-                _otaState.value = _otaState.value.copy(
-                    isInProgress = false,
-                    isCompleted = false,
-                    statusMessage = "OTA 失败",
-                    errorMessage = e.message ?: "未知错误"
-                )
-                Logger.error("OTA 失败: ${e.message}")
-            }
+            } catch (error: CancellationException) {
+                _otaState.value = _otaState.value.copy(isCompleted = false, statusMessage = "已停止升级跟踪，已尝试取消；设备结果请重连核实")
+                throw error
+            } catch (error: Exception) {
+                _otaState.value = _otaState.value.copy(isCompleted = false, statusMessage = "OTA 失败，已尝试中止设备事务", errorMessage = error.message ?: "未确认升级完成")
+                Logger.error("OTA 失败：${error.message}")
+            } finally { _otaState.value = _otaState.value.copy(isInProgress = false) }
         }
     }
 
-    fun cancelOtaTransfer() {
-        viewModelScope.launch {
-            bleManager.writeCharacteristic(
-                deviceId,
-                BleUuids.SERVICE_OTA,
-                BleUuids.CHARACTERISTIC_OTA_CONTROL,
-                """{"action":"abort"}""".toByteArray()
-            )
-            _otaState.value = _otaState.value.copy(
-                isInProgress = false,
-                statusMessage = "已取消 OTA",
-                errorMessage = null
-            )
-            Logger.info("已取消 OTA 传输")
-        }
-    }
+    fun cancelOtaTransfer() { otaJob?.cancel() }
 
     fun buildExportText(): String {
         val exportTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
@@ -349,24 +275,7 @@ class DeviceDetailViewModel(
         )
     }
 
-    private fun handleOtaStatus(raw: ByteArray) {
-        val payload = runCatching { String(raw) }.getOrNull() ?: return
-        val transition = applyOtaStatusPayload(_otaState.value, payload) ?: return
-        _otaState.value = transition.state
-        if (transition.logMessage != null && transition.logType != null) {
-            when (transition.logType) {
-                LogType.Info -> Logger.info(transition.logMessage)
-                LogType.Success -> Logger.success(transition.logMessage)
-                LogType.Warning -> Logger.warning(transition.logMessage)
-                LogType.Error -> Logger.error(transition.logMessage)
-                LogType.Receive -> Logger.receive(transition.logMessage)
-                LogType.Send -> Logger.send(transition.logMessage)
-            }
-        }
-    }
 }
-
-private const val OTA_CHUNK_SIZE = 180
 
 /**
  * WIN-AAND-007：服务列表播报判定——仅当服务 UUID 集合真正变化（首次发现/
@@ -390,6 +299,6 @@ data class OtaUiState(
     val sentBytes: Long = 0,
     val totalBytes: Long = 0,
     val progressPercent: Int = 0,
-    val statusMessage: String = "未开始 OTA",
+    val statusMessage: String = "请选择 .bin 和 manifest.json；OTA 尚未完成真实设备验证",
     val errorMessage: String? = null,
 )

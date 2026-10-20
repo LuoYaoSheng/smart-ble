@@ -9,6 +9,8 @@ SERVICE = '4fafc201-1fb5-459e-8fcc-c5c9c331914d'
 CTRL = 'beb5483e-36e1-4688-b7f5-ea07361b26c0'
 DATA = 'beb5483e-36e1-4688-b7f5-ea07361b26c1'
 STATUS = 'beb5483e-36e1-4688-b7f5-ea07361b26c2'
+INFO_SERVICE = '4fafc201-1fb5-459e-8fcc-c5c9c331914b'
+INFO = 'beb5483e-36e1-4688-b7f5-ea07361b26a8'
 
 
 class OtaError(ValueError):
@@ -56,8 +58,26 @@ def status_frame(data):
         return None
 
 
-async def update(client, firmware, manifest, progress, timeout=30, delay=asyncio.sleep):
+async def read_identity(client, manifest, timeout):
+    characteristic = resolve_characteristic(client, INFO_SERVICE, INFO)
+    try:
+        frame = json.loads(bytes(await asyncio.wait_for(client.read_gatt_char(characteristic), timeout)).decode('utf-8'))
+        if not isinstance(frame, dict) or frame.get('type') != 'system_info': raise ValueError()
+        if frame.get('target') != manifest['target'] or frame.get('hardware') != manifest['hardware']:
+            raise OtaError('设备 target / hardware 与固件包不匹配')
+        version = frame.get('firmware_version')
+        if not isinstance(version, str) or not version: raise ValueError()
+        return version
+    except (ValueError, UnicodeError, TypeError, KeyError) as error:
+        if isinstance(error, OtaError): raise
+        raise OtaError('设备实际固件身份无法读取，禁止升级') from error
+
+
+async def update(client, firmware, manifest, progress, timeout=30, delay=asyncio.sleep, get_client=None):
     manifest = validate_package(firmware, manifest)  # no BLE side effects before validation
+    current = await read_identity(client, manifest, timeout)
+    if current == manifest['firmware_version']:
+        raise OtaError('设备已运行该固件版本，无需重复升级')
     control_char = resolve_characteristic(client, SERVICE, CTRL)
     data_char = resolve_characteristic(client, SERVICE, DATA)
     status_char = resolve_characteristic(client, SERVICE, STATUS)
@@ -89,7 +109,7 @@ async def update(client, firmware, manifest, progress, timeout=30, delay=asyncio
         await delay(0)
         while not queue.empty(): queue.get_nowait()
         chunk = min(180, max(20, int(getattr(client, 'mtu_size', 23)) - 3))
-        payload = {'op': 'start', 'target': manifest['target'], 'target_version': manifest['firmware_version'], 'size': len(firmware), 'chunk_size': chunk, 'sha256': manifest['sha256']}
+        payload = {'op': 'start', 'target': manifest['target'], 'hardware': manifest['hardware'], 'target_version': manifest['firmware_version'], 'size': len(firmware), 'chunk_size': chunk, 'sha256': manifest['sha256']}
         phase = 'waiting_ready'
         started = True
         await asyncio.wait_for(client.write_gatt_char(control_char, json.dumps(payload, separators=(',', ':')).encode(), response=True), timeout=15)
@@ -121,9 +141,25 @@ async def update(client, firmware, manifest, progress, timeout=30, delay=asyncio
         await asyncio.wait_for(client.write_gatt_char(control_char, b'{"op":"commit"}', response=True), timeout=15)
         await delay(0)
         await wait('success')
+        # Device success only confirms flash commit. Observe an actual reboot
+        # disconnect, then use the owner's newly discovered connection for INFO.
         success = True
-        progress(100)
-        return {'version': manifest['firmware_version'], 'reboot_pending': True}
+        phase = 'verifying'
+        deadline = loop.time() + timeout
+        while client.is_connected:
+            if loop.time() >= deadline: raise TimeoutError('设备提交后未断开重启，不能确认升级完成')
+            await delay(.1)
+        while loop.time() < deadline:
+            restored = get_client() if get_client else None
+            if restored is not None and restored is not client and restored.is_connected:
+                actual = await read_identity(restored, manifest, max(.001, deadline - loop.time()))
+                if actual != manifest['firmware_version']:
+                    raise OtaError('OTA_VERSION_MISMATCH：重启后实际版本与固件包不符')
+                await asyncio.sleep(0)  # deliver cancellation before publishing success
+                progress(100)
+                return {'version': actual, 'reboot_pending': False, 'verified': True}
+            await delay(.1)
+        raise TimeoutError('等待设备重连与实际版本回读超时，未确认升级完成')
     finally:
         if started and not success and client.is_connected:
             try: await asyncio.wait_for(client.write_gatt_char(control_char, b'{"op":"abort"}', response=True), timeout=3)

@@ -4,7 +4,9 @@
 
 两端 Bundle ID 均为 `com.i2kai.open.smartble`，版本 **1.0.5 / build 101**。App Store Connect 使用一个应用记录添加 iOS、macOS 两个平台，各自准备构建、截图及审核资料：[Apple 添加平台说明](https://developer.apple.com/help/app-store-connect/create-an-app-record/add-platforms)。其他客户端实现继续保留和验证。
 
-## 2026-10-19 已生成的上架包
+## 2026-10-19 已生成的历史上架包
+
+> 2026-10-20：本地 OTA 事务与固件正在补齐；下列包不包含本轮修复，保留作历史验包证据。须完成真实设备验证后，从修复后的源码重新归档、签名和验包，再进入上传流程。见 [OTA 当前说明](./ota-local-upgrade.md)。
 
 | 平台 | 原生实现 | 当前安装包 | 架构 |
 | --- | --- | --- | --- |

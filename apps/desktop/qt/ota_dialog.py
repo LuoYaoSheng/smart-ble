@@ -41,7 +41,8 @@ class OtaController(QObject):
         async def execute():
             self._task = asyncio.current_task()
             if self._cancel_requested: raise asyncio.CancelledError
-            return await update(client, firmware, manifest, self.progress.emit)
+            return await update(client, firmware, manifest, self.progress.emit,
+                                get_client=lambda: self.ble._clients.get(self.address))
         future = self.ble._gatt.submit(execute())
         def done(result):
             if not isValid(self): return
@@ -57,7 +58,7 @@ class OtaController(QObject):
             except Exception:
                 self.finished.emit('蓝牙操作失败；升级和取消请求的设备结果均未确认，请重连检查')
             else:
-                self.finished.emit('设备已确认升级成功，正在重启；重连后核对版本 ' + value['version'])
+                self.finished.emit('升级完成，已重连并核对设备实际版本 ' + value['version'])
         future.add_done_callback(done)
 
     def cancel(self):
@@ -99,7 +100,7 @@ class OtaDialog(QDialog):
 
     def show_progress(self, percent):
         self.bar.setValue(percent)
-        self.status.setText(f'传输中 {percent}%；完成后等待设备提交回执' if percent < 100 else '设备已返回成功回执，正在重启')
+        self.status.setText(f'传输中 {percent}%；提交后等待重启及实际版本验证' if percent < 100 else '升级完成，设备重启后的实际版本已验证')
 
     def select_package(self):
         binary, _ = QFileDialog.getOpenFileName(self, '选择固件', '', '固件 (*.bin)')

@@ -17,6 +17,8 @@ internal static class OtaEngine
     internal const string Control = "beb5483e-36e1-4688-b7f5-ea07361b26c0";
     internal const string Data = "beb5483e-36e1-4688-b7f5-ea07361b26c1";
     internal const string Status = "beb5483e-36e1-4688-b7f5-ea07361b26c2";
+    internal const string InfoService = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+    internal const string Info = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
     internal sealed record Package(string Target, string Hardware, string Version, int Size, string Sha256);
     internal sealed record Receipt(string? Kind, string Status, string Detail, int? MaxChunk);
     internal interface ITransport
@@ -24,9 +26,25 @@ internal static class OtaEngine
         event Action<byte[]> StatusReceived;
         event Action Disconnected;
         int ChunkSize { get; }
+        Task<byte[]?> ReadInfoAsync(CancellationToken token);
+        Task<bool> ReconnectAsync(CancellationToken token);
         Task<bool> SubscribeAsync(bool enable, CancellationToken token);
         Task<bool> WriteControlAsync(byte[] value, CancellationToken token);
         Task<bool> WriteDataAsync(byte[] value, CancellationToken token);
+    }
+
+    private static string VerifyIdentity(byte[]? bytes, Package package)
+    {
+        if (bytes == null) throw new InvalidOperationException("设备实际固件身份无法读取");
+        using var document = JsonDocument.Parse(bytes);
+        var info = document.RootElement;
+        if (info.ValueKind != JsonValueKind.Object ||
+            !info.TryGetProperty("type", out var type) || type.GetString() != "system_info" ||
+            !info.TryGetProperty("target", out var target) || target.GetString() != package.Target ||
+            !info.TryGetProperty("hardware", out var hardware) || hardware.GetString() != package.Hardware ||
+            !info.TryGetProperty("firmware_version", out var version) || string.IsNullOrWhiteSpace(version.GetString()))
+            throw new InvalidOperationException("设备 target / hardware / 实际固件身份与固件包不匹配");
+        return version.GetString()!;
     }
 
     internal static Package Validate(byte[] firmware, string manifest)
@@ -64,10 +82,22 @@ internal static class OtaEngine
     }
 
     internal static async Task<Package> RunAsync(ITransport transport, byte[] firmware, string manifest, Action<int> progress,
-        CancellationToken token, TimeSpan? receiptTimeout = null, Func<TimeSpan, CancellationToken, Task>? delay = null)
+        CancellationToken token, TimeSpan? receiptTimeout = null, Func<TimeSpan, CancellationToken, Task>? delay = null,
+        TimeSpan? operationTimeout = null)
     {
+        async Task<T> Operation<T>(string name, Func<CancellationToken, Task<T>> execute)
+        {
+            using var limit = CancellationTokenSource.CreateLinkedTokenSource(token);
+            limit.CancelAfter(operationTimeout ?? TimeSpan.FromSeconds(15));
+            try { return await execute(limit.Token).WaitAsync(limit.Token); }
+            catch (OperationCanceledException) when (!token.IsCancellationRequested)
+            { throw new TimeoutException($"OTA {name} 操作超时，未确认升级完成"); }
+        }
         var package = Validate(firmware, manifest);
+        var current = VerifyIdentity(await Operation("INFO", transport.ReadInfoAsync), package);
+        if (current == package.Version) throw new InvalidOperationException("设备已运行该固件版本，无需重复升级");
         var queue = Channel.CreateUnbounded<Receipt>();
+        var rebootDisconnected = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         var phase = "starting";
         void Receive(byte[] bytes)
         {
@@ -75,7 +105,11 @@ internal static class OtaEngine
             var currentPhase = Volatile.Read(ref phase);
             if (receipt != null && (receipt.Kind == "error" || receipt.Kind == "ready" && currentPhase == "waiting_ready" || receipt.Kind == "success" && currentPhase == "committing")) queue.Writer.TryWrite(receipt);
         }
-        void Disconnected() => queue.Writer.TryWrite(new Receipt("disconnect", "", "OTA 连接已断开；未确认升级完成，需重连核对状态", null));
+        void Disconnected()
+        {
+            rebootDisconnected.TrySetResult(true);
+            queue.Writer.TryWrite(new Receipt("disconnect", "", "OTA 连接已断开；未确认升级完成，需重连核对状态", null));
+        }
         async Task<Receipt> Wait(string expected)
         {
             using var timeout = CancellationTokenSource.CreateLinkedTokenSource(token);
@@ -96,13 +130,13 @@ internal static class OtaEngine
         try
         {
             token.ThrowIfCancellationRequested();
-            if (!await transport.SubscribeAsync(true, token).WaitAsync(token)) throw new InvalidOperationException("OTA STATUS 订阅失败，未写入设备");
+            if (!await Operation("订阅", ct => transport.SubscribeAsync(true, ct))) throw new InvalidOperationException("OTA STATUS 订阅失败，未写入设备");
             subscribed = true;
             while (queue.Reader.TryRead(out _)) { }
             var chunk = Math.Clamp(transport.ChunkSize, 1, 180);
-            var payload = JsonSerializer.SerializeToUtf8Bytes(new { op = "start", target = package.Target, target_version = package.Version, size = package.Size, chunk_size = chunk, sha256 = package.Sha256 });
+            var payload = JsonSerializer.SerializeToUtf8Bytes(new { op = "start", target = package.Target, hardware = package.Hardware, target_version = package.Version, size = package.Size, chunk_size = chunk, sha256 = package.Sha256 });
             Volatile.Write(ref phase, "waiting_ready"); started = true;
-            if (!await transport.WriteControlAsync(payload, token).WaitAsync(token)) throw new InvalidOperationException("OTA start 写入失败");
+            if (!await Operation("start", ct => transport.WriteControlAsync(payload, ct))) throw new InvalidOperationException("OTA start 写入失败");
             var ready = await Wait("ready");
             if (ready.MaxChunk is <= 0) throw new InvalidOperationException("设备返回非法 max_chunk");
             chunk = Math.Min(chunk, ready.MaxChunk ?? chunk);
@@ -114,7 +148,7 @@ internal static class OtaEngine
                 while (queue.Reader.TryRead(out var receipt))
                     if (receipt.Kind is "error" or "disconnect") throw new InvalidOperationException(receipt.Detail);
                 var value = firmware.AsSpan(offset, Math.Min(chunk, firmware.Length - offset)).ToArray();
-                if (!await transport.WriteDataAsync(value, token).WaitAsync(token)) throw new InvalidOperationException("OTA DATA 写入失败，未确认升级完成");
+                if (!await Operation("DATA", ct => transport.WriteDataAsync(value, ct))) throw new InvalidOperationException("OTA DATA 写入失败，未确认升级完成");
                 var percent = Math.Min(99, (int)((long)(offset + value.Length) * 100 / firmware.Length));
                 if (percent != lastPercent) { progress(percent); lastPercent = percent; }
                 await delay(TimeSpan.FromMilliseconds(20), token);
@@ -122,9 +156,24 @@ internal static class OtaEngine
             while (queue.Reader.TryRead(out var pending))
                 if (pending.Kind is "error" or "disconnect") throw new InvalidOperationException(pending.Detail);
             Volatile.Write(ref phase, "committing");
-            if (!await transport.WriteControlAsync(Encoding.UTF8.GetBytes("{\"op\":\"commit\"}"), token).WaitAsync(token)) throw new InvalidOperationException("OTA commit 写入失败");
+            if (!await Operation("commit", ct => transport.WriteControlAsync(Encoding.UTF8.GetBytes("{\"op\":\"commit\"}"), ct))) throw new InvalidOperationException("OTA commit 写入失败");
             await Wait("success");
-            success = true; progress(100);
+            success = true;
+            Volatile.Write(ref phase, "verifying");
+            using var verification = CancellationTokenSource.CreateLinkedTokenSource(token);
+            verification.CancelAfter(receiptTimeout ?? TimeSpan.FromSeconds(30));
+            try
+            {
+                await rebootDisconnected.Task.WaitAsync(verification.Token);
+                if (!await transport.ReconnectAsync(verification.Token).WaitAsync(verification.Token))
+                    throw new InvalidOperationException("设备重启后重连失败，未确认升级完成");
+                var actual = VerifyIdentity(await transport.ReadInfoAsync(verification.Token).WaitAsync(verification.Token), package);
+                if (actual != package.Version) throw new InvalidOperationException("OTA_VERSION_MISMATCH：重启后实际版本与固件包不符");
+            }
+            catch (OperationCanceledException) when (!token.IsCancellationRequested)
+            { throw new TimeoutException("等待设备重启、重连和实际版本回读超时，未确认升级完成"); }
+            token.ThrowIfCancellationRequested();
+            progress(100);
             return package;
         }
         finally

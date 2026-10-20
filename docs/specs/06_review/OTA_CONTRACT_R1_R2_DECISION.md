@@ -1,5 +1,7 @@
 # OTA 契约对齐决策（R-1 / R-2）· 2026-09-10
 
+> 2026-10-20 更新：以下为历史修复记录。当前实现已收紧为六字段 manifest 必填、start 增加 hardware、typed status 精确解析，并以重启后实际 INFO 版本判定成功；不再采用历史“任意 JSON 字符串子串”或“无 manifest 省略字段后交给固件拒绝”方式。见 [当前协议](../../ota-local-upgrade.md)。
+
 ```yaml
 status: R-2 已按缺陷修复；R-1 采用方案 A（App 对齐冻结契约），如需改契约走正式正典变更
 author: Mac 收尾轮（docs/plans/2026-09-10-mac-closeout-dev-plan.md Task 2/3）

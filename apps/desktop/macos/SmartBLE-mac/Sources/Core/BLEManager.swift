@@ -302,8 +302,8 @@ class BLEManager: NSObject, ObservableObject {
     }
     /// 全部断开结算回调（P007 设置后调用 disconnectAll）
     var onDisconnectAllSettled: ((DisconnectAllReport) -> Void)?
-    /// OTA STATUS 特征值转发（F025 · OtaManager 订阅）：(deviceId, data)
-    var otaStatusHandler: ((String, Data) -> Void)?
+    /// A single OTA transaction reserves its target device's write lane.
+    private weak var otaTransfer: OtaBluetoothSession?
     /// Smart HID INFO/STATUS 特征值转发（F019-F022 · HidProvisionManager 订阅）：(deviceId, charUuidUpper, data)
     var hidValueHandler: ((String, String, Data) -> Void)?
     /// 写队列结算回调（F025 分块节拍用）：(deviceId, itemId, success)
@@ -517,6 +517,7 @@ class BLEManager: NSObject, ObservableObject {
 
     /// 断开指定设备（P006 断开按钮 / P007 卡片断开；含取消进行中的重连）
     func disconnect(deviceId: String) {
+        if otaTransfer?.deviceID == deviceId { otaTransfer?.cancel() }
         guard let session = sessions[deviceId] else { return }
         session.userInitiatedDisconnect = true
         session.retiringConnection = true
@@ -633,6 +634,30 @@ class BLEManager: NSObject, ObservableObject {
         sessions[deviceId]?.writeDepth ?? 0
     }
 
+    func canStartOta(deviceId: String) -> Bool {
+        guard let session = sessions[deviceId] else { return false }
+        return session.state == .connected && !session.retiringConnection && session.writeDepth == 0 && otaTransfer?.holdsWriteLane != true
+    }
+
+    func makeOtaSession(package: OtaLocalPackage, deviceId: String) -> OtaBluetoothSession {
+        let device = sessions[deviceId]?.device
+        let transfer = OtaBluetoothSession(package: package, deviceID: deviceId, connection: { [weak self] in
+            guard let session = self?.sessions[deviceId], session.state == .connected, !session.retiringConnection else { return nil }
+            return session.peripheral
+        }, resolve: { [weak self] service, characteristic in
+            guard let self, let session = self.sessions[deviceId], session.state == .connected else { return nil }
+            return self.findCharacteristic(characteristic, serviceUUID: service, in: session.services)?.peripheralCharacteristic
+        }, reconnect: { [weak self] in
+            guard let self, let device else { return }
+            self.connect(device: device)
+        }, closeConnection: { [weak self] in
+            guard let self, let session = self.sessions[deviceId] else { return }
+            self.centralManager?.cancelPeripheralConnection(session.peripheral)
+        })
+        otaTransfer = transfer
+        return transfer
+    }
+
     /// 写入统一入口：入队串行发送（正典 F009：写队列串行化 = 本功能）
     /// - Parameter forceWithoutResponse: OTA DATA 分块等协议固定 writeNoResponse 时置 true
     ///   （特征属性不含 writeWithoutResponse 时自动回落 withResponse 并记一条日志）
@@ -643,6 +668,10 @@ class BLEManager: NSObject, ObservableObject {
         let session = deviceId == nil ? activeSession : sessions[deviceId!]
         guard let session else {
             log("写入失败：无会话", .err)
+            return false
+        }
+        guard !(otaTransfer?.holdsWriteLane == true && otaTransfer?.deviceID == session.id) else {
+            log("OTA 升级占用写通道", .err)
             return false
         }
         guard let char = findCharacteristic(characteristicUUID, serviceUUID: serviceUUID, in: session.services),
@@ -1125,6 +1154,7 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
             if wasActive { services = [] }
             scheduleReconnect(session)
         }
+        if otaTransfer?.deviceID == session.id { otaTransfer?.disconnected() }
     }
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral,
@@ -1221,6 +1251,10 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
                     error: Error?) {
         guard let session = callbackSession(peripheral, characteristic: characteristic) else { return }
         session.readDeadlines.complete(key: characteristicKey(characteristic))
+        if otaTransfer?.deviceID == session.id {
+            otaTransfer?.received(characteristic.value ?? Data(), serviceUUID: characteristic.service?.uuid.uuidString ?? "",
+                                  characteristicUUID: characteristic.uuid.uuidString, error: error)
+        }
         if let error = error {
             log("读取失败 · \(session.device.name)：\(error.localizedDescription)", .err)
             return
@@ -1232,12 +1266,6 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
         // OTA 状态/版本回读 + Smart HID INFO/STATUS 特征转发（F025/F019-F022）
         let upper = characteristic.uuid.uuidString.uppercased()
         let serviceUUID = characteristic.service?.uuid.uuidString ?? ""
-        let address = characteristicAddress(characteristic)
-        let otaStatus = GattCharacteristicAddress(serviceUUID: OtaManager.serviceUuid, characteristicUUID: OtaManager.statusCharUuid)
-        let firmwareVersion = GattCharacteristicAddress(serviceUUID: "180A", characteristicUUID: OtaManager.firmwareVersionCharUuid)
-        if address == otaStatus || address == firmwareVersion {
-            otaStatusHandler?(session.id, data)
-        }
         if Self.isHidValue(serviceUUID: serviceUUID, characteristicUUID: upper) {
             hidValueHandler?(session.id, upper.lowercased(), data)
         }
@@ -1252,6 +1280,8 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic,
                     error: Error?) {
         guard let session = callbackSession(peripheral, characteristic: characteristic) else { return }
+        if otaTransfer?.deviceID == session.id,
+           otaTransfer?.wrote(serviceUUID: characteristic.service?.uuid.uuidString ?? "", characteristicUUID: characteristic.uuid.uuidString, error: error) == true { return }
         // 写队列结算（F009：withResponse 完成回调驱动串行续泵）
         if let inflight = session.writeInFlight,
            inflight.matchesReceipt(serviceUUID: characteristic.service?.uuid.uuidString ?? "",
@@ -1280,6 +1310,9 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
                     error: Error?) {
         guard let session = callbackSession(peripheral, characteristic: characteristic) else { return }
         session.notificationDeadlines.complete(key: characteristicKey(characteristic))
+        if let error, otaTransfer?.deviceID == session.id {
+            otaTransfer?.received(Data(), serviceUUID: characteristic.service?.uuid.uuidString ?? "", characteristicUUID: characteristic.uuid.uuidString, error: error)
+        }
         session.notificationState.observe(address: characteristicAddress(characteristic),
                                           isNotifying: characteristic.isNotifying, succeeded: error == nil)
         if session.id == activeDeviceId { syncActiveMirror() }

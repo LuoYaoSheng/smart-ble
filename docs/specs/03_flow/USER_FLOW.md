@@ -65,13 +65,13 @@ P001 扫描 → SHID-XXXX 卡（UUID 强匹配 STRONG 徽章，F018）
 
 ```
 P006（设备含 OTA 服务 4fafc201-…-914d，「固件更新」可见）
-  → 选 .bin（可选 manifest.json）→ 六重包校验（target/hardware/SemVer/sha256 实测）
-  → 接管会话（期间禁自动重连）→ MTU 247 → start（chunk 180）
-  → 分包传输（20ms 间隔）带进度 → commit → 重连回读固件版本比对
-  → 一致才报成功，2s 自动关闭弹窗；任意时刻可取消（abort）
+  → 明确选择 .bin + manifest.json（两者必选）→ 六重包校验（target/hardware/SemVer/sha256 实测）
+  → 读取 INFO 比对 target/hardware/当前版本 → 接管会话 → 订阅状态 → start（hardware 必填，chunk≤180）
+  → 等 ready → 分包传输（20ms 间隔）→ commit → success 回执 → 等真实重启断开 → 重连回读 INFO
+  → 型号与实际版本一致才报成功和100%；提交前可取消（abort），提交后取消仅停止跟踪
 ```
 
-⚠ 当前产品状态：OTA 标注 **BLOCKED**（客户端与固件完整事务尚未对齐 E5），属受限开放能力。
+⚠ 当前产品状态：OTA 标注 **BLOCKED**（协议/固件与软件验证见 docs/ota-local-upgrade.md；真实设备 E5 尚未完成），属受限开放能力。
 
 ## S6 多设备会话管理（U1/U3）
 

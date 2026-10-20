@@ -75,8 +75,10 @@ test('R-2: error 帧（code/detail）触发 error', () => {
   );
 });
 
-test('R-2 回归: "failed" 整值不在旧精确匹配集合 → 子串匹配必须命中', () => {
-  assert.equal(OC.OtaStatusClassifier.classify('{"event":"failed","code":"OTA_ERR_STATE"}'), 'error');
+test('R-2: only typed status can acknowledge OTA, never message/event substrings', () => {
+  for (const text of ['{"event":"failed"}', '{"status":"ready"}', '{"type":"ota","status":"error","message":"not ready, success impossible"}', '{"type":"info","status":"success"}']) {
+    assert.equal(OC.OtaStatusClassifier.classify(text), text.includes('impossible') ? 'error' : null);
+  }
 });
 
 test('R-2 回归: "aborted"（固件 abort 通知）必须命中错误类', () => {
@@ -89,8 +91,8 @@ test('R-2: 版本串等无关帧静默忽略（null）', () => {
 });
 
 test('R-2: 文本帧直配同样子串匹配', () => {
-  assert.equal(OC.OtaStatusClassifier.classify('Device ready'), 'ready');
-  assert.equal(OC.OtaStatusClassifier.classify('transfer failed'), 'error');
+  assert.equal(OC.OtaStatusClassifier.classify('Device ready'), null);
+  assert.equal(OC.OtaStatusClassifier.classify('transfer failed'), null);
 });
 
 // ---------------------------------------------------------------------------
@@ -100,43 +102,25 @@ test('R-2: 文本帧直配同样子串匹配', () => {
 test('R-1: 完整 manifest → 六键契约帧', () => {
   const p = OC.OtaStartPayload.build({
     manifestTarget: 'lightble-peripheral',
+    manifestHardware: 'esp32-s3',
     manifestVersion: '1.0.1',
     fileSize: 1024,
     chunkSize: 180,
     sha256: 'a'.repeat(64),
   });
-  assert.deepEqual(Object.keys(p), ['op', 'size', 'chunk_size', 'sha256', 'target', 'target_version']);
+  assert.deepEqual(Object.keys(p), ['op', 'target', 'hardware', 'target_version', 'size', 'chunk_size', 'sha256']);
   assert.equal(p.op, 'start');
   assert.equal(p.target, 'lightble-peripheral');
   assert.equal(p.target_version, '1.0.1');
 });
 
-test('R-1: 无 manifest → 省略 target/target_version（不伪造枚举/版本）', () => {
-  const p = OC.OtaStartPayload.build({
-    manifestTarget: null,
-    manifestVersion: null,
-    fileSize: 512,
-    chunkSize: 180,
-    sha256: 'b'.repeat(64),
-  });
-  assert.ok(!('target' in p));
-  assert.ok(!('target_version' in p));
-  assert.equal(p.op, 'start');
-});
-
-test('R-1: 非枚举 target 不进帧', () => {
-  const p = OC.OtaStartPayload.build({
-    manifestTarget: '1.0.5', // 旧版把版本号当 target 的病，构造层拦截
-    manifestVersion: null,
-    fileSize: 8,
-    chunkSize: 180,
-    sha256: 'c'.repeat(64),
-  });
-  assert.ok(!('target' in p));
+test('R-1: missing/incomplete manifest cannot construct start', () => {
+  assert.throws(() => OC.OtaStartPayload.build({ fileSize: 512, chunkSize: 180, sha256: 'b'.repeat(64) }), /manifest/);
+  assert.throws(() => OC.OtaStartPayload.build({ manifestTarget: '1.0.5', manifestHardware: 'esp32-s3', manifestVersion: '1.0.0', fileSize: 8, chunkSize: 180, sha256: 'c'.repeat(64) }), /manifest/);
 });
 
 test('R-1: display 不泄露 sha256 全文', () => {
-  const p = OC.OtaStartPayload.build({ manifestTarget: 'lightble-observer', manifestVersion: '2.0.0', fileSize: 3, chunkSize: 180, sha256: 'd'.repeat(64) });
+  const p = OC.OtaStartPayload.build({ manifestTarget: 'lightble-observer', manifestHardware: 'esp32-s3', manifestVersion: '2.0.0', fileSize: 3, chunkSize: 180, sha256: 'd'.repeat(64) });
   const d = OC.OtaStartPayload.display(p);
   assert.ok(!d.includes('dddd'));
   assert.ok(d.includes('target=lightble-observer'));

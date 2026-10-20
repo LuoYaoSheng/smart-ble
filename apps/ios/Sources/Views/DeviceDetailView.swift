@@ -111,7 +111,7 @@ struct DeviceDetailView: View {
     private var htmlNote: some View {
         HStack(alignment: .top, spacing: 9) {
             Image(systemName: "exclamationmark.triangle")
-            Text("OTA 端到端链路 BLOCKED（固件侧暂未开放）：正式使用前需固件配合。")
+            Text("OTA 尚未完成真实设备验证，暂不作为正式发布能力。")
                 .scaledFont(12)
         }
         .foregroundColor(Color(red: 138 / 255, green: 84 / 255, blue: 16 / 255))
