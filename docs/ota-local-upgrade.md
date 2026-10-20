@@ -70,7 +70,7 @@ NimBLE 回调仅投递有界 RAM 命令队列；Flash 写入、SHA、会话状�
 
 ## 生成与验证真实固件包
 
-先通过 PlatformIO 构建对应 Peripheral 固件，然后执行：
+工具链固定为 `espressif32@6.12.0`（Arduino 2.0.17 / ESP-IDF 4.4.7），避免干净环境自动升级到改变 OTA/SHA API 的 Arduino 3.x。先通过 PlatformIO 构建对应 Peripheral 固件，然后执行：
 
 ```bash
 python3 scripts/ota/package-firmware.py \
@@ -101,7 +101,7 @@ dotnet test tests/ota-dotnet/SmartBLE.Ota.Tests.csproj
 .tmp/qt-venv/bin/python scripts/ota/verify-device.py --scan-seconds 5
 .tmp/qt-venv/bin/python scripts/ota/verify-device.py \
   --address "准确的设备地址或macOS设备UUID" \
-  --package .tmp/ota/2026-10-20/verified/esp32-s3/1.0.1 \
+  --package .tmp/ota/2026-10-20/pinned/esp32-s3/1.0.1 \
   --scenario cancel
 ```
 

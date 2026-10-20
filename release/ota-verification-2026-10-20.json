@@ -5,7 +5,7 @@
   "mode": "LOCAL_BIN_AND_MANIFEST_NO_BACKEND",
   "protocol": "docs/ota-local-upgrade.md",
   "source_baseline": "54b49e109501f512551712d36f88793865d26bd0",
-  "source_scope": "Working tree OTA fixes, not yet committed; firmware metadata honestly records 54b49e1-dirty. Package SHA and source file hashes bind the local evidence.",
+  "source_scope": "Local builds were executed before commit, with dirty Git metadata. Receipt source-file hashes and package SHA bind the evidence. The toolchain pin matches the platform actually used for the successful local builds.",
   "firmware_source_sha256": {
     "hardware/esp32/LightBLE/src/ota_server.cpp": "0510df4e463f732aefccdeba0f80a1ffce13b516635612d103b2f9fc5d2de756",
     "hardware/esp32/LightBLE/include/ota_server.h": "9104b1e7bbd0a58c4e82f8113767e02646c16aa97a07954e69325c987bb6939b",
@@ -13,7 +13,7 @@
     "hardware/esp32/LightBLE/src/device_info.cpp": "32d0beac5c8c5fc6ed0e1bc2a43cf08035b937b5ae163c04cba227b3f03f89a9",
     "hardware/esp32/LightBLE/src/main.cpp": "825ae422b5530f4efe4b21358943b60857a0993ac7352fd71eb3aadda36cdbb9",
     "hardware/esp32/scripts/build-info.py": "f5d360b724e2aa9d0bb6beb74129fa749d5fee8c93a52a7e2f88a2b07de556b8",
-    "hardware/esp32/LightBLE/platformio.ini": "9e22e48878e29f928d7a9f81c8bca03ff55fbd550c81564e88235fa06f094279"
+    "hardware/esp32/LightBLE/platformio.ini": "caada3693b611503750d8e78c4e28b27b53889f5a750f7a2c43868781d639a37"
   },
   "firmware": {
     "verification": "SOFTWARE_BUILD_ONLY",
@@ -30,8 +30,8 @@
           "firmware_name": "LightBLE",
           "target": "lightble-peripheral",
           "version": "1.0.0",
-          "git_sha": "54b49e1-dirty",
-          "build_time": "2026-10-20T02:07:25Z"
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:16:26Z"
         }
       },
       {
@@ -45,8 +45,8 @@
           "firmware_name": "LightBLE",
           "target": "lightble-peripheral",
           "version": "1.0.0",
-          "git_sha": "54b49e1-dirty",
-          "build_time": "2026-10-20T02:07:28Z"
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:16:40Z"
         }
       },
       {
@@ -60,8 +60,8 @@
           "firmware_name": "LightBLE",
           "target": "lightble-peripheral",
           "version": "1.0.1",
-          "git_sha": "54b49e1-dirty",
-          "build_time": "2026-10-20T02:07:36Z"
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:17:24Z"
         }
       },
       {
@@ -75,8 +75,8 @@
           "firmware_name": "LightBLE",
           "target": "lightble-peripheral",
           "version": "1.0.1",
-          "git_sha": "54b49e1-dirty",
-          "build_time": "2026-10-20T02:07:40Z"
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:17:39Z"
         }
       },
       {
@@ -90,8 +90,8 @@
           "firmware_name": "LightBLE",
           "target": "lightble-observer",
           "version": "1.0.0",
-          "git_sha": "54b49e1-dirty",
-          "build_time": "2026-10-20T02:07:31Z"
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:16:55Z"
         }
       },
       {
@@ -105,8 +105,8 @@
           "firmware_name": "LightBLE",
           "target": "lightble-observer",
           "version": "1.0.0",
-          "git_sha": "54b49e1-dirty",
-          "build_time": "2026-10-20T02:07:34Z"
+          "git_sha": "e6e6e5d-dirty",
+          "build_time": "2026-10-20T02:17:09Z"
         }
       }
     ],
@@ -114,7 +114,7 @@
   },
   "local_packages": [
     {
-      "directory": ".tmp/ota/2026-10-20/verified/esp32-wroom-32/1.0.0",
+      "directory": ".tmp/ota/2026-10-20/pinned/esp32-wroom-32/1.0.0",
       "manifest": {
         "format_version": 1,
         "target": "lightble-peripheral",
@@ -126,7 +126,7 @@
       "local_image_integrity": "PASS"
     },
     {
-      "directory": ".tmp/ota/2026-10-20/verified/esp32-s3/1.0.0",
+      "directory": ".tmp/ota/2026-10-20/pinned/esp32-s3/1.0.0",
       "manifest": {
         "format_version": 1,
         "target": "lightble-peripheral",
@@ -138,7 +138,7 @@
       "local_image_integrity": "PASS"
     },
     {
-      "directory": ".tmp/ota/2026-10-20/verified/esp32-wroom-32/1.0.1",
+      "directory": ".tmp/ota/2026-10-20/pinned/esp32-wroom-32/1.0.1",
       "manifest": {
         "format_version": 1,
         "target": "lightble-peripheral",
@@ -150,7 +150,7 @@
       "local_image_integrity": "PASS"
     },
     {
-      "directory": ".tmp/ota/2026-10-20/verified/esp32-s3/1.0.1",
+      "directory": ".tmp/ota/2026-10-20/pinned/esp32-s3/1.0.1",
       "manifest": {
         "format_version": 1,
         "target": "lightble-peripheral",
@@ -254,6 +254,11 @@
     "ota_target_integration": {
       "status": "PASS",
       "tests": 19
+    },
+    "firmware_pinned_platform_six_environments": {
+      "status": "PASS",
+      "platform": "espressif32@6.12.0",
+      "log": ".tmp/ota-firmware-pinned-build.log"
     }
   },
   "hardware_validation": {
@@ -278,5 +283,14 @@
     "status": "BLOCKED_PENDING_REAL_DEVICE_E5_AND_REPACKAGING",
     "old_packages": "2026-10-19 1.0.5/101 exports predate these fixes; do not submit as fixed binaries",
     "store_upload": "NOT_RUN"
-  }
+  },
+  "toolchain": {
+    "platform": "espressif32@6.12.0",
+    "arduino": "2.0.17",
+    "esp_idf": "4.4.7",
+    "reason": "CI clean install resolved unpinned espressif32 to8.0.0/Arduino3.3.12, whose app descriptor/SHA APIs differ. Pin actual validated toolchain for reproducibility.",
+    "first_ci_failure_run": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/39357630670",
+    "first_ci_failure_job": 118416008135
+  },
+  "software_source_commit": "e6e6e5d5caf725e53f33903b3b7d6c6b644d1abe"
 }
